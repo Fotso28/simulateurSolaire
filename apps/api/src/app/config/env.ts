@@ -64,6 +64,10 @@ export function validateEnv(raw: Record<string, unknown>): Env {
   const env = plainToInstance(Env, defined, {
     excludeExtraneousValues: false,
   });
+  // Cookie `Secure` par défaut en production si COOKIE_SECURE n'est pas renseigné.
+  if (defined['COOKIE_SECURE'] === undefined) {
+    env.COOKIE_SECURE = env.NODE_ENV === 'production';
+  }
   const errors = validateSync(env, { whitelist: false });
   if (errors.length > 0) {
     const names = errors.map((e) => e.property).join(', ');

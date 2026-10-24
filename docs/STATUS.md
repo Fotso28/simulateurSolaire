@@ -10,7 +10,7 @@
 | L4b | terminé — mode pro (saisie, résultat, récapitulatif technique, tests ; finalisé en L4c) | L4b |
 | L4a | terminé — back-office `/admin` | L4a |
 | L5 | terminé (1–4 et 6 faits — déploiement : L5b ; 5, 7 : L5c) | L5, L5b, L5c |
-| L6 | en cours — L6a/L6b : points 1 à 7 faits | L6a, L6b |
+| L6 | terminé — L6a/L6b : points 1 à 7 faits ; L6c : recette (`docs/RECETTE.md`) | L6a, L6b, L6c |
 
 ## Notes par lot
 
@@ -21,7 +21,7 @@
   Projets : `web`, `api`, `engine`, `shared-types`. Alias `@simulateur/engine`, `@simulateur/shared-types`.
 - `apps/web` : Angular 22.1 (standalone, zoneless par défaut, builder esbuild `@angular/build`), Angular CDK 22.1,
   Tailwind CSS 4 (config CSS-first : jetons dans `@theme` de `apps/web/src/styles.css`, PostCSS via `apps/web/.postcssrc.json`).
-  Polices IBM Plex Sans / Mono chargées depuis Google Fonts dans `index.html` (à auto-héberger pour le hors-ligne, L5).
+  Polices IBM Plex Sans / Mono (auto-hébergées depuis L5, `apps/web/public/fonts`).
   Routes : `/` (HomePage), `/mode`, `/besoins`, `/autonomie`, `/resultat`, `/configurateur`, `/s/:shareToken`
   (toutes en `loadComponent` vers `shared/placeholder-page.ts`), `/admin` en `loadChildren` (`features/admin/admin.routes.ts`).
   Proxy de dev `apps/web/proxy.conf.json` : `/api` → `http://localhost:3000`.
@@ -494,3 +494,18 @@ Fait en L6b :
 6. CI GitHub : run 21 (commit e57faff) **vert**, jobs `ci` et `e2e`.
 7. `npx nx e2e web-e2e` (build prod) relancé : 14/14, aucune spec à ajuster après les nouvelles puissances
    typiques du catalogue.
+
+## L6c — revue de conformité finale (terminé)
+
+- Revue en 5 périmètres → `docs/RECETTE.md`. RF : 23/23 conformes après correctifs (RF-03 et RF-14 étaient
+  partiels). Non fonctionnelles : 10 conformes, 2 partielles (contraste des composants, focus/aria à vérifier
+  à la main), 1 absente (suivi des erreurs navigateur).
+- Correctifs (avec tests) : moteur N_s,min panneaux en 48 V faible énergie, repli P_typ, c_s ≤ 1, test alerte
+  pointe ; pro : seuil onduleur avec P_dem / f_s, pluie non dupliquée, échec du partage signalé ; particulier :
+  accords « appareil(s) » / « jour(s) », quantité « Autre appareil » ≤ 999 et durée −/+ ; API : cookie
+  `Secure` par défaut en production, 400 `INVALID_PERIOD`, multer 2 Mo + 1 (413 `FILE_TOO_LARGE`), constante
+  TTL ; règle pare-feu `POST /auth/login` ; focus `textarea` / recherche admin, cibles 44 px du bandeau hors-ligne.
+- Reste (voir RECETTE « Écarts à corriger ») : verrouillage non atomique (avec L6b), contrôle
+  ensoleillement min ≤ moyenne, contraste `.field` / `.radio-dot`, suivi des erreurs, « Partager » en en-tête
+  desktop, e2e 413, `@angular/cdk` inutilisé. Note périmée L4b « PDF en formulation particulier » : corrigé en L6a.
+

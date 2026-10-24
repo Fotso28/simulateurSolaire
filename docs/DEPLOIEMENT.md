@@ -235,7 +235,7 @@ apps/api/scripts/firewall-rules.sh apps/web
 apps/api/scripts/firewall-rules.sh apps/api
 ```
 
-Le script crée les deux règles en brouillon, les publie (`vercel firewall publish`) et
+Le script crée les trois règles (simulations, leads, connexion) en brouillon, les publie (`vercel firewall publish`) et
 affiche la liste.
 
 **Par le tableau de bord** (équivalent) : projet → **Firewall → Configure → New Rule** :
@@ -245,7 +245,8 @@ affiche la liste.
 3. **Then** `Rate Limit` → *Fixed Window*, `60` secondes, `20` requêtes, clé `IP Address`,
    action au dépassement `Too Many Requests (429)`.
 4. **Save Rule** ; recommencer pour `Limite POST leads` (`/api/v1/leads`, `600` s, `5`
-   requêtes, action `Deny`, durée `15 minutes`).
+   requêtes, action `Deny`, durée `15 minutes`), puis `Limite POST login`
+   (`/api/v1/auth/login`, `60` s, `10` requêtes, action `429`).
 5. **Review Changes → Publish**.
 
 Le nombre de règles de limitation dépend du plan Vercel : si le plan n'en autorise qu'une,

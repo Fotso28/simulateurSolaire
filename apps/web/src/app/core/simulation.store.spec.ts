@@ -69,6 +69,13 @@ describe('SimulationStore', () => {
     expect(store.outcome().status).toBe('ok');
   });
 
+  it('borne la quantité d’un « Autre appareil » à 999', () => {
+    const store = setup();
+    store.addCustom({ label: 'Machine à coudre', powerW: 50, hoursPerDay: 2 });
+    store.setLoadQuantity(store.loads()[0].key, 5000);
+    expect(store.loads()[0].quantity).toBe(999);
+  });
+
   it('applique les forçages du configurateur et revient à la proposition', () => {
     const store = setup();
     enterDouala(store);

@@ -5,6 +5,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import { ApiError } from '../common/api-error';
 import { PrismaService } from '../prisma/prisma.service';
 import {
+  ACCESS_TOKEN_TTL_SECONDS,
   AccessTokenPayload,
   LOCK_DURATION_MS,
   MAX_FAILED_LOGINS,
@@ -134,7 +135,7 @@ export class AuthService {
     });
     return {
       accessToken,
-      expiresIn: 15 * 60,
+      expiresIn: ACCESS_TOKEN_TTL_SECONDS,
       refreshToken,
       refreshExpiresAt,
       user: { id: user.id, email: user.email, role: user.role },

@@ -50,7 +50,7 @@ const PAGE_SIZE = 12;
       >
         <div class="flex flex-wrap items-center gap-2.5">
           <label
-            class="flex h-11 grow basis-60 items-center gap-2 rounded-md border border-line-strong bg-surface px-3 text-muted"
+            class="flex h-11 grow basis-60 items-center gap-2 rounded-md border border-line-strong bg-surface px-3 text-muted focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink"
           >
             <app-admin-icon name="search" />
             <span class="sr-only">Rechercher un appareil</span>

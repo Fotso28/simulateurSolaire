@@ -502,8 +502,15 @@ function sizeAtVoltage(
   forcedInverter: InverterModel | undefined,
 ): Sizing {
   const p = ctx.params;
+  // Au moins N_s,min panneaux : sinon aucune chaîne n'atteint la tension
+  // minimale (forte puissance, faible énergie en 48 V).
   const panelCount =
-    overrides.panelCount ?? Math.max(1, ceil(pvRequiredWp / panel.powerWp));
+    overrides.panelCount ??
+    Math.max(
+      1,
+      ceil(pvRequiredWp / panel.powerWp),
+      ceil((p.pvMinVoltageFactor * voltage) / panel.vmpV),
+    );
   const { inverter, controller, layout } = sizePowerChain(
     ctx,
     demand,

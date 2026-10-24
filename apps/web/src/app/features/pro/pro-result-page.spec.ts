@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { RESULT_ACTIONS } from '../../core/extensions';
+import { QueuedOfflineError } from '../../core/share.service';
 import { SimulationStore } from '../../core/simulation.store';
 import { enterDouala } from '../../core/test-helpers';
 import { RecapPage } from '../particulier/recap-page';
@@ -43,6 +45,21 @@ describe('ProResultPage', () => {
     expect(el.querySelector('a[href="/recapitulatif"]')).not.toBeNull();
   });
 
+  it('saison des pluies affichée une seule fois, seuil onduleur avec la pointe', () => {
+    const store = TestBed.inject(SimulationStore);
+    store.reset();
+    store.setRegion('cm-littoral');
+    store.setMode('pro');
+    store.setTotals({ powerW: 400, dailyEnergyWh: 2000, surgeFactor: 3.5 });
+    store.overrides.set({ inverterId: 'inv-sa-12v-600' });
+    const el = render();
+    const text = el.textContent ?? '';
+    expect(text.split('Saison des pluies').length - 1).toBe(1);
+    // max(1,25 × 400 ; 1 400 / 2) = 700 W
+    expect(text).toContain('≥ 700\u00a0W');
+    expect(text).toContain('INVERTER_UNDERSIZED');
+  });
+
   it('puissance totale : dimensionne sans liste d’appareils', () => {
     const store = TestBed.inject(SimulationStore);
     store.reset();
@@ -69,5 +86,33 @@ describe('ProResultPage', () => {
     expect(text).toContain('Wh/j');
     expect(text).toContain('P_inst / P_dem');
     expect(text).toContain('Calibre');
+  });
+});
+
+describe('ProResultPage — partage', () => {
+  it('signale un partage mis en attente hors ligne', async () => {
+    sessionStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        {
+          provide: RESULT_ACTIONS,
+          useValue: { share: () => Promise.reject(new QueuedOfflineError()) },
+        },
+      ],
+    });
+    const store = TestBed.inject(SimulationStore);
+    enterDouala(store);
+    store.setMode('pro');
+    const fixture = TestBed.createComponent(ProResultPage);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const btn = [...el.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Partager'),
+    );
+    btn?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(el.textContent).toContain('Vous êtes hors ligne');
   });
 });

@@ -308,6 +308,13 @@ export class StatsController {
       ? new Date(q.from)
       : new Date(Date.now() - 30 * 24 * 3600 * 1000);
     const to = q.to ? new Date(q.to) : new Date();
+    if (from > to) {
+      throw ApiError.badRequest(
+        'INVALID_PERIOD',
+        'La date de début doit précéder la date de fin.',
+        'from',
+      );
+    }
     const where = { createdAt: { gte: from, lte: to } };
     const [total, byMode, byRegion, perDay, topDevices] = await Promise.all([
       this.prisma.simulation.count({ where }),

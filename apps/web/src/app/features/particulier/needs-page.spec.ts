@@ -88,4 +88,16 @@ describe('NeedsPage (mobile)', () => {
     });
     expect(root.textContent).toContain('Pompe à eau');
   });
+
+  it('règle la durée d’un « Autre appareil » déjà ajouté (RF-03)', async () => {
+    const store = TestBed.inject(SimulationStore);
+    store.addCustom({ label: 'Pompe à eau', powerW: 250, hoursPerDay: 4 });
+    const fixture = TestBed.createComponent(NeedsPage);
+    const root = fixture.nativeElement as HTMLElement;
+    await fixture.whenStable();
+    button(root, 'Augmenter la durée : Pompe à eau').click();
+    await fixture.whenStable();
+    expect(store.loads()[0].hoursPerDay).toBe(5);
+    expect(root.textContent).toContain('5\u00a0h');
+  });
 });

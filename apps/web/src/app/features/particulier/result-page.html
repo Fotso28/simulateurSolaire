@@ -303,7 +303,7 @@
       </h1>
       <p class="m-0 text-body text-muted">
         {{ store.region()?.name }} ({{ store.region()?.capital }}) · {{
-        store.deviceCount() }} appareils · batterie {{
+        plural(store.deviceCount(), 'appareil') }} · batterie {{
         batteryLabel().toLowerCase() }} ·
         <a routerLink="/besoins">modifier les appareils</a>
       </p>

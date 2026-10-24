@@ -41,5 +41,19 @@ vercel firewall rules add "Limite POST leads" \
   --duration 15m \
   --yes
 
+# POST /api/v1/auth/login : 10 tentatives par minute et par adresse IP
+# (complète le verrouillage du compte après 5 échecs).
+vercel firewall rules add "Limite POST login" \
+  --description "10 POST /api/v1/auth/login par minute et par IP" \
+  --condition '{"type":"path","op":"eq","value":"/api/v1/auth/login"}' \
+  --condition '{"type":"method","op":"eq","value":"POST"}' \
+  --action rate_limit \
+  --rate-limit-window 60 \
+  --rate-limit-requests 10 \
+  --rate-limit-keys ip \
+  --rate-limit-algo fixed_window \
+  --rate-limit-action rate_limit \
+  --yes
+
 vercel firewall publish --yes
 vercel firewall rules list

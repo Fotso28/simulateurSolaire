@@ -113,10 +113,10 @@ function validateInput(input: SimulationInput): void {
     throw new EngineError('INVALID_INPUT', 'Technologie de batterie invalide.');
   }
   const simultaneity = input.options?.simultaneity;
-  if (simultaneity !== undefined && !(simultaneity > 0)) {
+  if (simultaneity !== undefined && !(simultaneity > 0 && simultaneity <= 1)) {
     throw new EngineError(
       'INVALID_INPUT',
-      'Le coefficient de simultanéité doit être positif.',
+      'Le coefficient de simultanéité doit être compris entre 0 et 1.',
     );
   }
   const totals = input.totals;

@@ -24,12 +24,14 @@ import { OfflineQueue } from '../../core/offline-queue';
         >
           {{ m }}
           @if (!offline() && queue.lastSentToken(); as token) {
-            <a [routerLink]="['/s', token]" class="ml-1 text-white underline"
+            <a
+              [routerLink]="['/s', token]"
+              class="ml-1 inline-flex min-h-11 items-center text-white underline"
               >Voir le lien</a
             >
             <button
               type="button"
-              class="ml-2 min-h-6 px-1 text-white"
+              class="ml-2 inline-flex min-h-11 min-w-11 items-center justify-center text-white"
               aria-label="Fermer"
               (click)="queue.clearLastSent()"
             >

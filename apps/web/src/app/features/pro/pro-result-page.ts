@@ -372,7 +372,11 @@ export class ProResultPage {
     const f = formatNumber;
     const hybrid = !r.controller;
     const minAutonomy = p.minAutonomyDays ?? 0.5;
-    const needW = p.inverterPowerMargin * r.peakW.installed;
+    // Les deux conditions du TRD : marge sur P_inst et pointe f_s × P_nom ≥ P_dem.
+    const needW = Math.max(
+      p.inverterPowerMargin * r.peakW.installed,
+      r.peakW.surge / p.inverterSurgeFactor,
+    );
     return {
       subtitle: `${ctx.region?.name ?? ''} · ${f(r.energyWhPerDay.typ)}${NBSP}Wh/j · ${r.systemVoltage}${NBSP}V · ${input.totals ? 'saisie en puissance totale' : 'saisie par appareil'}`,
       hypotheses: [
@@ -430,7 +434,8 @@ export class ProResultPage {
           ok: r.inverter.nominalW + 1e-6 >= needW,
         },
       ],
-      alerts: r.alerts,
+      // La saison des pluies a son propre encart.
+      alerts: r.alerts.filter((a) => a.code !== 'RAINY_SEASON'),
       cards: techCards(r, ctx),
       cables: cableRows(r, ctx),
       protections: protectionRows(r),
@@ -489,8 +494,14 @@ export class ProResultPage {
         await navigator.clipboard.writeText(url);
         this.shareMessage.set('Lien copié.');
       }
-    } catch {
-      // Partage annulé par l'utilisateur.
+    } catch (error) {
+      // Partage annulé par l'utilisateur : rien à signaler.
+      if ((error as Error)?.name === 'AbortError') return;
+      this.shareMessage.set(
+        (error as Error)?.name === 'QueuedOfflineError'
+          ? (error as Error).message
+          : 'Le lien n’a pas pu être créé. Réessayez.',
+      );
     }
   }
 

@@ -18,6 +18,16 @@ describe('validateEnv', () => {
     ).toEqual(['https://a.fr', 'https://b.fr']);
   });
 
+  it('cookie Secure par défaut en production, sauf mention contraire', () => {
+    expect(
+      validateEnv({ ...valid, NODE_ENV: 'production' }).COOKIE_SECURE,
+    ).toBe(true);
+    expect(
+      validateEnv({ ...valid, NODE_ENV: 'production', COOKIE_SECURE: 'false' })
+        .COOKIE_SECURE,
+    ).toBe(false);
+  });
+
   it('refuse une configuration incomplète', () => {
     expect(() => validateEnv({ ...valid, JWT_ACCESS_SECRET: 'court' })).toThrow(
       'JWT_ACCESS_SECRET',

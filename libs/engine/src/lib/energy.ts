@@ -93,16 +93,21 @@ export function resolveLoads(
       assertNonNegative(load.powerW, 'puissance', label);
       powerW = { min: load.powerW, typ: load.powerW, max: load.powerW };
     } else if (device) {
+      // Repli du TRD : P_typ = (P_min + P_max) / 2 s'il n'est pas renseigné.
+      const typ =
+        device.powerTypW > 0
+          ? device.powerTypW
+          : (device.powerMinW + device.powerMaxW) / 2;
       powerW =
         mode === 'pro'
           ? {
-              min: device.powerTypW,
-              typ: device.powerTypW,
-              max: device.powerTypW,
+              min: typ,
+              typ,
+              max: typ,
             }
           : {
               min: device.powerMinW,
-              typ: device.powerTypW,
+              typ,
               max: device.powerMaxW,
             };
     } else {

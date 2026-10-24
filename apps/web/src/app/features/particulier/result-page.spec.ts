@@ -1,5 +1,7 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { Breakpoint } from '../../core/breakpoint';
 import { SimulationStore } from '../../core/simulation.store';
 import { enterDouala } from '../../core/test-helpers';
 import { ConfiguratorPanel } from './configurator-panel';
@@ -27,6 +29,15 @@ describe('écrans du résultat (cas de Douala)', () => {
       'button[aria-pressed="true"]',
     );
     expect(pressed?.textContent).toContain('Une journée');
+  });
+
+  it('accorde « jour(s) » dans l’indicateur d’autonomie', async () => {
+    TestBed.inject(SimulationStore).setAutonomy(3);
+    const fixture = TestBed.createComponent(ResultPage);
+    await fixture.whenStable();
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toMatch(/Couvre \d+(,5)?\u00a0?\s?jours/);
+    expect(text).not.toContain(',0 jour');
   });
 
   it('recalcule à chaque clic du configurateur', async () => {
@@ -65,5 +76,27 @@ describe('écrans du résultat (cas de Douala)', () => {
     expect(
       root.querySelector('svg[role="img"]')?.getAttribute('aria-label'),
     ).toContain('Régulateur MPPT');
+  });
+});
+
+describe('résultat desktop', () => {
+  it('accorde le nombre d’appareils au singulier', async () => {
+    sessionStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: Breakpoint, useValue: { isDesktop: signal(true) } },
+      ],
+    });
+    const store = TestBed.inject(SimulationStore);
+    enterDouala(store);
+    const [first, ...rest] = store.loads();
+    for (const l of rest) store.setLoadQuantity(l.key, 0);
+    store.setLoadQuantity(first.key, 1);
+    store.flush();
+    const fixture = TestBed.createComponent(ResultPage);
+    await fixture.whenStable();
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('1\u00a0appareil ·');
   });
 });

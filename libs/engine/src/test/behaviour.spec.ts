@@ -25,9 +25,26 @@ function expectEngineError(fn: () => unknown, code: string): void {
   throw new Error(`EngineError ${code} attendue`);
 }
 
+const PRO_BASE: SimulationInput = {
+  mode: 'pro',
+  regionId: 'cm-littoral',
+  autonomyDays: 1,
+  batteryTech: 'lithium',
+};
+
 const codes = (input: SimulationInput) => run(input).alerts.map((a) => a.code);
 
 describe('alertes', () => {
+  it('onduleur forcé sous la pointe (f_s × P_nom < P_dem) → critique', () => {
+    expect(
+      codes({
+        ...PRO_BASE,
+        totals: { powerW: 400, dailyEnergyWh: 2000, surgeFactor: 3.5 },
+        overrides: { inverterId: 'inv-sa-12v-600' },
+      }),
+    ).toEqual(['INVERTER_UNDERSIZED', 'RAINY_SEASON']);
+  });
+
   it('onduleur forcé trop petit → critique, en tête de liste', () => {
     const r = run({ ...DOUALA, overrides: { inverterId: 'inv-sa-12v-300' } });
     expect(r.systemVoltage).toBe(12);
@@ -347,6 +364,7 @@ describe('cas limites et erreurs', () => {
     ['autonomie', { autonomyDays: 0 }],
     ['technologie', { batteryTech: 'nickel' as never }],
     ['simultanéité', { options: { simultaneity: 0 } }],
+    ['simultanéité > 1', { options: { simultaneity: 1.5 } }],
     ['totaux négatifs', { totals: { powerW: -1, dailyEnergyWh: 100 } }],
     [
       'facteur de démarrage < 1',
@@ -504,5 +522,37 @@ describe('paramètres', () => {
       lower: 2,
       upper: undefined,
     });
+  });
+});
+
+describe('cas limites L6c', () => {
+  it('forte puissance, faible énergie en 48 V : au moins N_s,min panneaux', () => {
+    const r = run({
+      ...PRO_BASE,
+      totals: { powerW: 2500, dailyEnergyWh: 1000 },
+    });
+    expect(r.systemVoltage).toBe(48);
+    expect(r.pv.count).toBeGreaterThanOrEqual(2);
+    expect(r.pv.series).toBeGreaterThanOrEqual(2);
+  });
+
+  it('P_typ absent du catalogue : repli sur (P_min + P_max) / 2', () => {
+    const catalog: Catalog = {
+      ...DEFAULT_CATALOG,
+      devices: DEFAULT_CATALOG.devices.map((d) =>
+        d.id === DOUALA.loads?.[0].deviceId ? { ...d, powerTypW: 0 } : d,
+      ),
+    };
+    const device = DEFAULT_CATALOG.devices.find(
+      (d) => d.id === DOUALA.loads?.[0].deviceId,
+    )!;
+    const load = DOUALA.loads![0];
+    const one = { ...DOUALA, loads: [{ ...load, powerW: undefined }] };
+    const r = run(one, catalog);
+    const ref = run({
+      ...one,
+      loads: [{ ...load, powerW: (device.powerMinW + device.powerMaxW) / 2 }],
+    });
+    expect(r.energyWhPerDay.typ).toBeCloseTo(ref.energyWhPerDay.typ, 6);
   });
 });

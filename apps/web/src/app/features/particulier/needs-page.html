@@ -114,6 +114,34 @@
         </button>
       </div>
     </div>
+    <div
+      class="ml-14 flex items-center justify-between gap-2 rounded-md border border-line bg-surface py-1.5 pr-1.5 pl-3"
+    >
+      <span class="text-caption text-ink-2">Durée d'usage par jour</span>
+      <div class="flex items-center">
+        <button
+          type="button"
+          class="flex size-11 items-center justify-center rounded-sm border-0 bg-surface-2 text-ink"
+          [attr.aria-label]="'Réduire la durée : ' + l.label"
+          (click)="store.stepHours(l.key, -1)"
+        >
+          <app-icon name="minus" [size]="16" [strokeWidth]="2" />
+        </button>
+        <span
+          class="tnum min-w-16 text-center text-[15px] font-semibold"
+          aria-live="polite"
+          >{{ formatHours(l.hoursPerDay) }}</span
+        >
+        <button
+          type="button"
+          class="flex size-11 items-center justify-center rounded-sm border-0 bg-surface-2 text-ink"
+          [attr.aria-label]="'Augmenter la durée : ' + l.label"
+          (click)="store.stepHours(l.key, 1)"
+        >
+          <app-icon name="plus" [size]="16" [strokeWidth]="2" />
+        </button>
+      </div>
+    </div>
     }
   </ng-template>
 
@@ -396,7 +424,7 @@
         <div class="flex items-baseline justify-between gap-3">
           <h2 class="m-0 text-h2">{{ cat.name }}</h2>
           <span class="text-small text-muted"
-            >{{ cat.devices.length }} appareils au catalogue</span
+            >{{ plural(cat.devices.length, 'appareil') }} au catalogue</span
           >
         </div>
         <div

@@ -359,7 +359,7 @@ export class SimulationStore {
   }
 
   setLoadQuantity(key: string, quantity: number): void {
-    const q = Math.max(0, Math.round(quantity));
+    const q = Math.max(0, Math.min(999, Math.round(quantity)));
     this.commitLoads(
       q === 0
         ? this.loads().filter((l) => l.key !== key)

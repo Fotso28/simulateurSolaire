@@ -33,7 +33,8 @@ export class MediaController {
   @Post()
   @UseInterceptors(
     FileInterceptor('file', {
-      limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
+      // + 1 : le dépassement atteint processUpload (413 FILE_TOO_LARGE).
+      limits: { fileSize: MAX_UPLOAD_BYTES + 1, files: 1 },
     }),
   )
   async upload(

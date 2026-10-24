@@ -18,6 +18,7 @@ import {
   formatW,
   kwh,
   NBSP,
+  plural,
 } from '../../core/format';
 import { Icon } from '../../shared/icons/icon';
 import { StepHeader } from '../../shared/layout/step-header';
@@ -52,6 +53,7 @@ import {
 })
 export class ResultPage {
   protected readonly store = inject(SimulationStore);
+  protected readonly plural = plural;
   protected readonly isDesktop = inject(Breakpoint).isDesktop;
 
   protected readonly batteryLabel = computed(() =>
@@ -96,9 +98,10 @@ export class ResultPage {
     const minDays = this.store.params().values.minAutonomyDays ?? 0.5;
     const days = r.effectiveAutonomyDays;
     const aOk = days >= minDays - 1e-9;
+    const half = Math.floor(days * 2) / 2;
     const covers =
       days >= 1.5
-        ? `${formatNumber(Math.floor(days * 2) / 2, 1)} jour`
+        ? `${formatNumber(half, half % 1 ? 1 : 0)} ${half >= 2 ? 'jours' : 'jour'}`
         : days >= 1
           ? 'une journée'
           : 'une nuit';

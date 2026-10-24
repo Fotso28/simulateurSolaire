@@ -46,6 +46,7 @@ interface CategoryView {
 })
 export class NeedsPage {
   protected readonly store = inject(SimulationStore);
+  protected readonly plural = plural;
   protected readonly isDesktop = inject(Breakpoint).isDesktop;
   private readonly router = inject(Router);
 
