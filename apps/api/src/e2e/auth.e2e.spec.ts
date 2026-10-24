@@ -81,12 +81,10 @@ describe('Authentification et rôles', () => {
       .send(EDITOR)
       .expect(423);
     expect(locked.body.code).toBe('ACCOUNT_LOCKED');
-    await app
-      .get(PrismaService)
-      .adminUser.update({
-        where: { email: EDITOR.email },
-        data: { lockedUntil: null },
-      });
+    await app.get(PrismaService).adminUser.update({
+      where: { email: EDITOR.email },
+      data: { lockedUntil: null },
+    });
   });
 
   it('protège les routes admin : 401 sans jeton, 401 jeton invalide, 403 rôle insuffisant', async () => {
@@ -124,19 +122,15 @@ describe('Authentification et rôles', () => {
 
   it('un compte désactivé ne peut plus se connecter ni renouveler', async () => {
     const { cookie } = await login(app, EDITOR);
-    await app
-      .get(PrismaService)
-      .adminUser.update({
-        where: { email: EDITOR.email },
-        data: { active: false },
-      });
+    await app.get(PrismaService).adminUser.update({
+      where: { email: EDITOR.email },
+      data: { active: false },
+    });
     await http.post(`${API}/auth/login`).send(EDITOR).expect(401);
     await http.post(`${API}/auth/refresh`).set('Cookie', cookie).expect(401);
-    await app
-      .get(PrismaService)
-      .adminUser.update({
-        where: { email: EDITOR.email },
-        data: { active: true },
-      });
+    await app.get(PrismaService).adminUser.update({
+      where: { email: EDITOR.email },
+      data: { active: true },
+    });
   });
 });

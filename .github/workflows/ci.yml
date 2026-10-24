@@ -16,6 +16,21 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NX_NO_CLOUD: true
+    services:
+      # Base PostgreSQL des tests e2e de l'API.
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: simulateur
+          POSTGRES_PASSWORD: simulateur
+          POSTGRES_DB: simulateur_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U simulateur"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
 
@@ -42,3 +57,8 @@ jobs:
 
       - name: Build
         run: npx nx run-many -t build
+
+      - name: Tests e2e API (PostgreSQL)
+        run: npx nx run api:e2e
+        env:
+          DATABASE_URL_TEST: postgresql://simulateur:simulateur@localhost:5432/simulateur_test
