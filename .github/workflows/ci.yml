@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      NX_NO_CLOUD: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # npm 10 (livré avec Node 22) ne relit pas correctement ce lockfile : npm 11 requis.
+      - name: npm 11
+        run: npm install -g npm@11.6.2
+
+      - name: Installation
+        run: npm ci
+
+      - name: Format
+        run: npx nx format:check --all
+
+      - name: Lint
+        run: npx nx run-many -t lint
+
+      - name: Tests
+        run: npx nx run-many -t test
+
+      - name: Build
+        run: npx nx run-many -t build

@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+
+/*
+ * Jetons de design — design/maquettes/Fondations.dc.html.
+ * Les noms se reportent tels quels en classes Tailwind : bg-bg, text-ink, bg-action, border-line…
+ * Le jaune solaire n'est jamais une couleur de texte sur blanc (utiliser solar-ink).
+ */
+@theme {
+  --color-bg: #f5f5f1;
+  --color-surface: #ffffff;
+  --color-surface-2: #efefea;
+  --color-line: #e2e2dc;
+  --color-line-strong: #c9cac3;
+  --color-muted: #5e636b;
+  --color-ink: #16181d;
+  --color-ink-2: #3d4149;
+  --color-solar: #f5b301;
+  --color-solar-soft: #fff5d6;
+  --color-solar-ink: #8a5800;
+  --color-action: #15803d;
+
+  --color-ok: #1d7a46;
+  --color-ok-soft: #e5f3ea;
+  --color-ok-ink: #16603a;
+  --color-warn: #a84e0a;
+  --color-warn-soft: #fdefe3;
+  --color-warn-ink: #8f4208;
+  --color-crit: #c0262d;
+  --color-crit-soft: #fce9ea;
+  --color-crit-ink: #9e1f25;
+  --color-info: #2a2d33;
+  --color-info-soft: #eef0f3;
+  --color-info-ink: #2a2d33;
+
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Échelle typographique : taille / interligne */
+  --text-key: 2rem;
+  --text-key--line-height: 2.375rem;
+  --text-key--font-weight: 600;
+  --text-h1: 1.5rem;
+  --text-h1--line-height: 1.875rem;
+  --text-h1--font-weight: 600;
+  --text-h2: 1.25rem;
+  --text-h2--line-height: 1.625rem;
+  --text-h2--font-weight: 600;
+  --text-body: 1rem;
+  --text-body--line-height: 1.5rem;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.25rem;
+  --text-mono: 0.75rem;
+  --text-mono--line-height: 1rem;
+  --text-mono--font-weight: 500;
+
+  /* Rayons 8 · 10 · 12 · 14 (espacements : échelle Tailwind par défaut, pas de 4 px) */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background-color: var(--color-bg);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+  }
+
+  a {
+    color: var(--color-solar-ink);
+  }
+}
