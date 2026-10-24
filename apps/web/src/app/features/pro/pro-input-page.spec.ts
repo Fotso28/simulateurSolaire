@@ -8,6 +8,7 @@ function setup() {
   TestBed.configureTestingModule({ providers: [provideRouter([])] });
   const store = TestBed.inject(SimulationStore);
   store.reset();
+  store.setRegion('cm-littoral');
   store.setMode('pro');
   const fixture = TestBed.createComponent(ProInputPage);
   fixture.detectChanges();
@@ -48,5 +49,84 @@ describe('ProInputPage', () => {
     });
     click('Par appareil');
     expect(store.totals()).toBeUndefined();
+  });
+
+  it('saisie par appareils : ligne libre, catalogue, énergie et bandeau', () => {
+    const { store, fixture, el, type, click } = setup();
+    const submit = () =>
+      [...el.querySelectorAll('button')].find((b) =>
+        b.textContent?.includes('Dimensionner'),
+      ) as HTMLButtonElement;
+    expect(submit().disabled).toBe(true);
+    expect(el.querySelector('#pro-blocker')?.textContent).toContain(
+      'au moins une charge',
+    );
+
+    click('+ Ligne libre');
+    const key = store.loads()[0].key;
+    expect(el.querySelector('#pro-blocker')?.textContent).toContain(
+      'puissance',
+    );
+    type(`#load-${key}-powerW`, '100');
+    type(`#load-${key}-quantity`, '2');
+    type(`#load-${key}-hoursPerDay`, '5');
+    expect(store.loads()[0]).toMatchObject({
+      powerW: 100,
+      quantity: 2,
+      hoursPerDay: 5,
+    });
+    expect(submit().disabled).toBe(false);
+    expect(el.querySelector('[data-testid="pro-load"]')?.textContent).toContain(
+      '1\u202f000',
+    );
+
+    click('Catalogue');
+    const query = el.querySelector('#pro-catalog-q') as HTMLInputElement;
+    type(query, 'frig');
+    const fridge = store.catalog().devices.find((d) => d.id === 'fridge')!;
+    const item = [...el.querySelectorAll('#pro-catalog button')].find((b) =>
+      b.textContent?.includes(fridge.name),
+    ) as HTMLButtonElement;
+    item.click();
+    store.flush();
+    fixture.detectChanges();
+    expect(store.loads()[1]).toMatchObject({
+      deviceId: 'fridge',
+      powerW: fridge.powerTypW,
+    });
+    expect(el.querySelector('#pro-catalog')).toBeNull();
+    expect(store.result()).toBeDefined();
+    expect(el.querySelector('[data-testid="pro-summary"]')?.textContent).toContain(
+      'P_dem',
+    );
+  });
+
+  it('valide les champs et bloque le dimensionnement', () => {
+    const { store, el, type, click } = setup();
+    click('+ Ligne libre');
+    const key = store.loads()[0].key;
+    type(`#load-${key}-powerW`, '60');
+    type(`#load-${key}-quantity`, '1,5');
+    const q = el.querySelector(`#load-${key}-quantity`) as HTMLInputElement;
+    expect(q.getAttribute('aria-invalid')).toBe('true');
+    expect(el.querySelector(`#load-${key}-quantity-err`)?.textContent).toContain(
+      'Quantité entière',
+    );
+    expect(el.querySelector('#pro-blocker')?.textContent).toContain(
+      'Corrigez',
+    );
+    expect(store.loads()[0].quantity).toBe(1);
+    type(`#load-${key}-surgeFactor`, '0,5');
+    expect(el.querySelector(`#load-${key}-surgeFactor-err`)).not.toBeNull();
+    type(`#load-${key}-quantity`, '3');
+    type(`#load-${key}-surgeFactor`, '');
+    expect(el.querySelector('#pro-blocker')).toBeNull();
+    expect(store.loads()[0].quantity).toBe(3);
+
+    click('Puissance totale');
+    type('#tot-p', 'abc');
+    expect(el.querySelector('#pro-blocker')?.textContent).toContain(
+      'Corrigez',
+    );
   });
 });

@@ -117,4 +117,69 @@ describe('SimulationStore', () => {
     store.flush();
     expect(store.outcome().status).toBe('empty');
   });
+
+  describe('mode pro', () => {
+    it('addProLoad : ligne du catalogue (puissance typique, k) ou ligne libre', () => {
+      const store = setup();
+      store.reset();
+      store.setMode('pro');
+      const fridge = store.catalog().devices.find((d) => d.id === 'fridge')!;
+      const k1 = store.addProLoad(fridge);
+      const k2 = store.addProLoad();
+      expect(k1).not.toBe(k2);
+      const [a, b] = store.loads();
+      expect(a).toMatchObject({
+        deviceId: 'fridge',
+        powerW: fridge.powerTypW,
+        quantity: 1,
+        hoursPerDay: fridge.defaultHoursPerDay,
+      });
+      if (fridge.surgeFactor && fridge.surgeFactor !== 1) {
+        expect(a.surgeFactor).toBe(fridge.surgeFactor);
+      }
+      expect(b).toMatchObject({ label: '', quantity: 1, hoursPerDay: 1 });
+      expect(b.powerW).toBeUndefined();
+      store.flush();
+      // La ligne libre sans puissance est ignorée par le moteur.
+      expect(store.input()?.loads).toHaveLength(1);
+      store.updateLoad(k2, { powerW: 50, surgeFactor: 3 });
+      store.flush();
+      const loads = store.input()?.loads ?? [];
+      expect(loads).toHaveLength(2);
+      expect(loads[1]).toMatchObject({ powerW: 50, surgeFactor: 3 });
+      expect(loads[1].label).toBe('Appareil');
+    });
+
+    it('panelModelId : fusionné dans les forçages, persisté, efface le configurateur', () => {
+      const store = setup();
+      enterDouala(store);
+      store.setMode('pro');
+      const panel = store.catalog().panels.filter((p) => p.active).at(-1)!;
+      store.applyOverride({ panelCount: 9 });
+      store.setPanelModel(panel.id);
+      expect(store.hasOverrides()).toBe(false);
+      expect(store.input()?.overrides).toEqual({ panelModelId: panel.id });
+      TestBed.tick();
+      TestBed.resetTestingModule();
+      const again = setup();
+      expect(again.panelModelId()).toBe(panel.id);
+    });
+
+    it('setMode(particulier) efface options, totaux et panneau', () => {
+      const store = setup();
+      enterDouala(store);
+      store.setMode('pro');
+      store.setOptions({ systemVoltage: 48, simultaneity: 0.8 });
+      store.setTotals({ powerW: 500, dailyEnergyWh: 3000 });
+      store.setPanelModel(store.catalog().panels[0].id);
+      expect(store.input()?.totals).toBeDefined();
+      store.setMode('pro');
+      expect(store.options()).toBeDefined();
+      store.setMode('particulier');
+      expect(store.options()).toBeUndefined();
+      expect(store.totals()).toBeUndefined();
+      expect(store.panelModelId()).toBeUndefined();
+      expect(store.input()?.overrides).toBeUndefined();
+    });
+  });
 });
