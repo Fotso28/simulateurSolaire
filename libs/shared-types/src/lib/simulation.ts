@@ -77,6 +77,8 @@ export interface SimulationResult {
     level: 'critique' | 'attention' | 'info';
     code: string;
     message: string;
+    /** Index dans `input.loads` de l'appareil concerné, le cas échéant. */
+    loadIndex?: number;
   }[];
   engineVersion: string;
   paramsVersion: number;

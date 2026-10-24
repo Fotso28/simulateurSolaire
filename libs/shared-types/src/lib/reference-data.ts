@@ -28,6 +28,8 @@ export interface DeviceCategory {
   id: string;
   name: string;
   iconUrl: string | null;
+  /** Clé d'icône stable (pictogramme SVG du front), indépendante de `iconUrl`. */
+  iconKey?: string;
   sortOrder: number;
 }
 
@@ -37,6 +39,8 @@ export interface Device {
   categoryId: string;
   name: string;
   iconUrl: string | null;
+  /** Clé d'icône stable (pictogramme SVG du front), indépendante de `iconUrl`. */
+  iconKey?: string;
   imageUrl: string | null;
   powerMinW: number;
   powerTypW: number;
@@ -66,6 +70,8 @@ export interface PanelModel {
 /** Table `battery_model`. */
 export interface BatteryModel {
   id: string;
+  /** Libellé affiché (facultatif). */
+  label?: string;
   technology: BatteryTech;
   nominalVoltageV: number;
   capacityAh: number;
@@ -78,6 +84,8 @@ export type InverterModelType = 'hybride' | 'autonome';
 /** Table `inverter_model`. Les champs MPPT ne concernent que les onduleurs hybrides. */
 export interface InverterModel {
   id: string;
+  /** Libellé affiché (facultatif). */
+  label?: string;
   type: InverterModelType;
   nominalPowerW: number;
   surgeFactor: number;
@@ -93,6 +101,8 @@ export type ControllerModelType = 'MPPT' | 'PWM';
 /** Table `controller_model`. */
 export interface ControllerModel {
   id: string;
+  /** Libellé affiché (facultatif). */
+  label?: string;
   type: ControllerModelType;
   maxCurrentA: number;
   maxPvVoltageV: number;
@@ -126,6 +136,25 @@ export interface EngineParameters {
   copperResistivity: number;
   autonomySteps: number[];
   defaultCableLengthsM: Record<CableSegment, number>;
+  /** Coefficient de simultanéité par défaut (1). */
+  simultaneity?: number;
+  /** Facteur de démarrage global en mode puissance totale (1). */
+  totalsSurgeFactor?: number;
+  /** Coefficient de sécurité sur V_oc pour N_s,max (1,1). */
+  pvVocSafetyFactor?: number;
+  /** Coefficient sur V_sys pour N_s,min (1,25). */
+  pvMinVoltageFactor?: number;
+  /** Seuils de choix de la tension système (W et Wc). */
+  voltageThresholds?: {
+    max12V: { inverterW: number; pvWp: number };
+    max24V: { inverterW: number; pvWp: number };
+  };
+  /** Section minimale côté panneaux, câble solaire (4 mm²). */
+  pvCableMinSectionMm2?: number;
+  /** Puissance au-delà de laquelle un appareil est signalé (1 500 W). */
+  heavyDeviceThresholdW?: number;
+  /** Autonomie en dessous de laquelle le stockage ne couvre pas une nuit (0,5 j). */
+  minAutonomyDays?: number;
 }
 
 /** Table `parameter_set`. */
