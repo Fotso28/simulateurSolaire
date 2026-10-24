@@ -6,8 +6,8 @@
 | L1 | terminé | L1 |
 | L2 | terminé | L2 |
 | L3 | terminé | L3 |
-| L4 | en cours (L4a terminé, L4b partiel) | L4a, L4b |
-| L4b | partiel — mode pro (saisie + résultat livrés, tests à compléter) | L4b |
+| L4 | terminé (L4a, L4b + L4c) | L4a, L4b |
+| L4b | terminé — mode pro (saisie, résultat, récapitulatif technique, tests ; finalisé en L4c) | L4b |
 | L4a | terminé — back-office `/admin` | L4a |
 | L5 | partiel (1–4 faits ; 5, 6, 7 à finir) | L5 |
 | L6 | à faire | |
@@ -341,7 +341,7 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
 - `AdminCatalogue` : la maquette n'a pas d'icône de catégorie dans la liste ; colonnes génériques ailleurs.
 
 
-### L4b — Mode professionnel (partiel)
+### L4b — Mode professionnel (terminé, finalisé par L4c)
 
 **Fait**
 - `features/pro/pro-input-page.ts` (route `/besoins` gardée par `isProMode`, placeholder retiré) : bascule « Par appareil »
@@ -365,11 +365,23 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
 - Playwright (serveur statique de `dist`) à 360 px : cas par appareils OK (pas de défilement horizontal, P_inst
   890 W / P_dem 2 390 W / E_j 3 594 Wh/j). Bug trouvé et corrigé ensuite : saisie des totaux perdue à la sortie du champ.
 
-**Reste à faire**
-- Tests : seul `pro-input-page.spec.ts` (cas totaux) existe ; ajouter cas par appareils + validation, `pro-result-page`,
-  store pro (`addProLoad`, `panelModelId`, `setMode`), `pro-view` / `pro-validation`.
-- Rejouer Playwright après correctif : cas puissance totale à 360 px, les deux cas à 1440 px, configurateur depuis pro.
-- `/recapitulatif` réutilisé tel quel (formulation particulier : « Consommation ≈ ») — à adapter éventuellement.
+**Fait en L4c**
+- Tests : `pro-input-page.spec.ts` (totaux, par appareils : ligne libre + catalogue + bandeau, validation des champs et
+  blocage du bouton), `pro-result-page.spec.ts` (vide, fiches/câbles/protections, cas puissance totale, récapitulatif
+  pro vs particulier), `pro-view.spec.ts` (`pro-validation`, fiches, câbles, protections, récap pro), store
+  (`addProLoad`, `panelModelId` persisté/fusionné, `setMode('particulier')`). Web : 78 tests verts.
+- Récapitulatif en mode pro : `proRecapSummary` / `proBillOfMaterials` (`pro-view.ts`) — E_j en Wh/j, P_inst / P_dem,
+  tension système, A_eff, C_PV ; nomenclature avec N_s S × N_p P (PV et batteries), V_oc chaîne, I_reg, P_nom /
+  f_s × P_nom, sections avec I · U · L · section calculée · ΔU, calibres des protections. `recap-page.ts` choisit la
+  version pro si `mode() === 'pro'` ; la version particulier est inchangée (test).
+- Playwright manuel (serveur `apps/web-e2e/serve.mjs` sur le build) : puissance totale à 360 px, par appareils et
+  puissance totale à 1440 px, configurateur depuis le résultat pro (360 px : page `/configurateur` ; 1440 px :
+  configurateur compact à droite), récapitulatif pro à 360 px — aucun défilement horizontal, aucune erreur JS
+  (seuls les 503 attendus de `/api` sans API). Rien de cassé trouvé.
+
+**Écarts / notes**
+- L'export PDF reste en formulation particulier (périmètre L5) ; à harmoniser en L6 si souhaité.
+- Les champs des totaux affichent la saisie brute (« 3277 ») sans séparateur de milliers.
 
 ### L5 — Hors-ligne, PDF, partage, leads, déploiement (partiel)
 

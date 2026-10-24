@@ -11,6 +11,7 @@ import { SimulationStore } from '../../core/simulation.store';
 import { Icon } from '../../shared/icons/icon';
 import { StepHeader } from '../../shared/layout/step-header';
 import { RainNotice } from '../../shared/ui/notices';
+import { proBillOfMaterials, proRecapSummary } from '../pro/pro-view';
 import { billOfMaterials, recapSummary } from './recap-data';
 import { WiringDiagram } from './wiring-diagram';
 
@@ -218,15 +219,31 @@ export class RecapPage {
     new Date(),
   );
 
+  /** Mode pro : synthèse et nomenclature en vocabulaire technique. */
+  private readonly proContext = computed(() => {
+    const input = this.store.input();
+    if (this.store.mode() !== 'pro' || !input) return null;
+    return {
+      catalog: this.store.catalog(),
+      params: this.store.params(),
+      region: this.store.region(),
+      input,
+    };
+  });
+
   protected readonly summary = computed(() => {
     const r = this.store.result();
     if (!r) return { title: '', keys: [], facts: [] };
+    const pro = this.proContext();
+    if (pro) return proRecapSummary(r, pro);
     return recapSummary(r, this.store.catalog(), this.store.region());
   });
 
   protected readonly bom = computed(() => {
     const r = this.store.result();
     if (!r) return [];
+    const pro = this.proContext();
+    if (pro) return proBillOfMaterials(r, pro);
     return billOfMaterials(
       r,
       this.store.catalog(),

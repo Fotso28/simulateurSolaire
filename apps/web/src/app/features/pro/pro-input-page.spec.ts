@@ -96,9 +96,9 @@ describe('ProInputPage', () => {
     });
     expect(el.querySelector('#pro-catalog')).toBeNull();
     expect(store.result()).toBeDefined();
-    expect(el.querySelector('[data-testid="pro-summary"]')?.textContent).toContain(
-      'P_dem',
-    );
+    expect(
+      el.querySelector('[data-testid="pro-summary"]')?.textContent,
+    ).toContain('P_dem');
   });
 
   it('valide les champs et bloque le dimensionnement', () => {
@@ -109,12 +109,10 @@ describe('ProInputPage', () => {
     type(`#load-${key}-quantity`, '1,5');
     const q = el.querySelector(`#load-${key}-quantity`) as HTMLInputElement;
     expect(q.getAttribute('aria-invalid')).toBe('true');
-    expect(el.querySelector(`#load-${key}-quantity-err`)?.textContent).toContain(
-      'Quantité entière',
-    );
-    expect(el.querySelector('#pro-blocker')?.textContent).toContain(
-      'Corrigez',
-    );
+    expect(
+      el.querySelector(`#load-${key}-quantity-err`)?.textContent,
+    ).toContain('Quantité entière');
+    expect(el.querySelector('#pro-blocker')?.textContent).toContain('Corrigez');
     expect(store.loads()[0].quantity).toBe(1);
     type(`#load-${key}-surgeFactor`, '0,5');
     expect(el.querySelector(`#load-${key}-surgeFactor-err`)).not.toBeNull();
@@ -125,8 +123,6 @@ describe('ProInputPage', () => {
 
     click('Puissance totale');
     type('#tot-p', 'abc');
-    expect(el.querySelector('#pro-blocker')?.textContent).toContain(
-      'Corrigez',
-    );
+    expect(el.querySelector('#pro-blocker')?.textContent).toContain('Corrigez');
   });
 });

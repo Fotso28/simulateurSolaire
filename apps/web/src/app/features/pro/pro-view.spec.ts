@@ -7,6 +7,8 @@ import {
   cableRows,
   dodOf,
   formatDrop,
+  proBillOfMaterials,
+  proRecapSummary,
   type ProContext,
   protectionRows,
   techCards,
@@ -82,7 +84,9 @@ describe('pro-view', () => {
       'inverter',
     ]);
     expect(cards[0].value).toContain('Wc');
-    const checks = cards.flatMap((c) => c.rows).filter((x) => x.ok !== undefined);
+    const checks = cards
+      .flatMap((c) => c.rows)
+      .filter((x) => x.ok !== undefined);
     expect(checks.length).toBeGreaterThan(0);
     expect(checks.every((x) => x.ok)).toBe(true);
   });
@@ -113,5 +117,20 @@ describe('pro-view', () => {
     expect(dodOf('lithium', ctx.params)).toBe(ctx.params.values.dodLithium);
     expect(dodOf('plomb', ctx.params)).toBe(ctx.params.values.dodLead);
     expect(formatDrop(0.018)).toBe('1,8 %');
+  });
+
+  it('récapitulatif pro : Wh/j, P_inst / P_dem, S × P, sections, calibres', () => {
+    const { r, ctx } = douala();
+    const sum = proRecapSummary(r, ctx);
+    const facts = Object.fromEntries(sum.facts.map((f) => [f.label, f.value]));
+    expect(facts['Énergie journalière E_j']).toMatch(/Wh\/j$/);
+    expect(facts['P_inst / P_dem']).toContain('/');
+    expect(sum.facts.some((f) => f.label === 'Consommation')).toBe(false);
+    const [eq, cables, prot] = proBillOfMaterials(r, ctx);
+    expect(eq.lines[0].note).toMatch(/^\dS × \dP/);
+    expect(eq.lines.some((l) => l.note.startsWith('I_reg'))).toBe(true);
+    expect(cables.lines).toHaveLength(r.cables.length);
+    expect(cables.lines.every((l) => l.note.includes('ΔU'))).toBe(true);
+    expect(prot.lines.some((l) => l.note.startsWith('Calibre'))).toBe(true);
   });
 });

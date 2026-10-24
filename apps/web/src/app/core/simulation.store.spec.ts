@@ -154,7 +154,10 @@ describe('SimulationStore', () => {
       const store = setup();
       enterDouala(store);
       store.setMode('pro');
-      const panel = store.catalog().panels.filter((p) => p.active).at(-1)!;
+      const panel = store
+        .catalog()
+        .panels.filter((p) => p.active)
+        .at(-1)!;
       store.applyOverride({ panelCount: 9 });
       store.setPanelModel(panel.id);
       expect(store.hasOverrides()).toBe(false);

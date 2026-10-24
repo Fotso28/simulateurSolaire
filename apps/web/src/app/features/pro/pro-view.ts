@@ -6,7 +6,12 @@ import type {
   SimulationInput,
   SimulationResult,
 } from '@simulateur/shared-types';
-import { NBSP, formatNumber, withUnit } from '../../core/format';
+import { NBSP, formatNumber, formatPercent, withUnit } from '../../core/format';
+import type {
+  BomGroup,
+  BomLine,
+  RecapSummary,
+} from '../particulier/recap-data';
 import {
   batteryModel,
   controllerModel,
@@ -14,6 +19,7 @@ import {
   inverterModel,
   panelModel,
   protectionLabel,
+  SEGMENT_LABELS,
   segmentLength,
   storageNeedWh,
 } from '../particulier/result-view';
@@ -295,4 +301,115 @@ export function protectionRows(r: SimulationResult): ProtectionRow[] {
           : '—',
     quantity: p.quantity,
   }));
+}
+
+/** Synthèse du récapitulatif en vocabulaire technique (mode pro). */
+export function proRecapSummary(
+  r: SimulationResult,
+  ctx: ProContext,
+): RecapSummary {
+  const inverter = inverterModel(ctx.catalog, r);
+  const region = ctx.region;
+  return {
+    title:
+      inverter?.type === 'hybride'
+        ? 'Installation hybride · dimensionnement technique'
+        : 'Installation autonome · dimensionnement technique',
+    keys: [
+      { value: n(r.pv.totalWp), label: 'Wc · champ PV' },
+      { value: n(r.battery.capacityWh), label: 'Wh · C installée' },
+      { value: n(r.inverter.nominalW), label: 'W · P_nom onduleur' },
+    ],
+    facts: [
+      {
+        label: 'Site',
+        value: region
+          ? `${region.name} · H ${n(region.irradiationAvg, 1)}${NBSP}kWh/m²/j`
+          : '—',
+      },
+      {
+        label: 'Énergie journalière E_j',
+        value: unit(r.energyWhPerDay.typ, 'Wh/j'),
+      },
+      {
+        label: 'P_inst / P_dem',
+        value: `${n(r.peakW.installed)} / ${unit(r.peakW.surge, 'W')}`,
+      },
+      { label: 'Tension système', value: unit(r.systemVoltage, 'V') },
+      { label: 'A_eff', value: unit(r.effectiveAutonomyDays, 'j', 2) },
+      { label: 'C_PV', value: formatPercent(r.pvCoverage) },
+    ],
+  };
+}
+
+/** Nomenclature technique : câblage série/parallèle, sections et calibres. */
+export function proBillOfMaterials(
+  r: SimulationResult,
+  ctx: ProContext,
+): BomGroup[] {
+  const p = ctx.params.values;
+  const panel = panelModel(ctx.catalog, r);
+  const ctrl = controllerModel(ctx.catalog, r);
+  const bat = batteryModel(ctx.catalog, r);
+  const inv = inverterModel(ctx.catalog, r);
+  const x = (v: number) => `${n(v)}${NBSP}×`;
+  const dod = dodOf(ctx.input.batteryTech, ctx.params);
+  const vocString =
+    (p.pvVocSafetyFactor ?? 1.1) * r.pv.series * (panel?.vocV ?? 0);
+  const mounting = r.protections.find((pr) => pr.type === 'mounting_structure');
+  const units = r.battery.series * r.battery.parallel;
+
+  const equipment: BomLine[] = [
+    {
+      qty: x(r.pv.count),
+      name: panel?.label ?? 'Module PV',
+      note: `${r.pv.series}S × ${r.pv.strings}P · ${unit(r.pv.totalWp, 'Wc')} · V_oc chaîne ${unit(vocString, 'V')}`,
+    },
+  ];
+  if (mounting) {
+    equipment.push({
+      qty: x(mounting.quantity),
+      name: 'Structure de fixation',
+      note: '1 par module',
+    });
+  }
+  if (ctrl && r.controller) {
+    equipment.push({
+      qty: x(1),
+      name: ctrl.label ?? `Régulateur ${ctrl.type} ${ctrl.maxCurrentA} A`,
+      note: `I_reg ${unit(r.controller.currentA, 'A', 1)} ≤ ${unit(ctrl.maxCurrentA, 'A')} · V_PV max ${unit(ctrl.maxPvVoltageV, 'V')}`,
+    });
+  }
+  equipment.push(
+    {
+      qty: x(units),
+      name: bat?.label ?? 'Batterie',
+      note: `${r.battery.series}S × ${r.battery.parallel}P · ${unit(r.battery.capacityWh, 'Wh')} · DoD ${n(dod, 2)} → ${unit(r.battery.capacityWh * dod, 'Wh')} utiles`,
+    },
+    {
+      qty: x(1),
+      name: inv?.label ?? `Onduleur ${n(r.inverter.nominalW)} W`,
+      note: `${unit(r.systemVoltage, 'V')} DC / ${unit(acVoltageOf(ctx), 'V')} AC · P_nom ≥ 1,25 × P_inst · f_s × P_nom ${unit(r.inverter.nominalW * p.inverterSurgeFactor, 'W')} ≥ P_dem`,
+    },
+  );
+
+  const cables: BomLine[] = cableRows(r, ctx).map((c) => ({
+    qty: `${n(c.lengthM * 2)}${NBSP}m`,
+    name: `${SEGMENT_LABELS[c.segment].from} ${c.section}`,
+    note: `${c.route} · ${c.detail}`,
+  }));
+
+  const protections: BomLine[] = protectionRows(r)
+    .filter((pr) => pr.type !== 'mounting_structure')
+    .map((pr) => ({
+      qty: pr.type === 'earthing' ? '—' : x(pr.quantity),
+      name: pr.name,
+      note: pr.value === '—' ? '' : `Calibre ${pr.value}`,
+    }));
+
+  return [
+    { title: 'ÉQUIPEMENTS', lines: equipment },
+    { title: 'CÂBLES · SECTION, LONGUEUR ALLER + RETOUR', lines: cables },
+    { title: 'PROTECTIONS · CALIBRES', lines: protections },
+  ];
 }

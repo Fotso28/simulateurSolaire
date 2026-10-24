@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { SimulationStore } from '../../core/simulation.store';
 import { enterDouala } from '../../core/test-helpers';
+import { RecapPage } from '../particulier/recap-page';
 import { ProResultPage } from './pro-result-page';
 
 function render() {
@@ -51,5 +52,22 @@ describe('ProResultPage', () => {
     const el = render();
     expect(store.outcome().status).toBe('ok');
     expect(el.querySelector('[data-testid="card-pv"]')).not.toBeNull();
+  });
+
+  it('récapitulatif : vocabulaire technique en pro, inchangé en particulier', () => {
+    const store = TestBed.inject(SimulationStore);
+    enterDouala(store);
+    const recap = () => {
+      const f = TestBed.createComponent(RecapPage);
+      f.detectChanges();
+      return (f.nativeElement as HTMLElement).textContent ?? '';
+    };
+    expect(recap()).toContain('Consommation');
+    store.setMode('pro');
+    const text = recap();
+    expect(text).not.toContain('Consommation');
+    expect(text).toContain('Wh/j');
+    expect(text).toContain('P_inst / P_dem');
+    expect(text).toContain('Calibre');
   });
 });
