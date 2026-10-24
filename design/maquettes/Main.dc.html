@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Localisation</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8A5800}a:hover{color:#6B4400}
+a:focus-visible,button:focus-visible{outline:2px solid #16181D;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 360px; height: 1080px; box-sizing: border-box; display: flex; flex-direction: column; background: #F5F5F1; color: #16181D; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <header style="height: 56px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 16px; background: #FFFFFF; border-bottom: 1px solid #E2E2DC">
+    <span style="width: 32px; height: 32px; border-radius: 9px; background: #F5B301; display: flex; align-items: center; justify-content: center; flex: none">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16181D" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"></path></svg>
+    </span>
+    <span style="flex: 1; font-size: 16px; line-height: 20px; font-weight: 600">Simulateur solaire</span>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #5E636B">ÉTAPE 1 / 5</span>
+  </header>
+  <div style="flex: none; display: flex; gap: 4px; padding: 10px 16px; background: #FFFFFF" aria-hidden="true">
+    <span style="flex: 1; height: 4px; border-radius: 2px; background: #F5B301"></span>
+    <span style="flex: 1; height: 4px; border-radius: 2px; background: #DCDCD5"></span>
+    <span style="flex: 1; height: 4px; border-radius: 2px; background: #DCDCD5"></span>
+    <span style="flex: 1; height: 4px; border-radius: 2px; background: #DCDCD5"></span>
+    <span style="flex: 1; height: 4px; border-radius: 2px; background: #DCDCD5"></span>
+  </div>
+
+  <main style="flex: 1; min-height: 0; overflow-y: auto; padding: 24px 16px 24px; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <h1 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 600; letter-spacing: -0.01em">Où sera installé votre système&#160;?</h1>
+      <p style="margin: 0; font-size: 15px; line-height: 22px; color: #5E636B">L'ensoleillement moyen de votre région sert de base au calcul du nombre de panneaux.</p>
+    </div>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <h2 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600">Pays</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; background: #E9E9E3; border-radius: 12px">
+        <button type="button" onClick="{{pickCM}}" aria-pressed="{{cmPressed}}" style="height: 44px; border: 0; border-radius: 9px; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; background: {{cmBg}}; color: #16181D; box-shadow: {{cmShadow}}">Cameroun</button>
+        <button type="button" onClick="{{pickGA}}" aria-pressed="{{gaPressed}}" style="height: 44px; border: 0; border-radius: 9px; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; background: {{gaBg}}; color: #16181D; box-shadow: {{gaShadow}}">Gabon</button>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; align-items: baseline; justify-content: space-between">
+        <h2 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600">Région</h2>
+        <span style="font-size: 12px; line-height: 16px; color: #5E636B">Soleil moyen par jour</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; overflow: hidden">
+        <sc-for list="{{regions}}" as="r" hint-placeholder-count="10">
+          <button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="width: 100%; min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 8px 14px; box-sizing: border-box; border: 0; border-top: {{r.bt}}; background: {{r.bg}}; font: inherit; color: inherit; text-align: left; cursor: pointer">
+            <span style="width: 20px; height: 20px; flex: none; box-sizing: border-box; border-radius: 50%; border: 1.5px solid {{r.ring}}; display: flex; align-items: center; justify-content: center"><span style="width: 10px; height: 10px; border-radius: 50%; background: {{r.dot}}"></span></span>
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+              <span style="font-size: 16px; line-height: 22px; font-weight: {{r.weight}}">{{r.name}}</span>
+              <span style="font-size: 13px; line-height: 18px; color: #5E636B">{{r.city}}</span>
+            </span>
+            <span style="display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums">
+              <span style="font-size: 16px; line-height: 22px; font-weight: 600">{{r.sun}}</span>
+              <span style="font-size: 13px; line-height: 18px; color: #5E636B">h</span>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+      <p style="margin: 0; font-size: 13px; line-height: 18px; color: #5E636B">Heures équivalentes de plein soleil, en moyenne sur l'année. La saison des pluies est signalée dans le résultat.</p>
+    </section>
+  </main>
+
+  <div style="flex: none; padding: 12px 16px 16px; background: #FFFFFF; border-top: 1px solid #E2E2DC; box-shadow: 0 -6px 16px rgba(22, 24, 29, 0.06); display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; line-height: 20px">
+      <span style="display: flex; align-items: center; gap: 6px; color: #5E636B">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+        {{selName}}, {{selCountry}}
+      </span>
+      <span style="font-weight: 600; font-variant-numeric: tabular-nums">{{selSun}} h de soleil / jour</span>
+    </div>
+    <a href="Mode.dc.html" style="height: 52px; border-radius: 12px; background: #15803D; color: #FFFFFF; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none">
+      Continuer
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+    </a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":1080}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { country: 'CM', region: 'littoral' };
+  }
+  renderVals() {
+    var data = {
+      CM: [
+        ['adamaoua', 'Adamaoua', 'Ngaoundéré', 5.2],
+        ['centre', 'Centre', 'Yaoundé', 4.5],
+        ['est', 'Est', 'Bertoua', 4.6],
+        ['extreme-nord', 'Extrême-Nord', 'Maroua', 5.8],
+        ['littoral', 'Littoral', 'Douala', 4.0],
+        ['nord', 'Nord', 'Garoua', 5.6],
+        ['nord-ouest', 'Nord-Ouest', 'Bamenda', 4.8],
+        ['ouest', 'Ouest', 'Bafoussam', 4.7],
+        ['sud', 'Sud', 'Ebolowa', 4.3],
+        ['sud-ouest', 'Sud-Ouest', 'Buea', 4.0]
+      ],
+      GA: [
+        ['estuaire', 'Estuaire', 'Libreville', 4.0],
+        ['haut-ogooue', 'Haut-Ogooué', 'Franceville', 4.4],
+        ['moyen-ogooue', 'Moyen-Ogooué', 'Lambaréné', 4.1],
+        ['ngounie', 'Ngounié', 'Mouila', 4.2],
+        ['nyanga', 'Nyanga', 'Tchibanga', 4.2],
+        ['ogooue-ivindo', 'Ogooué-Ivindo', 'Makokou', 4.2],
+        ['ogooue-lolo', 'Ogooué-Lolo', 'Koulamoutou', 4.2],
+        ['ogooue-maritime', 'Ogooué-Maritime', 'Port-Gentil', 4.1],
+        ['woleu-ntem', 'Woleu-Ntem', 'Oyem', 4.3]
+      ]
+    };
+    var self = this;
+    var c = this.state.country;
+    var list = data[c];
+    var sel = list.find(function (r) { return r[0] === self.state.region; }) || list[0];
+    var fmt = function (v) { return v.toFixed(1).replace('.', ','); };
+    var regions = list.map(function (r, i) {
+      var on = r[0] === sel[0];
+      return {
+        name: r[1], city: r[2], sun: fmt(r[3]), pressed: on,
+        bt: i === 0 ? '0' : '1px solid #ECECE6',
+        bg: on ? '#FFF5D6' : '#FFFFFF',
+        ring: on ? '#16181D' : '#A7AAA2',
+        dot: on ? '#16181D' : 'transparent',
+        weight: on ? 600 : 400,
+        pick: function () { self.setState({ region: r[0] }); }
+      };
+    });
+    var seg = function (on) { return on ? '#FFFFFF' : 'transparent'; };
+    var sh = function (on) { return on ? '0 1px 2px rgba(22,24,29,0.12)' : 'none'; };
+    return {
+      regions: regions,
+      selName: sel[1], selCountry: c === 'CM' ? 'Cameroun' : 'Gabon', selSun: fmt(sel[3]),
+      cmPressed: c === 'CM', gaPressed: c === 'GA',
+      cmBg: seg(c === 'CM'), gaBg: seg(c === 'GA'),
+      cmShadow: sh(c === 'CM'), gaShadow: sh(c === 'GA'),
+      pickCM: function () { self.setState({ country: 'CM', region: 'littoral' }); },
+      pickGA: function () { self.setState({ country: 'GA', region: 'estuaire' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

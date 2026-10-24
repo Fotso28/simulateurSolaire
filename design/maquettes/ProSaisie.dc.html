@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Saisie technique</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8A5800}a:hover{color:#6B4400}
+a:focus-visible,button:focus-visible{outline:2px solid #16181D;outline-offset:2px}
+input:focus{outline:2px solid #16181D;outline-offset:0;border-color:#16181D}
+</style>
+</helmet>
+<div style="width: 360px; height: 2440px; box-sizing: border-box; display: flex; flex-direction: column; background: #F5F5F1; color: #16181D; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <header style="height: 56px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 16px 0 6px; background: #FFFFFF; border-bottom: 1px solid #E2E2DC">
+    <a href="Mode.dc.html" aria-label="Retour au choix du profil" style="width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #16181D">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>
+    </a>
+    <span style="flex: 1; display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 20px; font-weight: 600">Saisie technique <span style="padding: 1px 6px; border-radius: 5px; background: #16181D; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.04em">PRO</span></span>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #5E636B">ÉTAPE 3 / 4</span>
+  </header>
+
+  <main style="flex: 1; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 18px; color: #3D4149">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+      <span style="font-family: 'IBM Plex Mono', monospace">Littoral · H = 4,0 kWh/m²/j</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; background: #E9E9E3; border-radius: 12px" role="group" aria-label="Mode de saisie">
+      <button type="button" onClick="{{toApp}}" aria-pressed="{{isApp}}" style="height: 44px; border: 0; border-radius: 9px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; color: #16181D; background: {{appBg}}; box-shadow: {{appSh}}">Par appareil</button>
+      <button type="button" onClick="{{toTot}}" aria-pressed="{{isTot}}" style="height: 44px; border: 0; border-radius: 9px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; color: #16181D; background: {{totBg}}; box-shadow: {{totSh}}">Puissance totale</button>
+    </div>
+
+    <sc-if value="{{isApp}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <sc-for list="{{loads}}" as="l" hint-placeholder-count="7">
+          <div style="padding: 12px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; gap: 4px">
+              <label style="flex: 1; min-width: 0; display: flex"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Désignation</span>
+                <input type="text" value="{{l.name}}" onChange="{{l.onName}}" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 8px; margin-left: -8px; border: 1px solid transparent; border-radius: 8px; background: transparent; font: inherit; font-size: 15px; font-weight: 600; color: #16181D">
+              </label>
+              <button type="button" onClick="{{l.remove}}" aria-label="Supprimer la ligne {{l.name}}" style="width: 44px; height: 44px; flex: none; border: 0; border-radius: 10px; background: transparent; color: #5E636B; display: flex; align-items: center; justify-content: center; cursor: pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg>
+              </button>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+              <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #5E636B">P (W)</span><input type="text" inputmode="decimal" value="{{l.p}}" onChange="{{l.onP}}" style="width: 100%; height: 44px; box-sizing: border-box; padding: 0 8px; border: 1px solid #C9CAC3; border-radius: 8px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+              <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #5E636B">Qté</span><input type="text" inputmode="numeric" value="{{l.q}}" onChange="{{l.onQ}}" style="width: 100%; height: 44px; box-sizing: border-box; padding: 0 8px; border: 1px solid #C9CAC3; border-radius: 8px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+              <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #5E636B">h / jour</span><input type="text" inputmode="decimal" value="{{l.h}}" onChange="{{l.onH}}" style="width: 100%; height: 44px; box-sizing: border-box; padding: 0 8px; border: 1px solid #C9CAC3; border-radius: 8px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+              <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #5E636B">k démar.</span><input type="text" inputmode="decimal" value="{{l.k}}" onChange="{{l.onK}}" style="width: 100%; height: 44px; box-sizing: border-box; padding: 0 8px; border: 1px solid #C9CAC3; border-radius: 8px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+            </div>
+            <div style="display: flex; justify-content: space-between; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #5E636B">
+              <span>τ {{l.tau}}</span>
+              <span style="color: #16181D; font-weight: 500">{{l.e}} Wh/j</span>
+            </div>
+          </div>
+        </sc-for>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <button type="button" onClick="{{addRow}}" style="height: 48px; border-radius: 12px; border: 1.5px dashed #A7AAA2; background: transparent; font: inherit; font-size: 14px; font-weight: 600; color: #16181D; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            Ligne libre
+          </button>
+          <button type="button" style="height: 48px; border-radius: 12px; border: 1px solid #C9CAC3; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; color: #16181D; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4.3-4.3"></path></svg>
+            Catalogue
+          </button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isTot}}" hint-placeholder-val="{{false}}">
+      <div style="padding: 14px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; display: flex; flex-direction: column; gap: 14px">
+        <label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Puissance totale installée <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 400; color: #5E636B">W</span></span><input type="text" inputmode="decimal" value="{{tP}}" onChange="{{onTP}}" style="height: 48px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CAC3; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 16px; color: #16181D"></label>
+        <label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Énergie journalière <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 400; color: #5E636B">Wh/j</span></span><input type="text" inputmode="decimal" value="{{tE}}" onChange="{{onTE}}" style="height: 48px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CAC3; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 16px; color: #16181D"></label>
+        <label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Facteur de pointe global <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 400; color: #5E636B">× P</span></span><input type="text" inputmode="decimal" value="{{tK}}" onChange="{{onTK}}" style="height: 48px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9CAC3; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 16px; color: #16181D"><span style="font-size: 13px; line-height: 18px; color: #5E636B">1 par défaut. Augmentez-le si des moteurs démarrent sur l'installation.</span></label>
+      </div>
+    </sc-if>
+
+    <section style="padding: 14px; background: #16181D; color: #FFFFFF; border-radius: 12px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px" aria-live="polite">
+      <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #C9CAC3">P_inst</span><span style="font-size: 18px; line-height: 24px; font-weight: 600; font-variant-numeric: tabular-nums">{{pinst}} <span style="font-size: 12px; font-weight: 400">W</span></span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #C9CAC3">P_dem</span><span style="font-size: 18px; line-height: 24px; font-weight: 600; font-variant-numeric: tabular-nums">{{pdem}} <span style="font-size: 12px; font-weight: 400">W</span></span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #C9CAC3">E_j</span><span style="font-size: 18px; line-height: 24px; font-weight: 600; color: #F5B301; font-variant-numeric: tabular-nums">{{ej}} <span style="font-size: 12px; font-weight: 400; color: #FFFFFF">Wh/j</span></span></div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px">
+      <h2 style="margin: 0; font-size: 18px; line-height: 24px; font-weight: 600">Paramètres du système</h2>
+      <div style="padding: 14px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; display: flex; flex-direction: column; gap: 18px">
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 14px; line-height: 20px; font-weight: 600">Autonomie</span>
+          <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px">
+            <sc-for list="{{autos}}" as="o" hint-placeholder-count="5">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="height: 44px; border-radius: 10px; border: 1px solid {{o.border}}; background: {{o.bg}}; color: {{o.color}}; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; cursor: pointer">{{o.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 14px; line-height: 20px; font-weight: 600">Technologie de batterie</span>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+            <sc-for list="{{techs}}" as="o" hint-placeholder-count="2">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="min-height: 52px; padding: 6px 10px; border-radius: 10px; border: 1px solid {{o.border}}; background: {{o.bg}}; color: {{o.color}}; font: inherit; text-align: left; display: flex; flex-direction: column; justify-content: center; cursor: pointer"><span style="font-size: 14px; line-height: 18px; font-weight: 600">{{o.label}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 16px">{{o.sub}}</span></button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 14px; line-height: 20px; font-weight: 600">Tension système</span>
+          <div style="display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 6px">
+            <sc-for list="{{volts}}" as="o" hint-placeholder-count="4">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="height: 44px; border-radius: 10px; border: 1px solid {{o.border}}; background: {{o.bg}}; color: {{o.color}}; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; cursor: pointer">{{o.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 14px; line-height: 20px; font-weight: 600">Architecture</span>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+            <sc-for list="{{archs}}" as="o" hint-placeholder-count="2">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="min-height: 52px; padding: 6px 10px; border-radius: 10px; border: 1px solid {{o.border}}; background: {{o.bg}}; color: {{o.color}}; font: inherit; text-align: left; display: flex; flex-direction: column; justify-content: center; cursor: pointer"><span style="font-size: 14px; line-height: 18px; font-weight: 600">{{o.label}}</span><span style="font-size: 12px; line-height: 16px">{{o.sub}}</span></button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+          <span style="display: flex; flex-direction: column"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Simultanéité c_s</span><span style="font-size: 12px; line-height: 16px; color: #5E636B">Part des appareils allumés ensemble</span></span>
+          <div style="display: flex; align-items: center; border: 1px solid #C9CAC3; border-radius: 10px; overflow: hidden">
+            <button type="button" onClick="{{csDown}}" aria-label="Réduire la simultanéité" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #16181D; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+            <span style="min-width: 52px; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 500">{{cs}}</span>
+            <button type="button" onClick="{{csUp}}" aria-label="Augmenter la simultanéité" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #16181D; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 14px; line-height: 20px; font-weight: 600">Panneau de référence</span>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 12px; border: 1px solid #C9CAC3; border-radius: 10px">
+            <img src="/_blob/b25ce16475e83b6c2c19f0ce061f712c" alt="" width="24" height="24">
+            <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; line-height: 20px; font-weight: 600">450 Wc</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 16px; color: #5E636B">Voc 49,5 V · Vmp 41,5 V · Isc 11,6 A</span></span>
+            <button type="button" style="height: 44px; padding: 0 10px; border: 0; border-radius: 8px; background: #EFEFEA; font: inherit; font-size: 13px; font-weight: 600; color: #16181D; cursor: pointer">Changer</button>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 14px; line-height: 20px; font-weight: 600">Longueurs de câbles <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 400; color: #5E636B">m</span></span>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; line-height: 16px; color: #5E636B">Panneaux → régulateur</span><input type="text" inputmode="decimal" value="15" style="height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D"></label>
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; line-height: 16px; color: #5E636B">Régulateur → batteries</span><input type="text" inputmode="decimal" value="2" style="height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D"></label>
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; line-height: 16px; color: #5E636B">Batteries → onduleur</span><input type="text" inputmode="decimal" value="2" style="height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D"></label>
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; line-height: 16px; color: #5E636B">Onduleur → tableau</span><input type="text" inputmode="decimal" value="5" style="height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D"></label>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div style="flex: none; padding: 12px 16px 16px; background: #FFFFFF; border-top: 1px solid #E2E2DC; box-shadow: 0 -6px 16px rgba(22, 24, 29, 0.06)">
+    <a href="ProResultat.dc.html" style="height: 52px; border-radius: 12px; background: #15803D; color: #FFFFFF; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none">
+      Dimensionner
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+    </a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":2440}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mode: 'app',
+      loads: [
+        { name: 'Ampoule LED', p: '10', q: '6', h: '6', k: '1', tau: 1 },
+        { name: 'Télévision 43 pouces', p: '80', q: '1', h: '5', k: '1', tau: 1 },
+        { name: 'Décodeur TV', p: '15', q: '1', h: '5', k: '1', tau: 1 },
+        { name: 'Réfrigérateur', p: '120', q: '1', h: '24', k: '4', tau: 0.4 },
+        { name: 'Ventilateur', p: '60', q: '2', h: '8', k: '1,5', tau: 1 },
+        { name: 'Chargeur de téléphone', p: '10', q: '3', h: '3', k: '1', tau: 1 },
+        { name: 'Box internet', p: '10', q: '1', h: '24', k: '1', tau: 1 }
+      ],
+      tP: '435', tE: '3277', tK: '1,8',
+      auto: 1, tech: 'li', volt: 'auto', arch: 'sep', cs: 1
+    };
+  }
+  renderVals() {
+    var self = this, st = this.state;
+    var num = function (s) { var v = parseFloat(String(s).replace(',', '.')); return isFinite(v) ? v : 0; };
+    var nf = function (v) { return Math.round(v).toLocaleString('fr-FR'); };
+    var upd = function (i, key) {
+      return function (e) {
+        var L = st.loads.slice(); var o = Object.assign({}, L[i]); o[key] = e.target.value; L[i] = o;
+        self.setState({ loads: L });
+      };
+    };
+    var pinst, pdem, ej;
+    if (st.mode === 'app') {
+      var sumP = 0, maxSurge = 0; ej = 0;
+      st.loads.forEach(function (l) {
+        var p = num(l.p), q = num(l.q), h = num(l.h), k = num(l.k) || 1;
+        sumP += q * p; ej += q * p * h * l.tau;
+        maxSurge = Math.max(maxSurge, (k - 1) * p);
+      });
+      pinst = st.cs * sumP; pdem = pinst + maxSurge;
+    } else {
+      pinst = num(st.tP); ej = num(st.tE); pdem = pinst * (num(st.tK) || 1);
+    }
+    var ppv = ej / (4.0 * 0.7);
+    var autoV = (1.25 * pinst <= 1200 && ppv <= 1000) ? 12 : (1.25 * pinst <= 3000 && ppv <= 2500) ? 24 : 48;
+    var chip = function (on) { return on ? { border: '#16181D', bg: '#16181D', color: '#FFFFFF' } : { border: '#C9CAC3', bg: '#FFFFFF', color: '#16181D' }; };
+    var opts = function (list, key) {
+      return list.map(function (o) {
+        var on = st[key] === o[0];
+        return Object.assign({ label: o[1], sub: o[2] || '', on: on, pick: function () { var p = {}; p[key] = o[0]; self.setState(p); } }, chip(on));
+      });
+    };
+    var seg = function (on) { return on ? '#FFFFFF' : 'transparent'; };
+    var sh = function (on) { return on ? '0 1px 2px rgba(22,24,29,0.12)' : 'none'; };
+    var isApp = st.mode === 'app';
+    return {
+      isApp: isApp, isTot: !isApp,
+      appBg: seg(isApp), totBg: seg(!isApp), appSh: sh(isApp), totSh: sh(!isApp),
+      toApp: function () { self.setState({ mode: 'app' }); },
+      toTot: function () { self.setState({ mode: 'tot' }); },
+      loads: st.loads.map(function (l, i) {
+        var e = num(l.q) * num(l.p) * num(l.h) * l.tau;
+        return {
+          name: l.name, p: l.p, q: l.q, h: l.h, k: l.k,
+          tau: String(l.tau).replace('.', ',') + (l.tau !== 1 ? ' · catalogue' : ''),
+          e: nf(e),
+          onName: upd(i, 'name'), onP: upd(i, 'p'), onQ: upd(i, 'q'), onH: upd(i, 'h'), onK: upd(i, 'k'),
+          remove: function () { var L = st.loads.slice(); L.splice(i, 1); self.setState({ loads: L }); }
+        };
+      }),
+      addRow: function () { self.setState({ loads: st.loads.concat([{ name: 'Nouvel appareil', p: '', q: '1', h: '', k: '1', tau: 1 }]) }); },
+      tP: st.tP, tE: st.tE, tK: st.tK,
+      onTP: function (e) { self.setState({ tP: e.target.value }); },
+      onTE: function (e) { self.setState({ tE: e.target.value }); },
+      onTK: function (e) { self.setState({ tK: e.target.value }); },
+      pinst: nf(pinst), pdem: nf(pdem), ej: nf(ej),
+      autos: opts([[0.5, '0,5 j'], [1, '1 j'], [1.5, '1,5 j'], [2, '2 j'], [3, '3 j']], 'auto'),
+      techs: opts([['li', 'LiFePO4', 'DoD 0,80'], ['pb', 'Plomb / gel', 'DoD 0,50']], 'tech'),
+      volts: opts([['auto', 'Auto · ' + autoV + ' V'], [12, '12 V'], [24, '24 V'], [48, '48 V']], 'volt'),
+      archs: opts([['sep', 'Séparée', 'Régulateur MPPT + onduleur'], ['hyb', 'Hybride', 'MPPT intégré']], 'arch'),
+      cs: st.cs.toFixed(2).replace('.', ','),
+      csDown: function () { self.setState({ cs: Math.max(0.5, Math.round((st.cs - 0.05) * 100) / 100) }); },
+      csUp: function () { self.setState({ cs: Math.min(1, Math.round((st.cs + 0.05) * 100) / 100) }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

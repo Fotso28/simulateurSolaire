@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Ajuster l'installation</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8A5800}a:hover{color:#6B4400}
+a:focus-visible,button:focus-visible{outline:2px solid #16181D;outline-offset:2px}
+button:disabled{cursor:not-allowed}
+</style>
+</helmet>
+<div style="width: 360px; height: 1260px; box-sizing: border-box; display: flex; flex-direction: column; background: #F5F5F1; color: #16181D; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <header style="height: 56px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 16px 0 6px; background: #FFFFFF; border-bottom: 1px solid #E2E2DC">
+    <a href="Resultat.dc.html" aria-label="Retour au résultat" style="width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #16181D">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>
+    </a>
+    <span style="flex: 1; font-size: 16px; line-height: 20px; font-weight: 600">Ajuster l'installation</span>
+  </header>
+
+  <div style="flex: none; padding: 12px 16px; background: #FFFFFF; border-bottom: 1px solid #E2E2DC; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px" aria-live="polite">
+    <div style="padding: 10px 12px; border-radius: 12px; background: {{aBg}}; display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 12px; line-height: 16px; color: #3D4149">Autonomie réelle</span>
+      <span style="font-size: 22px; line-height: 28px; font-weight: 600; font-variant-numeric: tabular-nums">{{aeff}} <span style="font-size: 14px; font-weight: 500">jour</span></span>
+      <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: {{aColor}}">{{aState}}</span>
+    </div>
+    <div style="padding: 10px 12px; border-radius: 12px; background: {{cBg}}; display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 12px; line-height: 16px; color: #3D4149">Couverture solaire</span>
+      <span style="font-size: 22px; line-height: 28px; font-weight: 600; font-variant-numeric: tabular-nums">{{cpv}} <span style="font-size: 14px; font-weight: 500">%</span></span>
+      <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: {{cColor}}">{{cState}}</span>
+    </div>
+  </div>
+
+  <main style="flex: 1; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 12px">
+    <p style="margin: 0 0 4px; font-size: 15px; line-height: 22px; color: #3D4149">Montez ou descendez chaque élément d'une taille standard. Les indicateurs se recalculent à chaque clic.</p>
+
+    <sc-for list="{{alerts}}" as="al" hint-placeholder-count="1">
+      <div role="status" style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background: {{al.bg}}; color: {{al.color}}; font-size: 14px; line-height: 20px">
+        <sc-if value="{{al.crit}}" hint-placeholder-val="{{false}}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8.2 2.5h7.6l5.7 5.7v7.6l-5.7 5.7H8.2l-5.7-5.7V8.2z"></path><path d="M12 8v5M12 16h.01"></path></svg>
+        </sc-if>
+        <sc-if value="{{al.warn}}" hint-placeholder-val="{{true}}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 3.5 2.5 20h19z"></path><path d="M12 10v4M12 17h.01"></path></svg>
+        </sc-if>
+        <sc-if value="{{al.ok}}" hint-placeholder-val="{{false}}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.5 2.5 5-5"></path></svg>
+        </sc-if>
+        <span><strong style="font-weight: 600">{{al.title}}</strong> {{al.msg}}</span>
+      </div>
+    </sc-for>
+
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+      <section style="padding: 14px; background: #FFFFFF; border: 1px solid {{r.border}}; border-radius: 14px; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="width: 36px; height: 36px; flex: none; border-radius: 9px; background: #FFF5D6; display: flex; align-items: center; justify-content: center"><img src="{{r.icon}}" alt="" width="24" height="24"></span>
+          <h2 style="margin: 0; flex: 1; font-size: 16px; line-height: 22px; font-weight: 600">{{r.title}}</h2>
+          <sc-if value="{{r.changed}}" hint-placeholder-val="{{false}}">
+            <span style="padding: 2px 8px; border-radius: 6px; background: #16181D; color: #FFFFFF; font-size: 12px; line-height: 18px; font-weight: 600">Modifié</span>
+          </sc-if>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px">
+          <button type="button" onClick="{{r.down}}" disabled="{{r.atMin}}" aria-label="{{r.downLabel}}" style="width: 48px; height: 48px; flex: none; border-radius: 12px; border: 1px solid #C9CAC3; background: {{r.downBg}}; color: {{r.downColor}}; display: flex; align-items: center; justify-content: center; cursor: pointer">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+          </button>
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center">
+            <span style="font-size: 22px; line-height: 28px; font-weight: 600; font-variant-numeric: tabular-nums">{{r.value}}</span>
+            <span style="font-size: 13px; line-height: 18px; color: #5E636B">{{r.sub}}</span>
+          </div>
+          <button type="button" onClick="{{r.up}}" disabled="{{r.atMax}}" aria-label="{{r.upLabel}}" style="width: 48px; height: 48px; flex: none; border-radius: 12px; border: 1px solid #C9CAC3; background: {{r.upBg}}; color: {{r.upColor}}; display: flex; align-items: center; justify-content: center; cursor: pointer">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+          </button>
+        </div>
+        <sc-if value="{{r.hasNote}}" hint-placeholder-val="{{false}}">
+          <span style="font-size: 13px; line-height: 18px; color: #3D4149; text-align: center">{{r.note}}</span>
+        </sc-if>
+      </section>
+    </sc-for>
+
+    <button type="button" onClick="{{reset}}" disabled="{{pristine}}" style="min-height: 48px; border: 0; background: transparent; font: inherit; font-size: 15px; font-weight: 600; color: {{resetColor}}; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6L4 8.5"></path><path d="M4 4v4.5h4.5"></path></svg>
+      Revenir à la proposition
+    </button>
+
+    <div style="display: flex; gap: 10px; padding: 14px; background: #EEF0F3; border-radius: 12px; font-size: 14px; line-height: 20px; color: #2A2D33">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 15a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 7a3.75 3.75 0 0 1 .5 8z"></path><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"></path></svg>
+      <span><strong style="font-weight: 600">Saison des pluies&#160;:</strong> la production peut baisser de 20 à 30&#160;%.</span>
+    </div>
+  </main>
+
+  <div style="flex: none; padding: 12px 16px 16px; background: #FFFFFF; border-top: 1px solid #E2E2DC; box-shadow: 0 -6px 16px rgba(22, 24, 29, 0.06)">
+    <a href="Recap.dc.html" style="height: 52px; border-radius: 12px; background: #15803D; color: #FFFFFF; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none">
+      Valider et voir le matériel
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+    </a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":1260}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { inv: 0, bat: 1, pan: 3 };
+  }
+  renderVals() {
+    var self = this, st = this.state;
+    var E = 3277, Pinst = 435, Pdem = 795, H = 4.0, PR = 0.7;
+    var INV = [1000, 1500, 2000, 3000];
+    var BAT = [[1, 100], [1, 200], [3, 100], [2, 200], [3, 200], [4, 200]];
+    var REG = [60, 80, 100, 150];
+    var PROP = { inv: 0, bat: 1, pan: 3 };
+    var nf = function (v) { return Math.round(v).toLocaleString('fr-FR'); };
+    var f1 = function (v) { return v.toFixed(1).replace('.', ','); };
+    var f2 = function (v) { return v.toFixed(2).replace('.', ','); };
+    var pnom = INV[st.inv];
+    var b = BAT[st.bat];
+    var capWh = b[0] * b[1] * 24;
+    var aeff = capWh * 0.72 / E;
+    var cpv = st.pan * 450 * H * PR / E;
+    var ireg = 1.25 * st.pan * 450 / 24;
+    var reg = REG.find(function (r) { return r >= ireg; }) || REG[REG.length - 1];
+    var set = function (k, v) { var p = {}; p[k] = v; self.setState(p); };
+    var btn = function (dis) { return dis ? ['#F0F0EC', '#A7AAA2'] : ['#FFFFFF', '#16181D']; };
+
+    var invCrit = pnom < 1.25 * Pinst || 2 * pnom < Pdem;
+    var alerts = [];
+    if (invCrit) alerts.push({ crit: true, warn: false, ok: false, bg: '#FCE9EA', color: '#9E1F25', title: 'Critique :', msg: 'l’onduleur ne peut pas alimenter tous les appareils.' });
+    if (aeff < 0.5) alerts.push({ crit: false, warn: true, ok: false, bg: '#FDEFE3', color: '#8F4208', title: 'Attention :', msg: 'le stockage ne couvre pas une nuit.' });
+    if (cpv < 1) alerts.push({ crit: false, warn: true, ok: false, bg: '#FDEFE3', color: '#8F4208', title: 'Attention :', msg: 'en moyenne, les panneaux ne rechargent pas complètement les batteries.' });
+    if (!alerts.length) alerts.push({ crit: false, warn: false, ok: true, bg: '#E5F3EA', color: '#16603A', title: 'Aucune alerte :', msg: 'tous vos appareils sont alimentés et les batteries se rechargent.' });
+
+    var row = function (o) {
+      var d = btn(o.atMin), u = btn(o.atMax);
+      o.downBg = d[0]; o.downColor = d[1]; o.upBg = u[0]; o.upColor = u[1];
+      o.border = o.changed ? '#16181D' : '#E2E2DC';
+      o.hasNote = !!o.note;
+      return o;
+    };
+    var rows = [
+      row({ title: 'Onduleur', icon: '/_blob/a0e3b5c5374a89bf57f6fb84e4868a68',
+        value: nf(pnom) + ' W', sub: 'Supporte ' + nf(2 * pnom) + ' W en pointe',
+        note: st.inv === 0 ? 'Plus petite taille disponible au catalogue.' : '',
+        atMin: st.inv === 0, atMax: st.inv === INV.length - 1, changed: st.inv !== PROP.inv,
+        downLabel: 'Onduleur plus petit', upLabel: 'Onduleur plus puissant',
+        down: function () { set('inv', Math.max(0, st.inv - 1)); }, up: function () { set('inv', Math.min(INV.length - 1, st.inv + 1)); } }),
+      row({ title: 'Stockage', icon: '/_blob/0bb0c328c12bed066932abb489eaec9d',
+        value: f1(capWh / 1000) + ' kWh', sub: b[0] + (b[0] > 1 ? ' batteries ' : ' batterie ') + b[1] + ' Ah · lithium 24 V',
+        note: '', atMin: st.bat === 0, atMax: st.bat === BAT.length - 1, changed: st.bat !== PROP.bat,
+        downLabel: 'Moins de stockage', upLabel: 'Plus de stockage',
+        down: function () { set('bat', Math.max(0, st.bat - 1)); }, up: function () { set('bat', Math.min(BAT.length - 1, st.bat + 1)); } }),
+      row({ title: 'Panneaux solaires', icon: '/_blob/b25ce16475e83b6c2c19f0ce061f712c',
+        value: st.pan + (st.pan > 1 ? ' panneaux' : ' panneau'), sub: '450 Wc chacun · ' + f2(st.pan * 0.45) + ' kWc',
+        note: 'Régulateur ajusté automatiquement : MPPT ' + reg + ' A', atMin: st.pan === 1, atMax: st.pan === 6, changed: st.pan !== PROP.pan,
+        downLabel: 'Un panneau de moins', upLabel: 'Un panneau de plus',
+        down: function () { set('pan', Math.max(1, st.pan - 1)); }, up: function () { set('pan', Math.min(6, st.pan + 1)); } })
+    ];
+    var aOk = aeff >= 0.5, cOk = cpv >= 1;
+    var pristine = st.inv === PROP.inv && st.bat === PROP.bat && st.pan === PROP.pan;
+    return {
+      aeff: f2(aeff), cpv: Math.round(cpv * 100),
+      aBg: aOk ? '#E5F3EA' : '#FDEFE3', aColor: aOk ? '#16603A' : '#8F4208', aState: aOk ? 'Couvre au moins une nuit' : 'Moins d’une nuit',
+      cBg: cOk ? '#E5F3EA' : '#FDEFE3', cColor: cOk ? '#16603A' : '#8F4208', cState: cOk ? 'Recharge complète' : 'Recharge incomplète',
+      alerts: alerts, rows: rows,
+      pristine: pristine, resetColor: pristine ? '#A7AAA2' : '#8A5800',
+      reset: function () { self.setState({ inv: PROP.inv, bat: PROP.bat, pan: PROP.pan }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

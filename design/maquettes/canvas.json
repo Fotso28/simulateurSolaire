@@ -1,0 +1,44 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-24T13:40:00Z"},
+  "title": "Simulateur solaire — UX/UI",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 360, "h": 1080, "title": "01 · Localisation", "is_interactive": true},
+    "Mode.dc.html": {"x": 440, "y": 0, "w": 360, "h": 800, "title": "02 · Choix du mode", "is_interactive": true},
+    "Besoins.dc.html": {"x": 880, "y": 0, "w": 360, "h": 1460, "title": "03 · Appareils (particulier)", "is_interactive": true},
+    "Autonomie.dc.html": {"x": 1320, "y": 0, "w": 360, "h": 1080, "title": "04 · Autonomie", "is_interactive": true},
+    "Resultat.dc.html": {"x": 1760, "y": 0, "w": 360, "h": 1780, "title": "05 · Résultat et variantes", "is_interactive": true},
+    "Configurateur.dc.html": {"x": 2200, "y": 0, "w": 360, "h": 1260, "title": "06 · Configurateur", "is_interactive": true},
+    "Recap.dc.html": {"x": 2640, "y": 0, "w": 360, "h": 2280, "title": "07 · Liste du matériel", "is_interactive": true},
+    "ProSaisie.dc.html": {"x": 0, "y": 2700, "w": 360, "h": 2440, "title": "P1 · Saisie technique (pro)", "is_interactive": true},
+    "ProResultat.dc.html": {"x": 440, "y": 2700, "w": 360, "h": 2160, "title": "P2 · Dimensionnement (pro)", "is_interactive": true},
+    "DesktopBesoins.dc.html": {"x": 0, "y": 5560, "w": 1440, "h": 920, "title": "D1 · Appareils — desktop", "expand": "fill", "is_interactive": true},
+    "DesktopResultat.dc.html": {"x": 1520, "y": 5560, "w": 1440, "h": 1000, "title": "D2 · Résultat et configurateur — desktop", "expand": "fill", "is_interactive": true},
+    "AdminCatalogue.dc.html": {"x": 0, "y": 6980, "w": 1440, "h": 1000, "title": "A1 · Back-office — catalogue d'appareils", "expand": "fill"},
+    "Fondations.dc.html": {"x": 1520, "y": 6980, "w": 1200, "h": 2000, "title": "Fondations — jetons et composants"}
+  },
+  "order": [
+    "Main.dc.html",
+    "Mode.dc.html",
+    "Besoins.dc.html",
+    "Autonomie.dc.html",
+    "Resultat.dc.html",
+    "Configurateur.dc.html",
+    "Recap.dc.html",
+    "ProSaisie.dc.html",
+    "ProResultat.dc.html",
+    "DesktopBesoins.dc.html",
+    "DesktopResultat.dc.html",
+    "AdminCatalogue.dc.html",
+    "Fondations.dc.html"
+  ],
+  "notes": {
+    "t-particulier": {"x": 0, "y": -300, "text": "Parcours particulier — mobile 360 px", "kind": "title1", "maxW": 3000},
+    "t-pro": {"x": 0, "y": 2400, "text": "Mode professionnel — mobile 360 px", "kind": "title1", "maxW": 1600},
+    "t-desktop": {"x": 0, "y": 5260, "text": "Desktop — pages fluides", "kind": "title1", "maxW": 2960},
+    "t-admin": {"x": 0, "y": 6680, "text": "Back-office et fondations", "kind": "title1", "maxW": 2720}
+  },
+  "designSystems": []
+}

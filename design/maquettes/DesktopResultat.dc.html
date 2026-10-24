@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Votre installation — desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8A5800}a:hover{color:#6B4400}
+a:focus-visible,button:focus-visible{outline:2px solid #16181D;outline-offset:2px}
+button:disabled{cursor:not-allowed}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F5F5F1; color: #16181D; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2E2DC">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 12px 32px; min-height: 72px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px">
+      <span style="display: flex; align-items: center; gap: 10px">
+        <span style="width: 36px; height: 36px; border-radius: 10px; background: #F5B301; display: flex; align-items: center; justify-content: center">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16181D" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"></path></svg>
+        </span>
+        <span style="font-size: 17px; line-height: 22px; font-weight: 600">Simulateur solaire</span>
+      </span>
+      <ol style="flex: 1; margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 20px; font-size: 14px; line-height: 20px" aria-label="Étapes">
+        <li style="display: flex; align-items: center; gap: 8px; color: #3D4149"><span style="width: 24px; height: 24px; border-radius: 50%; background: #16181D; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>Lieu</li>
+        <li style="display: flex; align-items: center; gap: 8px; color: #3D4149"><span style="width: 24px; height: 24px; border-radius: 50%; background: #16181D; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>Profil</li>
+        <li style="display: flex; align-items: center; gap: 8px; color: #3D4149"><span style="width: 24px; height: 24px; border-radius: 50%; background: #16181D; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>Appareils</li>
+        <li style="display: flex; align-items: center; gap: 8px; color: #3D4149"><span style="width: 24px; height: 24px; border-radius: 50%; background: #16181D; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>Autonomie</li>
+        <li aria-current="step" style="display: flex; align-items: center; gap: 8px; font-weight: 600"><span style="width: 24px; height: 24px; border-radius: 50%; background: #F5B301; color: #16181D; font-family: 'IBM Plex Mono', monospace; font-size: 12px; display: flex; align-items: center; justify-content: center">5</span>Résultat</li>
+      </ol>
+      <button type="button" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #C9CAC3; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; color: #16181D; display: flex; align-items: center; gap: 8px; cursor: pointer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.2 10.8l7.6-4.6M8.2 13.2l7.6 4.6"></path></svg>
+        Partager
+      </button>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 0 auto; padding: 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em">Votre installation recommandée</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 24px; color: #5E636B">Littoral (Douala) · 15 appareils · batterie lithium · <a href="DesktopBesoins.dc.html">modifier les appareils</a></p>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 24px">
+      <div style="flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+        <section style="padding: 20px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px">
+          <div style="display: flex; flex-direction: column; gap: 2px; flex: 0 1 220px">
+            <span style="font-size: 14px; line-height: 20px; color: #5E636B">Consommation estimée</span>
+            <span style="font-size: 32px; line-height: 38px; font-weight: 600; font-variant-numeric: tabular-nums">3,3 kWh <span style="font-size: 16px; font-weight: 500; color: #3D4149">/ jour</span></span>
+          </div>
+          <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 6px">
+            <div style="position: relative; height: 44px" role="img" aria-label="Fourchette de 2,3 à 5,1 kWh par jour, valeur typique 3,3">
+              <div style="position: absolute; left: 0; right: 0; top: 18px; height: 8px; border-radius: 4px; background: #EBEBE5"></div>
+              <div style="position: absolute; left: 37.6%; width: 47%; top: 18px; height: 8px; border-radius: 4px; background: #F5B301"></div>
+              <div style="position: absolute; left: 54.6%; top: 12px; width: 4px; height: 20px; margin-left: -2px; border-radius: 2px; background: #16181D"></div>
+              <span style="position: absolute; left: 37.6%; top: 30px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #3D4149">2,3</span>
+              <span style="position: absolute; left: 54.6%; top: 0; transform: translateX(-50%); font-size: 12px; line-height: 12px; font-weight: 600">typique 3,3</span>
+              <span style="position: absolute; left: 84.6%; top: 30px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #3D4149">5,1</span>
+              <span style="position: absolute; right: 0; top: 30px; font-size: 12px; line-height: 14px; color: #5E636B">6 kWh</span>
+            </div>
+            <span style="font-size: 13px; line-height: 18px; color: #5E636B">Selon la puissance réelle de vos appareils. La proposition repose sur la valeur typique.</span>
+          </div>
+        </section>
+
+        <section style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px">
+            <h2 style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Trois niveaux d'autonomie</h2>
+            <span style="font-size: 14px; line-height: 20px; color: #5E636B">Seules les batteries changent d'une colonne à l'autre.</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px">
+            <sc-for list="{{variants}}" as="x" hint-placeholder-count="3">
+              <button type="button" onClick="{{x.pick}}" aria-pressed="{{x.on}}" style="padding: 18px; box-sizing: border-box; border-radius: 16px; border: {{x.border}}; background: {{x.bg}}; font: inherit; color: inherit; text-align: left; display: flex; flex-direction: column; gap: 14px; cursor: pointer">
+                <span style="width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px">
+                  <span style="font-size: 16px; line-height: 22px; font-weight: 600">{{x.label}}</span>
+                  <span style="padding: 2px 8px; border-radius: 6px; background: {{x.tagBg}}; color: {{x.tagColor}}; font-size: 12px; line-height: 18px; font-weight: 600">{{x.tag}}</span>
+                </span>
+                <span style="display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-size: 13px; line-height: 18px; color: #5E636B">Stockage</span>
+                  <span style="font-size: 28px; line-height: 34px; font-weight: 600; font-variant-numeric: tabular-nums">{{x.kwh}} kWh</span>
+                  <span style="font-size: 14px; line-height: 20px; color: #3D4149">{{x.units}}</span>
+                </span>
+                <span style="width: 100%; display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #E2E2DC; font-size: 14px; line-height: 20px">
+                  <span style="display: flex; justify-content: space-between; gap: 8px"><span style="color: #5E636B">Autonomie réelle</span><span style="font-weight: 600; font-variant-numeric: tabular-nums">{{x.aeff}} j</span></span>
+                  <span style="display: flex; justify-content: space-between; gap: 8px"><span style="color: #5E636B">Panneaux</span><span>3 × 450 Wc</span></span>
+                  <span style="display: flex; justify-content: space-between; gap: 8px"><span style="color: #5E636B">Onduleur</span><span>1 000 W</span></span>
+                  <span style="display: flex; justify-content: space-between; gap: 8px"><span style="color: #5E636B">Régulateur</span><span>MPPT 80 A</span></span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </section>
+
+        <div style="display: flex; gap: 10px; padding: 14px 16px; background: #EEF0F3; border-radius: 12px; font-size: 14px; line-height: 20px; color: #2A2D33">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 15a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 7a3.75 3.75 0 0 1 .5 8z"></path><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"></path></svg>
+          <span><strong style="font-weight: 600">Saison des pluies&#160;:</strong> la production peut baisser de 20 à 30&#160;%. Le calcul repose sur l'ensoleillement moyen de l'année.</span>
+        </div>
+      </div>
+
+      <aside aria-label="Configurateur" style="flex: 1 1 340px; max-width: 420px; padding: 20px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 16px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <h2 style="margin: 0; font-size: 18px; line-height: 24px; font-weight: 600">Ajuster l'installation</h2>
+          <span style="font-size: 13px; line-height: 18px; color: #5E636B">Une taille standard à chaque clic, recalcul immédiat.</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px" aria-live="polite">
+          <div style="padding: 10px 12px; border-radius: 12px; background: {{aBg}}; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 12px; line-height: 16px; color: #3D4149">Autonomie réelle</span>
+            <span style="font-size: 22px; line-height: 28px; font-weight: 600; font-variant-numeric: tabular-nums">{{aeff}} <span style="font-size: 14px; font-weight: 500">j</span></span>
+            <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: {{aColor}}">{{aState}}</span>
+          </div>
+          <div style="padding: 10px 12px; border-radius: 12px; background: {{cBg}}; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 12px; line-height: 16px; color: #3D4149">Couverture solaire</span>
+            <span style="font-size: 22px; line-height: 28px; font-weight: 600; font-variant-numeric: tabular-nums">{{cpv}} <span style="font-size: 14px; font-weight: 500">%</span></span>
+            <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: {{cColor}}">{{cState}}</span>
+          </div>
+        </div>
+        <sc-for list="{{alerts}}" as="al" hint-placeholder-count="1">
+          <div role="status" style="display: flex; gap: 8px; padding: 10px 12px; border-radius: 10px; background: {{al.bg}}; color: {{al.color}}; font-size: 13px; line-height: 18px">
+            <sc-if value="{{al.warn}}" hint-placeholder-val="{{false}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 3.5 2.5 20h19z"></path><path d="M12 10v4M12 17h.01"></path></svg></sc-if>
+            <sc-if value="{{al.ok}}" hint-placeholder-val="{{true}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.5 2.5 5-5"></path></svg></sc-if>
+            <span>{{al.msg}}</span>
+          </div>
+        </sc-for>
+        <div style="display: flex; flex-direction: column">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 10px; padding: 12px 0; border-top: 1px solid #ECECE6">
+              <img src="{{r.icon}}" alt="" width="24" height="24">
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+                <span style="font-size: 13px; line-height: 18px; color: #5E636B">{{r.title}}</span>
+                <span style="font-size: 16px; line-height: 22px; font-weight: 600; font-variant-numeric: tabular-nums">{{r.value}}</span>
+                <span style="font-size: 12px; line-height: 16px; color: #5E636B">{{r.sub}}</span>
+              </span>
+              <button type="button" onClick="{{r.down}}" disabled="{{r.atMin}}" aria-label="{{r.downLabel}}" style="width: 44px; height: 44px; flex: none; border-radius: 10px; border: 1px solid #C9CAC3; background: {{r.downBg}}; color: {{r.downColor}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+              <button type="button" onClick="{{r.up}}" disabled="{{r.atMax}}" aria-label="{{r.upLabel}}" style="width: 44px; height: 44px; flex: none; border-radius: 10px; border: 1px solid #C9CAC3; background: {{r.upBg}}; color: {{r.upColor}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+            </div>
+          </sc-for>
+        </div>
+        <button type="button" onClick="{{reset}}" disabled="{{pristine}}" style="min-height: 44px; border: 0; background: transparent; font: inherit; font-size: 14px; font-weight: 600; color: {{resetColor}}; cursor: pointer">Revenir à la proposition</button>
+        <a href="Recap.dc.html" style="height: 52px; border-radius: 12px; background: #15803D; color: #FFFFFF; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none">
+          Voir la liste du matériel
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </a>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { inv: 0, bat: 1, pan: 3 };
+  }
+  renderVals() {
+    var self = this, st = this.state;
+    var E = 3277, H = 4.0, PR = 0.7;
+    var INV = [1000, 1500, 2000, 3000];
+    var BAT = [[1, 100], [1, 200], [3, 100], [2, 200], [3, 200], [4, 200]];
+    var REG = [60, 80, 100, 150];
+    var PROP = { inv: 0, bat: 1, pan: 3 };
+    var nf = function (v) { return Math.round(v).toLocaleString('fr-FR'); };
+    var f1 = function (v) { return v.toFixed(1).replace('.', ','); };
+    var f2 = function (v) { return v.toFixed(2).replace('.', ','); };
+    var b = BAT[st.bat], capWh = b[0] * b[1] * 24;
+    var aeff = capWh * 0.72 / E, cpv = st.pan * 450 * H * PR / E;
+    var reg = REG.find(function (r) { return r >= 1.25 * st.pan * 450 / 24; }) || 150;
+    var set = function (k, v) { var p = {}; p[k] = v; self.setState(p); };
+    var btn = function (dis) { return dis ? ['#F0F0EC', '#A7AAA2'] : ['#FFFFFF', '#16181D']; };
+    var row = function (o) { var d = btn(o.atMin), u = btn(o.atMax); o.downBg = d[0]; o.downColor = d[1]; o.upBg = u[0]; o.upColor = u[1]; return o; };
+    var pnom = INV[st.inv];
+    var rows = [
+      row({ title: 'Onduleur', icon: '/_blob/a0e3b5c5374a89bf57f6fb84e4868a68', value: nf(pnom) + ' W', sub: nf(2 * pnom) + ' W en pointe',
+        atMin: st.inv === 0, atMax: st.inv === INV.length - 1, downLabel: 'Onduleur plus petit', upLabel: 'Onduleur plus puissant',
+        down: function () { set('inv', Math.max(0, st.inv - 1)); }, up: function () { set('inv', Math.min(INV.length - 1, st.inv + 1)); } }),
+      row({ title: 'Stockage', icon: '/_blob/0bb0c328c12bed066932abb489eaec9d', value: f1(capWh / 1000) + ' kWh', sub: b[0] + ' × ' + b[1] + ' Ah · 24 V',
+        atMin: st.bat === 0, atMax: st.bat === BAT.length - 1, downLabel: 'Moins de stockage', upLabel: 'Plus de stockage',
+        down: function () { set('bat', Math.max(0, st.bat - 1)); }, up: function () { set('bat', Math.min(BAT.length - 1, st.bat + 1)); } }),
+      row({ title: 'Panneaux', icon: '/_blob/b25ce16475e83b6c2c19f0ce061f712c', value: st.pan + ' × 450 Wc', sub: 'Régulateur MPPT ' + reg + ' A',
+        atMin: st.pan === 1, atMax: st.pan === 6, downLabel: 'Un panneau de moins', upLabel: 'Un panneau de plus',
+        down: function () { set('pan', Math.max(1, st.pan - 1)); }, up: function () { set('pan', Math.min(6, st.pan + 1)); } })
+    ];
+    var alerts = [];
+    if (aeff < 0.5) alerts.push({ warn: true, ok: false, bg: '#FDEFE3', color: '#8F4208', msg: 'Attention : le stockage ne couvre pas une nuit.' });
+    if (cpv < 1) alerts.push({ warn: true, ok: false, bg: '#FDEFE3', color: '#8F4208', msg: 'Attention : en moyenne, les panneaux ne rechargent pas complètement les batteries.' });
+    if (!alerts.length) alerts.push({ warn: false, ok: true, bg: '#E5F3EA', color: '#16603A', msg: 'Aucune alerte : tous vos appareils sont alimentés.' });
+    var V = [['Une nuit', 0], ['Une journée', 1], ['Un jour et demi', 2]];
+    var variants = V.map(function (v) {
+      var bb = BAT[v[1]], on = st.bat === v[1], prop = v[1] === PROP.bat;
+      return {
+        label: v[0], on: on,
+        kwh: f1(bb[0] * bb[1] * 24 / 1000), units: bb[0] + (bb[0] > 1 ? ' batteries ' : ' batterie ') + bb[1] + ' Ah · 24 V',
+        aeff: f2(bb[0] * bb[1] * 24 * 0.72 / E),
+        tag: on ? 'Sélectionnée' : (prop ? 'Votre choix' : 'Comparer'),
+        tagBg: on ? '#16181D' : '#EFEFEA', tagColor: on ? '#FFFFFF' : '#3D4149',
+        border: on ? '1.5px solid #16181D' : '1px solid #E2E2DC', bg: on ? '#FFF5D6' : '#FFFFFF',
+        pick: function () { self.setState({ bat: v[1] }); }
+      };
+    });
+    var aOk = aeff >= 0.5, cOk = cpv >= 1;
+    var pristine = st.inv === PROP.inv && st.bat === PROP.bat && st.pan === PROP.pan;
+    return {
+      variants: variants, rows: rows, alerts: alerts,
+      aeff: f2(aeff), cpv: Math.round(cpv * 100),
+      aBg: aOk ? '#E5F3EA' : '#FDEFE3', aColor: aOk ? '#16603A' : '#8F4208', aState: aOk ? 'Couvre au moins une nuit' : 'Moins d’une nuit',
+      cBg: cOk ? '#E5F3EA' : '#FDEFE3', cColor: cOk ? '#16603A' : '#8F4208', cState: cOk ? 'Recharge complète' : 'Recharge incomplète',
+      pristine: pristine, resetColor: pristine ? '#A7AAA2' : '#8A5800',
+      reset: function () { self.setState({ inv: PROP.inv, bat: PROP.bat, pan: PROP.pan }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

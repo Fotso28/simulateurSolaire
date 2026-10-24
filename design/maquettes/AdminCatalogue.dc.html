@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Back-office — appareils</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8A5800}a:hover{color:#6B4400}
+a:focus-visible,button:focus-visible{outline:2px solid #16181D;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F5F5F1; color: #16181D; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <nav aria-label="Back-office" style="flex: 1 1 220px; max-width: 248px; background: #16181D; color: #FFFFFF; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <span style="display: flex; align-items: center; gap: 10px; padding: 0 8px">
+      <span style="width: 32px; height: 32px; border-radius: 9px; background: #F5B301; display: flex; align-items: center; justify-content: center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16181D" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"></path></svg>
+      </span>
+      <span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 600">Simulateur solaire</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #A7AAA2; letter-spacing: 0.04em">BACK-OFFICE</span></span>
+    </span>
+    <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 20px">
+      <li><a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; color: #D7D8D2; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Statistiques</a></li>
+      <li><a href="#" aria-current="page" style="min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; background: #2E3138; color: #FFFFFF; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"></path><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.1V16h5v-.1c0-.8.4-1.6 1.1-2.1A6 6 0 0 0 12 3z"></path></svg><span style="flex: 1">Appareils</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #F5B301">36</span></a></li>
+      <li><a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; color: #D7D8D2; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"></rect></svg>Catégories</a></li>
+      <li><a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; color: #D7D8D2; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Pays et régions</a></li>
+      <li><a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; color: #D7D8D2; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="17" height="10" rx="2"></rect><path d="M22 10.5v3M6 10v4M9.5 10v4"></path></svg>Matériel de référence</a></li>
+      <li><a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; color: #D7D8D2; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"></path><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>Paramètres de calcul</a></li>
+      <li><a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; color: #D7D8D2; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.8c1.6.8 2.6 2.6 3 5.2"></path></svg>Comptes</a></li>
+      <li><a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; color: #D7D8D2; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Journal</a></li>
+    </ul>
+  </nav>
+
+  <div style="flex: 999 1 640px; min-width: 0; padding: 28px 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h1 style="margin: 0; font-size: 26px; line-height: 32px; font-weight: 600">Appareils</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 22px; color: #5E636B">36 appareils actifs dans 8 catégories. Toute modification apparaît aussitôt dans le simulateur.</p>
+      </div>
+      <button type="button" style="height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: #15803D; font: inherit; font-size: 15px; font-weight: 600; color: #FFFFFF; display: flex; align-items: center; gap: 8px; cursor: pointer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        Ajouter un appareil
+      </button>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px">
+      <section style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+          <label style="flex: 1 1 240px; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #C9CAC3; border-radius: 10px; color: #5E636B">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4.3-4.3"></path></svg>
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Rechercher un appareil</span>
+            <input type="search" placeholder="Rechercher un appareil" style="flex: 1; min-width: 0; height: 40px; border: 0; background: transparent; font: inherit; font-size: 15px; color: #16181D; outline: none">
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #3D4149">Catégorie
+            <select style="height: 44px; padding: 0 12px; border: 1px solid #C9CAC3; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 15px; color: #16181D">
+              <option>Toutes</option><option>Éclairage</option><option>Froid</option><option>Ventilation</option><option>Audiovisuel</option><option>Bureautique</option><option>Électroménager</option><option>Pompage</option><option>Coiffure et commerce</option>
+            </select>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; color: #3D4149"><input type="checkbox" style="width: 18px; height: 18px; accent-color: #16181D">Afficher les désactivés</label>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; overflow-x: auto">
+          <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px; line-height: 20px">
+            <thead>
+              <tr style="background: #EFEFEA; text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; letter-spacing: 0.03em; color: #3D4149">
+                <th scope="col" style="padding: 12px 14px; font-weight: 500">APPAREIL</th>
+                <th scope="col" style="padding: 12px 8px; font-weight: 500">CATÉGORIE</th>
+                <th scope="col" style="padding: 12px 8px; font-weight: 500; text-align: right">P MIN · TYP · MAX (W)</th>
+                <th scope="col" style="padding: 12px 8px; font-weight: 500; text-align: right">H/J</th>
+                <th scope="col" style="padding: 12px 8px; font-weight: 500; text-align: right">TAUX</th>
+                <th scope="col" style="padding: 12px 8px; font-weight: 500; text-align: right">K</th>
+                <th scope="col" style="padding: 12px 8px; font-weight: 500">ACTIF</th>
+                <th scope="col" style="padding: 12px 14px 12px 8px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{rows}}" as="r" hint-placeholder-count="12">
+                <tr style="border-top: 1px solid #ECECE6; background: {{r.bg}}; color: {{r.color}}">
+                  <td style="padding: 8px 14px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; flex: none; border-radius: 8px; background: #F5F5F1; display: flex; align-items: center; justify-content: center; opacity: {{r.op}}"><img src="{{r.icon}}" alt="" width="22" height="22"></span><span style="font-weight: 500">{{r.name}}</span></span></td>
+                  <td style="padding: 8px">{{r.cat}}</td>
+                  <td style="padding: 8px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px; white-space: nowrap">{{r.p}}</td>
+                  <td style="padding: 8px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px">{{r.h}}</td>
+                  <td style="padding: 8px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px">{{r.tau}}</td>
+                  <td style="padding: 8px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px">{{r.k}}</td>
+                  <td style="padding: 8px">
+                    <button type="button" role="switch" aria-checked="{{r.on}}" aria-label="Actif : {{r.name}}" style="width: 44px; height: 44px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; cursor: pointer">
+                      <span style="width: 36px; height: 20px; border-radius: 10px; background: {{r.trackBg}}; display: flex; align-items: center; padding: 2px; box-sizing: border-box; justify-content: {{r.knobPos}}"><span style="width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(0,0,0,0.25)"></span></span>
+                    </button>
+                  </td>
+                  <td style="padding: 8px 14px 8px 8px; text-align: right">
+                    <button type="button" aria-label="Modifier : {{r.name}}" style="width: 44px; height: 44px; border: 0; border-radius: 8px; background: transparent; color: #3D4149; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6; font-size: 13px; line-height: 18px; color: #5E636B">
+            <span>1–12 sur 36</span>
+            <span style="display: flex; gap: 4px">
+              <button type="button" aria-label="Page précédente" disabled style="width: 44px; height: 44px; border: 1px solid #E2E2DC; border-radius: 8px; background: #F0F0EC; color: #A7AAA2; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+              <button type="button" aria-label="Page suivante" style="width: 44px; height: 44px; border: 1px solid #C9CAC3; border-radius: 8px; background: #FFFFFF; color: #16181D; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <aside aria-label="Modifier l'appareil" style="flex: 1 1 340px; max-width: 400px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; box-sizing: border-box; display: flex; flex-direction: column">
+        <div style="display: flex; align-items: flex-start; gap: 8px; padding: 16px 12px 12px 18px; border-bottom: 1px solid #ECECE6">
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; letter-spacing: 0.04em; color: #5E636B">MODIFIER L'APPAREIL</span>
+            <span style="font-size: 17px; line-height: 22px; font-weight: 600">Congélateur de bar / vitrine réfrigérée</span>
+          </span>
+          <button type="button" aria-label="Fermer" style="width: 44px; height: 44px; border: 0; border-radius: 8px; background: transparent; color: #3D4149; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div style="padding: 16px 18px; display: flex; flex-direction: column; gap: 16px; font-size: 14px; line-height: 20px">
+          <label style="display: flex; flex-direction: column; gap: 6px"><span style="font-weight: 600">Nom</span><input type="text" value="Congélateur de bar / vitrine réfrigérée" style="height: 44px; padding: 0 12px; border: 1px solid #C9CAC3; border-radius: 10px; font: inherit; font-size: 15px; color: #16181D"></label>
+          <label style="display: flex; flex-direction: column; gap: 6px"><span style="font-weight: 600">Catégorie</span>
+            <select style="height: 44px; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 15px; color: #16181D"><option>Froid</option><option>Éclairage</option><option>Ventilation</option><option>Audiovisuel</option><option>Bureautique</option><option>Électroménager</option><option>Pompage</option><option>Coiffure et commerce</option></select>
+          </label>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <span style="font-weight: 600">Icône</span>
+              <span style="height: 88px; border: 1px solid #E2E2DC; border-radius: 10px; background: #F5F5F1; display: flex; align-items: center; justify-content: center"><img src="/_blob/01fa53255e7ccb449a40726df10103ff" alt="Icône actuelle" width="40" height="40"></span>
+              <button type="button" style="height: 44px; border: 1px solid #C9CAC3; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; color: #16181D; cursor: pointer">Remplacer le SVG</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <span style="font-weight: 600">Image réaliste</span>
+              <span style="height: 88px; border: 1.5px dashed #A7AAA2; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #5E636B; font-size: 12px; line-height: 16px; text-align: center">[photo produit]<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px">WebP 512 px · 80 Ko</span></span>
+              <button type="button" style="height: 44px; border: 1px solid #C9CAC3; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; color: #16181D; cursor: pointer">Téléverser</button>
+            </div>
+          </div>
+          <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px">
+            <legend style="padding: 0; margin-bottom: 6px; font-weight: 600">Puissance (W)</legend>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+              <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E636B">MIN</span><input type="text" inputmode="decimal" value="200" style="height: 44px; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+              <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E636B">TYPIQUE</span><input type="text" inputmode="decimal" value="" placeholder="325" style="height: 44px; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+              <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E636B">MAX</span><input type="text" inputmode="decimal" value="450" style="height: 44px; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+            </div>
+            <span style="font-size: 12px; line-height: 16px; color: #5E636B">Typique vide&#160;: moyenne de min et max.</span>
+          </fieldset>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-weight: 600; font-size: 13px">Heures / jour</span><input type="text" inputmode="decimal" value="24" style="height: 44px; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-weight: 600; font-size: 13px">Taux</span><input type="text" inputmode="decimal" value="0,6" style="height: 44px; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-weight: 600; font-size: 13px">Démarrage k</span><input type="text" inputmode="decimal" value="4" style="height: 44px; padding: 0 10px; border: 1px solid #C9CAC3; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #16181D; text-align: right"></label>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; background: #F5F5F1; border-radius: 10px">
+            <span style="display: flex; flex-direction: column"><span style="font-weight: 600">Actif</span><span style="font-size: 12px; line-height: 16px; color: #5E636B">Désactivé, il disparaît des listes mais reste lisible dans les anciennes simulations.</span></span>
+            <button type="button" role="switch" aria-checked="true" aria-label="Appareil actif" style="width: 44px; height: 44px; flex: none; border: 0; background: transparent; padding: 0; display: flex; align-items: center; cursor: pointer"><span style="width: 36px; height: 20px; border-radius: 10px; background: #1D7A46; display: flex; align-items: center; justify-content: flex-end; padding: 2px; box-sizing: border-box"><span style="width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF"></span></span></button>
+          </div>
+        </div>
+        <div style="margin-top: auto; padding: 12px 18px 16px; border-top: 1px solid #ECECE6; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-size: 12px; line-height: 16px; color: #5E636B">Dernière modification&#160;: [administrateur] · [date]</span>
+          <div style="display: flex; gap: 8px">
+            <button type="button" style="flex: 1; height: 44px; border: 1px solid #C9CAC3; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 15px; font-weight: 600; color: #16181D; cursor: pointer">Annuler</button>
+            <button type="button" style="flex: 1; height: 44px; border: 0; border-radius: 10px; background: #15803D; font: inherit; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer">Enregistrer</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var R = [
+      ['Ampoule LED', 'Éclairage', '5 · 10 · 15', '6', '1', '1', '/_blob/653eb5792dcdd9bcccea698a0ced15bf', true],
+      ['Ampoule fluocompacte (économique)', 'Éclairage', '11 · 18 · 25', '6', '1', '1', '/_blob/653eb5792dcdd9bcccea698a0ced15bf', true],
+      ['Ampoule incandescente', 'Éclairage', '40 · 70 · 100', '6', '1', '1', '/_blob/653eb5792dcdd9bcccea698a0ced15bf', false],
+      ['Tube LED', 'Éclairage', '9 · 15,5 · 22', '8', '1', '1', '/_blob/dda11919c27bdcd1e844df61f13f8b5b', true],
+      ['Tube néon 1,20 m', 'Éclairage', '18 · 29 · 40', '8', '1', '1', '/_blob/dda11919c27bdcd1e844df61f13f8b5b', true],
+      ['Projecteur extérieur LED', 'Éclairage', '20 · 60 · 100', '10', '1', '1', '/_blob/73ce3d526e9be19d0822d503c7ae6a2a', true],
+      ['Réfrigérateur', 'Froid', '80 · 120 · 200', '24', '0,4', '4', '/_blob/9d28e4e99807e1a461c205289e251bb8', true],
+      ['Réfrigérateur-congélateur combiné', 'Froid', '120 · 185 · 250', '24', '0,45', '4', '/_blob/9d28e4e99807e1a461c205289e251bb8', true],
+      ['Congélateur coffre domestique', 'Froid', '100 · 175 · 250', '24', '0,5', '4', '/_blob/d795d3c3e12c22c7a70fed87c7ec47da', true],
+      ['Congélateur de bar / vitrine réfrigérée', 'Froid', '200 · 325 · 450', '24', '0,6', '4', '/_blob/01fa53255e7ccb449a40726df10103ff', true, true],
+      ['Fontaine à eau fraîche', 'Froid', '80 · 100 · 120', '24', '0,4', '3', '/_blob/7d18fd7c0c60c32a0aecf15fc995de11', true],
+      ['Climatiseur split 1 CV', 'Froid', '750 · 875 · 1 000', '6', '0,7', '3', '/_blob/da1eb9cbddb8f760e0793fe10eba7419', true]
+    ];
+    return {
+      rows: R.map(function (r) {
+        return {
+          name: r[0], cat: r[1], p: r[2], h: r[3], tau: r[4], k: r[5], icon: r[6], on: r[7],
+          bg: r[8] ? '#FFF5D6' : (r[7] ? '#FFFFFF' : '#FAFAF7'),
+          color: r[7] ? '#16181D' : '#5E636B', op: r[7] ? 1 : 0.5,
+          trackBg: r[7] ? '#1D7A46' : '#A7AAA2', knobPos: r[7] ? 'flex-end' : 'flex-start'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Liste du matériel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8A5800}a:hover{color:#6B4400}
+a:focus-visible,button:focus-visible{outline:2px solid #16181D;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 360px; height: 2280px; box-sizing: border-box; display: flex; flex-direction: column; background: #F5F5F1; color: #16181D; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <header style="height: 56px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 16px 0 6px; background: #FFFFFF; border-bottom: 1px solid #E2E2DC">
+    <a href="Resultat.dc.html" aria-label="Retour au résultat" style="width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #16181D">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>
+    </a>
+    <span style="flex: 1; font-size: 16px; line-height: 20px; font-weight: 600">Liste du matériel</span>
+  </header>
+
+  <main style="flex: 1; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 24px">
+    <section style="padding: 16px; background: #16181D; color: #FFFFFF; border-radius: 14px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; letter-spacing: 0.04em; color: #C9CAC3">SIMULATION DU 24/10/2026</span>
+        <span style="font-size: 20px; line-height: 26px; font-weight: 600">Installation solaire autonome</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 20px; line-height: 26px; font-weight: 600; color: #F5B301; font-variant-numeric: tabular-nums">1,35</span><span style="font-size: 12px; line-height: 16px; color: #C9CAC3">kWc de panneaux</span></div>
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 20px; line-height: 26px; font-weight: 600; color: #F5B301; font-variant-numeric: tabular-nums">4,8</span><span style="font-size: 12px; line-height: 16px; color: #C9CAC3">kWh de stockage</span></div>
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 20px; line-height: 26px; font-weight: 600; color: #F5B301; font-variant-numeric: tabular-nums">1 000</span><span style="font-size: 12px; line-height: 16px; color: #C9CAC3">W d'onduleur</span></div>
+      </div>
+      <dl style="margin: 0; padding-top: 12px; border-top: 1px solid #3D4149; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px">
+        <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #C9CAC3">Lieu</dt><dd style="margin: 0">Littoral (Douala)</dd></div>
+        <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #C9CAC3">Consommation</dt><dd style="margin: 0; font-variant-numeric: tabular-nums">≈ 3,3 kWh / jour</dd></div>
+        <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #C9CAC3">Autonomie réelle</dt><dd style="margin: 0; font-variant-numeric: tabular-nums">1,05 jour</dd></div>
+        <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #C9CAC3">Couverture solaire</dt><dd style="margin: 0; font-variant-numeric: tabular-nums">115 %</dd></div>
+      </dl>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Schéma de câblage</h2>
+      <div style="padding: 14px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; display: flex; flex-direction: column">
+        <div style="display: flex; align-items: center; gap: 12px; min-height: 52px">
+          <span style="width: 44px; height: 44px; flex: none; border-radius: 10px; background: #FFF5D6; display: flex; align-items: center; justify-content: center"><img src="/_blob/b25ce16475e83b6c2c19f0ce061f712c" alt="" width="28" height="28"></span>
+          <span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 600">Panneaux solaires</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">3 × 450 Wc en série</span></span>
+        </div>
+        <div style="display: flex; gap: 12px; min-height: 56px">
+          <span style="width: 44px; flex: none; display: flex; justify-content: center"><span style="width: 2px; background: #16181D"></span></span>
+          <span style="padding: 8px 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 18px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #16181D">Câble solaire 4 mm² · 15 m</span>
+            <span style="color: #5E636B">Sectionneur DC 16 A, parafoudre DC</span>
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; min-height: 52px">
+          <span style="width: 44px; height: 44px; flex: none; border-radius: 10px; background: #FFF5D6; display: flex; align-items: center; justify-content: center"><img src="/_blob/6a10a1f1e23cfdaae86dc709274820fa" alt="" width="28" height="28"></span>
+          <span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 600">Régulateur MPPT</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">80 A · 250 V</span></span>
+        </div>
+        <div style="display: flex; gap: 12px; min-height: 56px">
+          <span style="width: 44px; flex: none; display: flex; justify-content: center"><span style="width: 2px; background: #16181D"></span></span>
+          <span style="padding: 8px 0; display: flex; flex-direction: column; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 18px">Câble 10 mm² · 2 m</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; min-height: 52px">
+          <span style="width: 44px; height: 44px; flex: none; border-radius: 10px; background: #FFF5D6; display: flex; align-items: center; justify-content: center"><img src="/_blob/0bb0c328c12bed066932abb489eaec9d" alt="" width="28" height="28"></span>
+          <span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 600">Batterie</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Lithium 24 V · 200 Ah</span></span>
+        </div>
+        <div style="display: flex; gap: 12px; min-height: 56px">
+          <span style="width: 44px; flex: none; display: flex; justify-content: center"><span style="width: 2px; background: #16181D"></span></span>
+          <span style="padding: 8px 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 18px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px">Câble 10 mm² · 2 m</span>
+            <span style="color: #5E636B">Fusible 63 A au plus près de la batterie</span>
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; min-height: 52px">
+          <span style="width: 44px; height: 44px; flex: none; border-radius: 10px; background: #FFF5D6; display: flex; align-items: center; justify-content: center"><img src="/_blob/a0e3b5c5374a89bf57f6fb84e4868a68" alt="" width="28" height="28"></span>
+          <span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 600">Onduleur</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">1 000 W · 24 V → 230 V</span></span>
+        </div>
+        <div style="display: flex; gap: 12px; min-height: 56px">
+          <span style="width: 44px; flex: none; display: flex; justify-content: center"><span style="width: 2px; background: #16181D"></span></span>
+          <span style="padding: 8px 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 18px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px">Câble 1,5 mm² · 5 m</span>
+            <span style="color: #5E636B">Disjoncteur 10 A, différentiel 30 mA, parafoudre AC</span>
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; min-height: 52px">
+          <span style="width: 44px; height: 44px; flex: none; border-radius: 10px; background: #EFEFEA; display: flex; align-items: center; justify-content: center"><img src="/_blob/44074b4026ec64ed8522135b63c4d04e" alt="" width="28" height="28"></span>
+          <span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 600">Tableau électrique</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Vos prises et éclairages</span></span>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Nomenclature</h2>
+      <div style="background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; overflow: hidden">
+        <h3 style="margin: 0; padding: 10px 14px; background: #EFEFEA; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.04em; color: #3D4149">ÉQUIPEMENTS</h3>
+        <ul style="margin: 0; padding: 0; list-style: none">
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">3 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Panneau solaire 450 Wc</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Montés en série, une seule chaîne</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">3 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Structure de fixation</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Une par panneau</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">1 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Régulateur MPPT 80 A / 250 V</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Charge les batteries depuis les panneaux</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">1 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Batterie lithium 24 V 200 Ah</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">4,8 kWh, dont 3,8 kWh utilisables</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">1 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Onduleur 1 000 W, 24 V</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Sortie 230 V, 2 000 W en pointe</span></span></li>
+        </ul>
+        <h3 style="margin: 0; padding: 10px 14px; background: #EFEFEA; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.04em; color: #3D4149">CÂBLES · LONGUEUR TOTALE, + ET −</h3>
+        <ul style="margin: 0; padding: 0; list-style: none">
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">30 m</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Câble solaire 4 mm²</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Panneaux → régulateur</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">4 m</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Câble 10 mm²</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Régulateur → batterie</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">4 m</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Câble 10 mm²</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Batterie → onduleur</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">10 m</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Câble 1,5 mm²</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Onduleur → tableau</span></span></li>
+        </ul>
+        <h3 style="margin: 0; padding: 10px 14px; background: #EFEFEA; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.04em; color: #3D4149">PROTECTIONS</h3>
+        <ul style="margin: 0; padding: 0; list-style: none">
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">1 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Sectionneur DC 16 A</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Coupe les panneaux pour l'entretien</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">1 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Parafoudre DC</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Côté panneaux</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">1 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Fusible batterie 63 A</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Au plus près de la batterie</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">1 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Disjoncteur 10 A</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Sortie de l'onduleur</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">1 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Différentiel 30 mA</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Protège les personnes</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">1 ×</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Parafoudre AC</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Côté tableau</span></span></li>
+          <li style="display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span style="width: 44px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 20px; font-weight: 500">—</span><span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 20px; font-weight: 500">Mise à la terre</span><span style="font-size: 13px; line-height: 18px; color: #5E636B">Cadres des panneaux et masses</span></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <div style="display: flex; gap: 10px; padding: 14px; background: #EEF0F3; border-radius: 12px; font-size: 14px; line-height: 20px; color: #2A2D33">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 15a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 7a3.75 3.75 0 0 1 .5 8z"></path><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"></path></svg>
+      <span><strong style="font-weight: 600">Saison des pluies&#160;:</strong> la production peut baisser de 20 à 30&#160;%.</span>
+    </div>
+
+    <section style="padding: 16px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; gap: 12px">
+        <span style="width: 44px; height: 44px; flex: none; border-radius: 10px; background: #EFEFEA; display: flex; align-items: center; justify-content: center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16181D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg>
+        </span>
+        <span style="display: flex; flex-direction: column; gap: 2px">
+          <span style="font-size: 16px; line-height: 22px; font-weight: 600">Besoin d'un devis&#160;?</span>
+          <span style="font-size: 14px; line-height: 20px; color: #3D4149">Laissez votre numéro, un installateur vous rappelle avec cette liste.</span>
+        </span>
+      </div>
+      <button type="button" style="height: 48px; border-radius: 12px; border: 1px solid #C9CAC3; background: #FFFFFF; font: inherit; font-size: 15px; font-weight: 600; color: #16181D; cursor: pointer">Être recontacté</button>
+    </section>
+  </main>
+
+  <div style="flex: none; padding: 12px 16px 16px; background: #FFFFFF; border-top: 1px solid #E2E2DC; box-shadow: 0 -6px 16px rgba(22, 24, 29, 0.06); display: flex; gap: 8px">
+    <button type="button" aria-label="Partager le lien" style="width: 52px; height: 52px; flex: none; border-radius: 12px; border: 1px solid #C9CAC3; background: #FFFFFF; color: #16181D; display: flex; align-items: center; justify-content: center; cursor: pointer">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.2 10.8l7.6-4.6M8.2 13.2l7.6 4.6"></path></svg>
+    </button>
+    <button type="button" style="flex: 1; height: 52px; border: 0; border-radius: 12px; background: #15803D; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
+      Télécharger le PDF
+    </button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":2280}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

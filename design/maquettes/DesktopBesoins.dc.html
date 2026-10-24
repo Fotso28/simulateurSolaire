@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Vos appareils — desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8A5800}a:hover{color:#6B4400}
+a:focus-visible,button:focus-visible{outline:2px solid #16181D;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F5F5F1; color: #16181D; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2E2DC">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 12px 32px; min-height: 72px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px">
+      <span style="display: flex; align-items: center; gap: 10px">
+        <span style="width: 36px; height: 36px; border-radius: 10px; background: #F5B301; display: flex; align-items: center; justify-content: center">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16181D" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"></path></svg>
+        </span>
+        <span style="font-size: 17px; line-height: 22px; font-weight: 600">Simulateur solaire</span>
+      </span>
+      <ol style="flex: 1; margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 20px; font-size: 14px; line-height: 20px" aria-label="Étapes">
+        <li style="display: flex; align-items: center; gap: 8px; color: #3D4149"><span style="width: 24px; height: 24px; border-radius: 50%; background: #16181D; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>Lieu</li>
+        <li style="display: flex; align-items: center; gap: 8px; color: #3D4149"><span style="width: 24px; height: 24px; border-radius: 50%; background: #16181D; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>Profil</li>
+        <li aria-current="step" style="display: flex; align-items: center; gap: 8px; font-weight: 600"><span style="width: 24px; height: 24px; border-radius: 50%; background: #F5B301; color: #16181D; font-family: 'IBM Plex Mono', monospace; font-size: 12px; display: flex; align-items: center; justify-content: center">3</span>Appareils</li>
+        <li style="display: flex; align-items: center; gap: 8px; color: #5E636B"><span style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 1.5px solid #A7AAA2; font-family: 'IBM Plex Mono', monospace; font-size: 12px; display: flex; align-items: center; justify-content: center">4</span>Autonomie</li>
+        <li style="display: flex; align-items: center; gap: 8px; color: #5E636B"><span style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 1.5px solid #A7AAA2; font-family: 'IBM Plex Mono', monospace; font-size: 12px; display: flex; align-items: center; justify-content: center">5</span>Résultat</li>
+      </ol>
+      <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; background: #EFEFEA; font-size: 14px; line-height: 20px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+        Littoral · 4,0 h de soleil
+      </span>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 0 auto; padding: 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em">Vos appareils</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 24px; color: #5E636B; max-width: 680px">Choisissez une catégorie, ajoutez vos appareils et leur nombre. Les heures d'usage sont pré-remplies et modifiables.</p>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 24px">
+      <nav aria-label="Catégories" style="flex: 1 1 200px; max-width: 260px; display: flex; flex-direction: column; gap: 4px">
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="8">
+          <button type="button" onClick="{{c.pick}}" aria-current="{{c.current}}" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 10px; border: 0; background: {{c.bg}}; font: inherit; font-size: 15px; font-weight: {{c.weight}}; color: #16181D; text-align: left; cursor: pointer">
+            <img src="{{c.icon}}" alt="" width="22" height="22">
+            <span style="flex: 1">{{c.name}}</span>
+            <sc-if value="{{c.hasCount}}" hint-placeholder-val="{{false}}">
+              <span style="min-width: 22px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 11px; background: #16181D; color: #FFFFFF; font-size: 12px; line-height: 22px; font-weight: 600; text-align: center">{{c.count}}</span>
+            </sc-if>
+          </button>
+        </sc-for>
+        <button type="button" style="min-height: 48px; margin-top: 8px; display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 10px; border: 1.5px dashed #A7AAA2; background: transparent; font: inherit; font-size: 15px; font-weight: 600; color: #16181D; text-align: left; cursor: pointer">
+          <img src="/_blob/8d6bb939bb1c3182dd861985bd353e86" alt="" width="22" height="22">
+          Autre appareil
+        </button>
+      </nav>
+
+      <section style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+          <h2 style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">{{active.name}}</h2>
+          <span style="font-size: 14px; line-height: 20px; color: #5E636B">{{active.total}} appareils au catalogue</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px">
+          <sc-for list="{{devices}}" as="d" hint-placeholder-count="6">
+            <div style="padding: 14px; box-sizing: border-box; background: {{d.bg}}; border: 1px solid {{d.border}}; border-radius: 14px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px">
+                <span style="width: 48px; height: 48px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E2E2DC; box-sizing: border-box; display: flex; align-items: center; justify-content: center"><img src="{{d.icon}}" alt="" width="30" height="30"></span>
+                <sc-if value="{{d.has}}" hint-placeholder-val="{{false}}">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #3D4149">≈ {{d.energy}}</span>
+                </sc-if>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 2px; flex: 1">
+                <span style="font-size: 15px; line-height: 20px; font-weight: 600">{{d.name}}</span>
+                <span style="font-size: 13px; line-height: 18px; color: #5E636B">{{d.range}}</span>
+              </div>
+              <sc-if value="{{d.none}}" hint-placeholder-val="{{true}}">
+                <button type="button" onClick="{{d.inc}}" style="height: 44px; border-radius: 10px; border: 1px solid #C9CAC3; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; color: #16181D; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                  Ajouter
+                </button>
+              </sc-if>
+              <sc-if value="{{d.has}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <div style="display: flex; align-items: center; justify-content: space-between; border: 1.5px solid #16181D; border-radius: 10px; background: #FFFFFF; overflow: hidden">
+                    <button type="button" onClick="{{d.dec}}" aria-label="Retirer un appareil : {{d.name}}" style="width: 44px; height: 42px; border: 0; background: transparent; color: #16181D; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+                    <span style="font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums">{{d.qty}}</span>
+                    <button type="button" onClick="{{d.inc}}" aria-label="Ajouter un appareil : {{d.name}}" style="width: 44px; height: 42px; border: 0; background: transparent; color: #16181D; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+                  </div>
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: 13px; line-height: 18px; color: #3D4149">
+                    <button type="button" onClick="{{d.hDec}}" aria-label="Réduire la durée d'usage" style="width: 44px; height: 44px; border: 0; border-radius: 8px; background: #EFEFEA; color: #16181D; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+                    <span style="display: flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{d.hoursLabel}} / jour</span>
+                    <button type="button" onClick="{{d.hInc}}" aria-label="Augmenter la durée d'usage" style="width: 44px; height: 44px; border: 0; border-radius: 8px; background: #EFEFEA; color: #16181D; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <aside aria-label="Récapitulatif" style="flex: 1 1 300px; max-width: 360px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 16px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between">
+          <h2 style="margin: 0; font-size: 18px; line-height: 24px; font-weight: 600">Récapitulatif</h2>
+          <span style="font-size: 14px; line-height: 20px; color: #5E636B">{{countLabel}}</span>
+        </div>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+          <sc-for list="{{chosen}}" as="x" hint-placeholder-count="7">
+            <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #ECECE6; font-size: 14px; line-height: 20px">
+              <img src="{{x.icon}}" alt="" width="20" height="20">
+              <span style="flex: 1; min-width: 0">{{x.name}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #3D4149">× {{x.qty}}</span>
+              <span style="width: 72px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5E636B">{{x.e}}</span>
+            </li>
+          </sc-for>
+        </ul>
+        <div style="display: flex; flex-direction: column; gap: 6px" aria-live="polite">
+          <span style="font-size: 13px; line-height: 18px; color: #5E636B">Consommation estimée</span>
+          <span style="font-size: 30px; line-height: 36px; font-weight: 600; font-variant-numeric: tabular-nums">≈ {{eTyp}} kWh <span style="font-size: 15px; font-weight: 500; color: #3D4149">/ jour</span></span>
+          <span style="font-size: 14px; line-height: 20px; color: #3D4149">Fourchette <strong style="font-weight: 600; font-variant-numeric: tabular-nums">{{eMin}} – {{eMax}} kWh</strong></span>
+        </div>
+        <a href="Autonomie.dc.html" style="height: 52px; border-radius: 12px; background: #15803D; color: #FFFFFF; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none">
+          Continuer
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </a>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":920}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: 'eclairage',
+      qty: { led: 6, tv43: 1, deco: 1, frigo: 1, ventilo: 2, chargeur: 3, box: 1 },
+      hours: {}
+    };
+  }
+  renderVals() {
+    var I = {
+      bulb: '/_blob/653eb5792dcdd9bcccea698a0ced15bf', tube: '/_blob/dda11919c27bdcd1e844df61f13f8b5b', flood: '/_blob/73ce3d526e9be19d0822d503c7ae6a2a',
+      fridge: '/_blob/9d28e4e99807e1a461c205289e251bb8', freezer: '/_blob/d795d3c3e12c22c7a70fed87c7ec47da', showcase: '/_blob/01fa53255e7ccb449a40726df10103ff',
+      fountain: '/_blob/7d18fd7c0c60c32a0aecf15fc995de11', ac: '/_blob/da1eb9cbddb8f760e0793fe10eba7419', snow: '/_blob/be1b1725cae05837a804522568b135d6',
+      fan: '/_blob/64c913c2f50b0d33cf1aac366d77d930', tv: '/_blob/29464ac991ad4146ce02858c5f5e6650', decoder: '/_blob/1024cfe1f6ae08ea18e6c5cc3c4c6644',
+      hifi: '/_blob/64f0f44567964f949fa0cf33b7452a4b', speaker: '/_blob/af19af70f1001cde44a4f58f792669b6', laptop: '/_blob/877a4b2158fffe8be76a01d7896617c0',
+      desktop: '/_blob/505f28d48e7e242a781553839c3174ff', printer: '/_blob/4640eadbdde9e6b1f0819affab977985', router: '/_blob/22c2ef823876d9bd78a2e8f141aec85a',
+      charger: '/_blob/80c774bcbc9fec1eff8375643c6aa1a8', camera: '/_blob/6389b0c29159f93b342d0d2d9bc321d9', iron: '/_blob/87daf40a9b3146f168028ac9b5330131',
+      washer: '/_blob/3e0e0e09063d0a9dca0f7fac6701ff4b', blender: '/_blob/95cd5ba6de8c2fc7aa43b69877004896', microwave: '/_blob/039c2e37cf34efaf2d76aff6ade629c7',
+      kettle: '/_blob/63a9c90035856336169ed8d773b67835', heater: '/_blob/546008c9a571500ed6a925bae57f782d', plug: '/_blob/f47cdcf741bddc125d8db773c9246597',
+      pump: '/_blob/5b20e4c872d69d699e613ac9381acb23', drop: '/_blob/f80425730a70569f78ec00dbd3eebcd5', clipper: '/_blob/4d637c19428d71743b8815257038b407',
+      hairdryer: '/_blob/412936950e36230644f288d76959e23f', scissors: '/_blob/7c22039acddc2eb580b44b0fad15f459'
+    };
+    var CATS = [
+      ['eclairage', 'Éclairage', 'bulb', [
+        ['led', 'Ampoule LED', 5, 10, 15, 6, 1, 'bulb'],
+        ['fluo', 'Ampoule fluocompacte (économique)', 11, 18, 25, 6, 1, 'bulb'],
+        ['inca', 'Ampoule incandescente', 40, 70, 100, 6, 1, 'bulb'],
+        ['tubeled', 'Tube LED', 9, 15.5, 22, 8, 1, 'tube'],
+        ['neon', 'Tube néon 1,20 m', 18, 29, 40, 8, 1, 'tube'],
+        ['proj', 'Projecteur extérieur LED', 20, 60, 100, 10, 1, 'flood']]],
+      ['froid', 'Froid', 'snow', [
+        ['frigo', 'Réfrigérateur', 80, 120, 200, 24, 0.4, 'fridge'],
+        ['combi', 'Réfrigérateur-congélateur combiné', 120, 185, 250, 24, 0.45, 'fridge'],
+        ['coffre', 'Congélateur coffre domestique', 100, 175, 250, 24, 0.5, 'freezer'],
+        ['bar', 'Congélateur de bar / vitrine réfrigérée', 200, 325, 450, 24, 0.6, 'showcase'],
+        ['fontaine', 'Fontaine à eau fraîche', 80, 100, 120, 24, 0.4, 'fountain'],
+        ['clim1', 'Climatiseur split 1 CV', 750, 875, 1000, 6, 0.7, 'ac'],
+        ['clim15', 'Climatiseur split 1,5 CV', 1100, 1250, 1400, 6, 0.7, 'ac'],
+        ['clim2', 'Climatiseur split 2 CV', 1500, 1750, 2000, 6, 0.7, 'ac']]],
+      ['ventilation', 'Ventilation', 'fan', [
+        ['ventilo', 'Ventilateur (pied, plafond, mural)', 45, 60, 75, 8, 1, 'fan']]],
+      ['audiovisuel', 'Audiovisuel', 'tv', [
+        ['tv32', 'Télévision 32 pouces', 30, 45, 60, 5, 1, 'tv'],
+        ['tv43', 'Télévision 43 à 55 pouces', 60, 80, 150, 5, 1, 'tv'],
+        ['deco', 'Décodeur TV', 10, 15, 25, 5, 1, 'decoder'],
+        ['hifi', 'Chaîne hi-fi / home cinéma', 30, 90, 150, 3, 1, 'hifi'],
+        ['sono', 'Sono / enceinte de bar', 100, 300, 500, 6, 1, 'speaker']]],
+      ['bureautique', 'Bureautique', 'laptop', [
+        ['laptop', 'Ordinateur portable', 45, 67.5, 90, 6, 1, 'laptop'],
+        ['pc', 'Ordinateur de bureau avec écran', 150, 225, 300, 6, 1, 'desktop'],
+        ['printer', 'Imprimante laser', 300, 450, 600, 0.3, 1, 'printer'],
+        ['box', 'Box internet / routeur Wi-Fi', 8, 10, 15, 24, 1, 'router'],
+        ['chargeur', 'Chargeur de téléphone', 5, 10, 20, 3, 1, 'charger'],
+        ['cam', 'Caméras de surveillance et enregistreur', 10, 25, 40, 24, 1, 'camera']]],
+      ['electromenager', 'Électroménager', 'plug', [
+        ['fer', 'Fer à repasser', 1000, 1600, 2200, 0.5, 0.6, 'iron'],
+        ['lave', 'Machine à laver', 500, 1250, 2000, 1, 0.6, 'washer'],
+        ['mixeur', 'Mixeur / blender', 300, 550, 800, 0.2, 1, 'blender'],
+        ['micro', 'Micro-ondes', 800, 1150, 1500, 0.3, 1, 'microwave'],
+        ['bouilloire', 'Bouilloire électrique', 1500, 1850, 2200, 0.2, 1, 'kettle'],
+        ['chauffe', 'Chauffe-eau électrique', 1500, 2250, 3000, 2, 0.7, 'heater']]],
+      ['pompage', 'Pompage', 'drop', [
+        ['pompe05', 'Pompe de surface 0,5 CV', 370, 560, 750, 1, 1, 'pump'],
+        ['pompe1', 'Pompe immergée 1 CV', 750, 925, 1100, 2, 1, 'pump']]],
+      ['coiffure', 'Coiffure et commerce', 'scissors', [
+        ['tondeuse', 'Tondeuse de coiffure', 10, 17.5, 25, 8, 1, 'clipper'],
+        ['seche', 'Sèche-cheveux / casque séchoir', 1000, 1500, 2000, 2, 1, 'hairdryer']]]
+    ];
+    var HS = [0.1, 0.2, 0.3, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24];
+    var self = this, st = this.state;
+    var nf = function (v) { return Math.round(v).toLocaleString('fr-FR'); };
+    var fmtH = function (h) { if (h < 1) return Math.round(h * 60) + ' min'; if (h % 1) return Math.floor(h) + ' h 30'; return h + ' h'; };
+    var kwh = function (wh) { return (wh / 1000).toFixed(1).replace('.', ','); };
+    var hoursOf = function (d) { return st.hours[d[0]] != null ? st.hours[d[0]] : d[5]; };
+    var setQty = function (id, n) { var q = Object.assign({}, st.qty); q[id] = Math.max(0, n); self.setState({ qty: q }); };
+    var stepH = function (d, dir) {
+      var i = HS.indexOf(hoursOf(d)); if (i < 0) i = 0;
+      var h = Object.assign({}, st.hours); h[d[0]] = HS[Math.min(HS.length - 1, Math.max(0, i + dir))];
+      self.setState({ hours: h });
+    };
+    var eMin = 0, eTyp = 0, eMax = 0, count = 0, chosen = [];
+    var cats = CATS.map(function (c) {
+      var n = 0;
+      c[3].forEach(function (d) {
+        var q = st.qty[d[0]] || 0, h = hoursOf(d);
+        n += q; count += q;
+        eMin += q * d[2] * h * d[6]; eTyp += q * d[3] * h * d[6]; eMax += q * d[4] * h * d[6];
+        if (q) chosen.push({ name: d[1], icon: I[d[7]], qty: q, e: nf(q * d[3] * h * d[6]) + ' Wh' });
+      });
+      var on = st.open === c[0];
+      return { id: c[0], name: c[1], icon: I[c[2]], count: n, hasCount: n > 0, current: on ? 'true' : 'false',
+        bg: on ? '#FFFFFF' : 'transparent', weight: on ? 600 : 400,
+        pick: function () { self.setState({ open: c[0] }); } };
+    });
+    var act = CATS.find(function (c) { return c[0] === st.open; }) || CATS[0];
+    var devices = act[3].map(function (d) {
+      var q = st.qty[d[0]] || 0, h = hoursOf(d);
+      return {
+        name: d[1], icon: I[d[7]], qty: q, has: q > 0, none: q === 0,
+        range: nf(d[2]) + '–' + nf(d[4]) + ' W' + (q ? '' : ' · ' + fmtH(h) + ' / jour'),
+        hoursLabel: fmtH(h), energy: nf(q * d[3] * h * d[6]) + ' Wh/j',
+        bg: q ? '#FFFBEB' : '#FFFFFF', border: q ? '#16181D' : '#E2E2DC',
+        inc: function () { setQty(d[0], q + 1); }, dec: function () { setQty(d[0], q - 1); },
+        hInc: function () { stepH(d, 1); }, hDec: function () { stepH(d, -1); }
+      };
+    });
+    return {
+      cats: cats, devices: devices, chosen: chosen,
+      active: { name: act[1], total: act[3].length },
+      countLabel: count + (count > 1 ? ' appareils' : ' appareil'),
+      eMin: kwh(eMin), eTyp: kwh(eTyp), eMax: kwh(eMax)
+    };
+  }
+}
+</script>
+</body>
+</html>

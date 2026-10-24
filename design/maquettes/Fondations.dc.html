@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fondations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8A5800}a:hover{color:#6B4400}
+</style>
+</helmet>
+<div style="width: 1200px; height: 2000px; box-sizing: border-box; padding: 48px; background: #F5F5F1; color: #16181D; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 40px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; letter-spacing: 0.06em; color: #5E636B">SIMULATEUR SOLAIRE · FONDATIONS</span>
+    <h1 style="margin: 0; font-size: 36px; line-height: 42px; font-weight: 600; letter-spacing: -0.01em">Jetons, typographie et composants</h1>
+    <p style="margin: 0; font-size: 16px; line-height: 24px; color: #3D4149; max-width: 760px">Fond clair, gris neutres, jaune solaire en accent, boutons principaux verts à texte blanc. Orange et rouge sont réservés aux alertes. Les noms de jetons se reportent tels quels dans la configuration Tailwind.</p>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 14px">
+    <h2 style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Couleurs</h2>
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px">
+      <sc-for list="{{colors}}" as="c" hint-placeholder-count="12">
+        <div style="background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; overflow: hidden">
+          <div style="height: 64px; background: {{c.hex}}; border-bottom: 1px solid #E2E2DC"></div>
+          <div style="padding: 10px 12px; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 14px; line-height: 20px; font-weight: 600">{{c.name}}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #3D4149">{{c.token}}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #5E636B">{{c.hex}}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+      <sc-for list="{{alerts}}" as="a" hint-placeholder-count="4">
+        <div style="padding: 14px; border-radius: 12px; background: {{a.soft}}; color: {{a.text}}; display: flex; flex-direction: column; gap: 6px">
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 15px; line-height: 20px; font-weight: 600"><span style="width: 14px; height: 14px; border-radius: 4px; background: {{a.base}}"></span>{{a.name}}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px">{{a.tokens}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px">
+    <h2 style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Typographie · IBM Plex Sans et IBM Plex Mono</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; overflow: hidden">
+      <div style="display: grid; grid-template-columns: 200px 1fr; align-items: baseline; gap: 16px; padding: 14px 20px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E636B">Chiffre clé · 32/38 · 600</span><span style="font-size: 32px; line-height: 38px; font-weight: 600; font-variant-numeric: tabular-nums">3,3 kWh par jour</span></div>
+      <div style="display: grid; grid-template-columns: 200px 1fr; align-items: baseline; gap: 16px; padding: 14px 20px; border-top: 1px solid #ECECE6"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E636B">Titre 1 · 24/30 · 600</span><span style="font-size: 24px; line-height: 30px; font-weight: 600">Combien de temps sans soleil ?</span></div>
+      <div style="display: grid; grid-template-columns: 200px 1fr; align-items: baseline; gap: 16px; padding: 14px 20px; border-top: 1px solid #ECECE6"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E636B">Titre 2 · 20/26 · 600</span><span style="font-size: 20px; line-height: 26px; font-weight: 600">Notre proposition</span></div>
+      <div style="display: grid; grid-template-columns: 200px 1fr; align-items: baseline; gap: 16px; padding: 14px 20px; border-top: 1px solid #ECECE6"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E636B">Corps · 16/24 · 400</span><span style="font-size: 16px; line-height: 24px">Vos batteries prennent le relais quand les panneaux ne produisent pas.</span></div>
+      <div style="display: grid; grid-template-columns: 200px 1fr; align-items: baseline; gap: 16px; padding: 14px 20px; border-top: 1px solid #ECECE6"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E636B">Petit · 14/20 · 400</span><span style="font-size: 14px; line-height: 20px; color: #3D4149">Selon la puissance réelle de vos appareils, entre 2,3 et 5,1 kWh par jour.</span></div>
+      <div style="display: grid; grid-template-columns: 200px 1fr; align-items: baseline; gap: 16px; padding: 14px 20px; border-top: 1px solid #ECECE6"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E636B">Mono · 12/16 · 500</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; letter-spacing: 0.04em">ÉTAPE 3 / 5 · P_inst 435 W · 14,5 A · 4 mm²</span></div>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: #3D4149">Nombres au format français&#160;: espace fine pour les milliers (1&#160;000 W), virgule décimale (3,3 kWh), chiffres tabulaires dans les résultats.</p>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px">
+    <h2 style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Icônes · grille 24 px, trait 1,5 px</h2>
+    <div style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{icons}}" as="i" hint-placeholder-count="40">
+        <div style="height: 84px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px">
+          <img src="{{i.src}}" alt="" width="28" height="28">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; line-height: 12px; color: #5E636B">{{i.name}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px">
+    <h2 style="margin: 0; font-size: 20px; line-height: 26px; font-weight: 600">Composants</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start">
+
+      <div style="padding: 18px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #5E636B">BOUTONS · 52 / 48 / 44 PX</span>
+        <span style="height: 52px; border-radius: 12px; background: #15803D; color: #FFFFFF; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center">Action principale</span>
+        <span style="height: 48px; box-sizing: border-box; border-radius: 12px; border: 1px solid #C9CAC3; background: #FFFFFF; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center">Action secondaire</span>
+        <span style="height: 44px; font-size: 15px; font-weight: 600; color: #8A5800; display: flex; align-items: center; justify-content: center">Lien d'action</span>
+        <span style="height: 52px; border-radius: 12px; background: #E2E2DC; color: #5E636B; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center">Désactivé</span>
+      </div>
+
+      <div style="padding: 18px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; display: flex; flex-direction: column; gap: 12px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #5E636B">SAISIE DES APPAREILS</span>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 10px; border: 1px solid #C9CAC3; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Ajouter</span>
+          <span style="display: flex; align-items: center; border: 1.5px solid #16181D; border-radius: 10px; overflow: hidden">
+            <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></span>
+            <span style="min-width: 32px; text-align: center; font-size: 16px; font-weight: 600">6</span>
+            <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>
+          </span>
+        </div>
+        <div style="border: 1px solid #E2E2DC; border-radius: 12px; overflow: hidden">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px">
+            <span style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid #E2E2DC; display: flex; align-items: center; justify-content: center"><img src="/_blob/da1eb9cbddb8f760e0793fe10eba7419" alt="" width="26" height="26"></span>
+            <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 500">Climatiseur split 2 CV</span><span style="font-size: 12px; color: #5E636B">1 500–2 000 W · 6 h / jour</span></span>
+          </div>
+          <div style="display: flex; gap: 8px; margin: 0 12px 12px; padding: 10px 12px; background: #EEF0F3; border-radius: 10px; font-size: 12px; line-height: 16px; color: #2A2D33">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+            Appareil de plus de 1 500 W&#160;: le résultat propose de comparer sans lui.
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; background: #E9E9E3; border-radius: 12px">
+          <span style="height: 40px; border-radius: 9px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(22,24,29,0.12); font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center">Par appareil</span>
+          <span style="height: 40px; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center">Puissance totale</span>
+        </div>
+      </div>
+
+      <div style="padding: 18px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #5E636B">ALERTES · ICÔNE + LIBELLÉ + COULEUR</span>
+        <div style="display: flex; gap: 8px; padding: 10px 12px; border-radius: 10px; background: #FCE9EA; color: #9E1F25; font-size: 13px; line-height: 18px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8.2 2.5h7.6l5.7 5.7v7.6l-5.7 5.7H8.2l-5.7-5.7V8.2z"></path><path d="M12 8v5M12 16h.01"></path></svg><span><strong>Critique&#160;:</strong> l'onduleur ne peut pas alimenter tous les appareils.</span></div>
+        <div style="display: flex; gap: 8px; padding: 10px 12px; border-radius: 10px; background: #FDEFE3; color: #8F4208; font-size: 13px; line-height: 18px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 3.5 2.5 20h19z"></path><path d="M12 10v4M12 17h.01"></path></svg><span><strong>Attention&#160;:</strong> le stockage ne couvre pas une nuit.</span></div>
+        <div style="display: flex; gap: 8px; padding: 10px 12px; border-radius: 10px; background: #EEF0F3; color: #2A2D33; font-size: 13px; line-height: 18px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 15a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 7a3.75 3.75 0 0 1 .5 8z"></path><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"></path></svg><span><strong>Information&#160;:</strong> en saison des pluies, la production peut baisser de 20 à 30&#160;%.</span></div>
+        <div style="display: flex; gap: 8px; padding: 10px 12px; border-radius: 10px; background: #E5F3EA; color: #16603A; font-size: 13px; line-height: 18px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.5 2.5 5-5"></path></svg><span><strong>Aucune alerte&#160;:</strong> tous vos appareils sont alimentés.</span></div>
+      </div>
+
+      <div style="padding: 18px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #5E636B">CARTE ÉQUIPEMENT · CHIFFRE CLÉ + DÉTAIL DÉPLIABLE</span>
+        <div style="display: flex; gap: 12px; padding: 14px; border: 1px solid #E2E2DC; border-radius: 14px">
+          <span style="width: 44px; height: 44px; flex: none; border-radius: 10px; background: #FFF5D6; display: flex; align-items: center; justify-content: center"><img src="/_blob/b25ce16475e83b6c2c19f0ce061f712c" alt="" width="28" height="28"></span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 13px; color: #5E636B">Panneaux solaires</span>
+            <span style="font-size: 24px; line-height: 30px; font-weight: 600">3 panneaux</span>
+            <span style="font-size: 14px; color: #3D4149">450 Wc · 1,35 kWc</span>
+            <span style="align-self: flex-start; margin-top: 6px; padding: 3px 8px; border-radius: 6px; background: #EFEFEA; font-size: 12px; color: #3D4149">Fourchette&#160;: 2 à 5 panneaux</span>
+          </span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M6 9l6 6 6-6"></path></svg>
+        </div>
+      </div>
+
+      <div style="padding: 18px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #5E636B">CONFIGURATEUR · TAILLE STANDARD ‹ ›</span>
+        <div style="display: flex; align-items: center; gap: 8px">
+          <span style="width: 48px; height: 48px; box-sizing: border-box; border-radius: 12px; border: 1px solid #C9CAC3; background: #F0F0EC; color: #A7AAA2; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column; align-items: center"><span style="font-size: 22px; line-height: 28px; font-weight: 600">1 000 W</span><span style="font-size: 12px; color: #5E636B">Plus petite taille disponible</span></span>
+          <span style="width: 48px; height: 48px; box-sizing: border-box; border-radius: 12px; border: 1px solid #C9CAC3; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <span style="padding: 10px 12px; border-radius: 12px; background: #E5F3EA; display: flex; flex-direction: column"><span style="font-size: 12px; color: #3D4149">Autonomie réelle</span><span style="font-size: 20px; font-weight: 600">1,05 j</span><span style="font-size: 12px; font-weight: 600; color: #16603A">Couvre au moins une nuit</span></span>
+          <span style="padding: 10px 12px; border-radius: 12px; background: #FDEFE3; display: flex; flex-direction: column"><span style="font-size: 12px; color: #3D4149">Couverture solaire</span><span style="font-size: 20px; font-weight: 600">77 %</span><span style="font-size: 12px; font-weight: 600; color: #8F4208">Recharge incomplète</span></span>
+        </div>
+      </div>
+
+      <div style="padding: 18px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 14px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 20px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #5E636B">RÈGLES</span>
+        <span>Zones tactiles d'au moins 44&#160;×&#160;44 px.</span>
+        <span>Contrastes WCAG AA&#160;: blanc sur vert action 5,0&#160;:&#160;1. Le jaune solaire n'est jamais une couleur de texte sur blanc.</span>
+        <span>Une seule action principale verte par écran.</span>
+        <span>Particulier&#160;: «&#160;stockage&#160;», «&#160;heures de soleil&#160;». Pro&#160;: Ah, DoD, kWh/m²/j.</span>
+        <span>Espacements 4 · 8 · 12 · 16 · 24 · 32. Rayons 8 · 10 · 12 · 14.</span>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var colors = [
+      ['Fond', 'bg', '#F5F5F1'], ['Surface', 'surface', '#FFFFFF'], ['Surface 2', 'surface-2', '#EFEFEA'],
+      ['Bordure', 'line', '#E2E2DC'], ['Bordure forte', 'line-strong', '#C9CAC3'], ['Atténué', 'muted', '#5E636B'],
+      ['Encre', 'ink', '#16181D'], ['Encre 2', 'ink-2', '#3D4149'], ['Soleil', 'solar', '#F5B301'],
+      ['Soleil doux', 'solar-soft', '#FFF5D6'], ['Soleil texte', 'solar-ink', '#8A5800'], ['Action', 'action', '#15803D']
+    ].map(function (c) { return { name: c[0], token: c[1], hex: c[2] }; });
+    var alerts = [
+      { name: 'Succès', base: '#1D7A46', soft: '#E5F3EA', text: '#16603A', tokens: 'ok #1D7A46 · ok-soft #E5F3EA' },
+      { name: 'Attention', base: '#A84E0A', soft: '#FDEFE3', text: '#8F4208', tokens: 'warn #A84E0A · warn-soft #FDEFE3' },
+      { name: 'Critique', base: '#C0262D', soft: '#FCE9EA', text: '#9E1F25', tokens: 'crit #C0262D · crit-soft #FCE9EA' },
+      { name: 'Information', base: '#2A2D33', soft: '#EEF0F3', text: '#2A2D33', tokens: 'info #2A2D33 · info-soft #EEF0F3' }
+    ];
+    var I = [
+      ['bulb', '653eb5792dcdd9bcccea698a0ced15bf'], ['tube', 'dda11919c27bdcd1e844df61f13f8b5b'], ['flood', '73ce3d526e9be19d0822d503c7ae6a2a'],
+      ['snow', 'be1b1725cae05837a804522568b135d6'], ['fridge', '9d28e4e99807e1a461c205289e251bb8'], ['freezer', 'd795d3c3e12c22c7a70fed87c7ec47da'],
+      ['showcase', '01fa53255e7ccb449a40726df10103ff'], ['fountain', '7d18fd7c0c60c32a0aecf15fc995de11'], ['ac', 'da1eb9cbddb8f760e0793fe10eba7419'],
+      ['fan', '64c913c2f50b0d33cf1aac366d77d930'], ['tv', '29464ac991ad4146ce02858c5f5e6650'], ['decoder', '1024cfe1f6ae08ea18e6c5cc3c4c6644'],
+      ['hifi', '64f0f44567964f949fa0cf33b7452a4b'], ['speaker', 'af19af70f1001cde44a4f58f792669b6'], ['laptop', '877a4b2158fffe8be76a01d7896617c0'],
+      ['desktop', '505f28d48e7e242a781553839c3174ff'], ['printer', '4640eadbdde9e6b1f0819affab977985'], ['router', '22c2ef823876d9bd78a2e8f141aec85a'],
+      ['charger', '80c774bcbc9fec1eff8375643c6aa1a8'], ['camera', '6389b0c29159f93b342d0d2d9bc321d9'], ['plug', 'f47cdcf741bddc125d8db773c9246597'],
+      ['iron', '87daf40a9b3146f168028ac9b5330131'], ['washer', '3e0e0e09063d0a9dca0f7fac6701ff4b'], ['blender', '95cd5ba6de8c2fc7aa43b69877004896'],
+      ['microwave', '039c2e37cf34efaf2d76aff6ade629c7'], ['kettle', '63a9c90035856336169ed8d773b67835'], ['heater', '546008c9a571500ed6a925bae57f782d'],
+      ['drop', 'f80425730a70569f78ec00dbd3eebcd5'], ['pump', '5b20e4c872d69d699e613ac9381acb23'], ['scissors', '7c22039acddc2eb580b44b0fad15f459'],
+      ['clipper', '4d637c19428d71743b8815257038b407'], ['hairdryer', '412936950e36230644f288d76959e23f'], ['other', '8d6bb939bb1c3182dd861985bd353e86'],
+      ['panel', 'b25ce16475e83b6c2c19f0ce061f712c'], ['controller', '6a10a1f1e23cfdaae86dc709274820fa'], ['battery', '0bb0c328c12bed066932abb489eaec9d'],
+      ['inverter', 'a0e3b5c5374a89bf57f6fb84e4868a68'], ['cable', '18da6951a13b04e68364c24452079204'], ['shield', '0f8da1202a03e4680d61c18a43330009'],
+      ['board', '44074b4026ec64ed8522135b63c4d04e']
+    ].map(function (i) { return { name: i[0], src: '/_blob/' + i[1] }; });
+    return { colors: colors, alerts: alerts, icons: I };
+  }
+}
+</script>
+</body>
+</html>

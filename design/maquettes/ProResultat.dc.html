@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Dimensionnement</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#8A5800}a:hover{color:#6B4400}
+a:focus-visible,button:focus-visible{outline:2px solid #16181D;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 360px; height: 2160px; box-sizing: border-box; display: flex; flex-direction: column; background: #F5F5F1; color: #16181D; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <header style="height: 56px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 16px 0 6px; background: #FFFFFF; border-bottom: 1px solid #E2E2DC">
+    <a href="ProSaisie.dc.html" aria-label="Retour à la saisie" style="width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #16181D">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>
+    </a>
+    <span style="flex: 1; display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 20px; font-weight: 600">Dimensionnement <span style="padding: 1px 6px; border-radius: 5px; background: #16181D; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.04em">PRO</span></span>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #5E636B">ÉTAPE 4 / 4</span>
+  </header>
+
+  <main style="flex: 1; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 20px">
+    <section style="padding: 14px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.04em; color: #5E636B">HYPOTHÈSES</h2>
+      <dl style="margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; font-size: 13px; line-height: 18px">
+        <div><dt style="color: #5E636B">Région</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 500">Littoral · H 4,0</dd></div>
+        <div><dt style="color: #5E636B">Énergie E_j</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 500">3 277 Wh/j</dd></div>
+        <div><dt style="color: #5E636B">P_inst / P_dem</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 500">435 / 795 W</dd></div>
+        <div><dt style="color: #5E636B">Autonomie</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 500">1 j</dd></div>
+        <div><dt style="color: #5E636B">Batterie</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 500">LiFePO4 · DoD 0,80</dd></div>
+        <div><dt style="color: #5E636B">η / PR</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 500">0,90 / 0,70</dd></div>
+        <div><dt style="color: #5E636B">Tension système</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 500">24 V · auto</dd></div>
+        <div><dt style="color: #5E636B">Architecture</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 500">MPPT séparé</dd></div>
+      </dl>
+    </section>
+
+    <section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+      <div style="padding: 10px; background: #E5F3EA; border-radius: 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #16603A">A_eff</span><span style="font-size: 18px; line-height: 24px; font-weight: 600; font-variant-numeric: tabular-nums">1,05 j</span><span style="font-size: 11px; line-height: 14px; color: #16603A; font-weight: 600">≥ 0,5 j</span></div>
+      <div style="padding: 10px; background: #E5F3EA; border-radius: 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #16603A">C_PV</span><span style="font-size: 18px; line-height: 24px; font-weight: 600; font-variant-numeric: tabular-nums">115 %</span><span style="font-size: 11px; line-height: 14px; color: #16603A; font-weight: 600">≥ 100 %</span></div>
+      <div style="padding: 10px; background: #E5F3EA; border-radius: 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 14px; color: #16603A">Onduleur</span><span style="font-size: 18px; line-height: 24px; font-weight: 600; font-variant-numeric: tabular-nums">1 000 W</span><span style="font-size: 11px; line-height: 14px; color: #16603A; font-weight: 600">≥ 544 W</span></div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <h2 style="margin: 0 0 2px; font-size: 18px; line-height: 24px; font-weight: 600">Équipements</h2>
+
+      <div style="padding: 14px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 10px"><img src="/_blob/b25ce16475e83b6c2c19f0ce061f712c" alt="" width="24" height="24"><span style="flex: 1; font-size: 13px; line-height: 18px; color: #5E636B">Champ photovoltaïque</span></div>
+        <span style="font-size: 20px; line-height: 26px; font-weight: 600; font-variant-numeric: tabular-nums">3 × 450 Wc = 1 350 Wc</span>
+        <dl style="margin: 0; display: flex; flex-direction: column; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">P_PV requise</dt><dd style="margin: 0">1 170 Wc</dd></div>
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">Câblage</dt><dd style="margin: 0">3S × 1P</dd></div>
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">1,1 × N_s × V_oc</dt><dd style="margin: 0">163 V ≤ 250 V ✓</dd></div>
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">N_p × I_sc × 1,25</dt><dd style="margin: 0">14,5 A</dd></div>
+        </dl>
+      </div>
+
+      <div style="padding: 14px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 10px"><img src="/_blob/6a10a1f1e23cfdaae86dc709274820fa" alt="" width="24" height="24"><span style="flex: 1; font-size: 13px; line-height: 18px; color: #5E636B">Régulateur</span></div>
+        <span style="font-size: 20px; line-height: 26px; font-weight: 600">MPPT 80 A / 250 V</span>
+        <dl style="margin: 0; display: flex; flex-direction: column; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">I_reg = 1,25 × 1 350 / 24</dt><dd style="margin: 0">70,3 A ≤ 80 A ✓</dd></div>
+        </dl>
+      </div>
+
+      <div style="padding: 14px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 10px"><img src="/_blob/0bb0c328c12bed066932abb489eaec9d" alt="" width="24" height="24"><span style="flex: 1; font-size: 13px; line-height: 18px; color: #5E636B">Batteries</span></div>
+        <span style="font-size: 20px; line-height: 26px; font-weight: 600">1 × LiFePO4 24 V 200 Ah</span>
+        <dl style="margin: 0; display: flex; flex-direction: column; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">C requise</dt><dd style="margin: 0">4 551 Wh · 190 Ah</dd></div>
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">C installée</dt><dd style="margin: 0">4 800 Wh</dd></div>
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">Montage</dt><dd style="margin: 0">1S × 1P</dd></div>
+        </dl>
+      </div>
+
+      <div style="padding: 14px; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 10px"><img src="/_blob/a0e3b5c5374a89bf57f6fb84e4868a68" alt="" width="24" height="24"><span style="flex: 1; font-size: 13px; line-height: 18px; color: #5E636B">Onduleur</span></div>
+        <span style="font-size: 20px; line-height: 26px; font-weight: 600">1 000 W · 24 V / 230 V</span>
+        <dl style="margin: 0; display: flex; flex-direction: column; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">1,25 × P_inst</dt><dd style="margin: 0">544 W ✓</dd></div>
+          <div style="display: flex; justify-content: space-between; gap: 8px"><dt style="color: #5E636B">f_s × P_nom ≥ P_dem</dt><dd style="margin: 0">2 000 ≥ 795 W ✓</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <h2 style="margin: 0 0 2px; font-size: 18px; line-height: 24px; font-weight: 600">Câbles</h2>
+      <div style="background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; overflow: hidden">
+        <div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 4px">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Panneaux → régulateur</span><span style="font-size: 14px; line-height: 20px; font-weight: 600">4 mm²</span></div>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #5E636B">14,5 A · 124,5 V · 15 m · calc. 2,6 mm² · min. solaire</span>
+        </div>
+        <div style="padding: 10px 14px; border-top: 1px solid #ECECE6; display: flex; flex-direction: column; gap: 4px">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Régulateur → batteries</span><span style="font-size: 14px; line-height: 20px; font-weight: 600">10 mm²</span></div>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #5E636B">70,3 A · 24 V · 2 m · calc. 8,8 mm²</span>
+        </div>
+        <div style="padding: 10px 14px; border-top: 1px solid #ECECE6; display: flex; flex-direction: column; gap: 4px">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Batteries → onduleur</span><span style="font-size: 14px; line-height: 20px; font-weight: 600">10 mm²</span></div>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #5E636B">57,9 A · 24 V · 2 m · calc. 7,2 mm²</span>
+        </div>
+        <div style="padding: 10px 14px; border-top: 1px solid #ECECE6; display: flex; flex-direction: column; gap: 4px">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Onduleur → tableau</span><span style="font-size: 14px; line-height: 20px; font-weight: 600">1,5 mm²</span></div>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 16px; color: #5E636B">5,4 A · 230 V · 5 m · calc. 0,2 mm²</span>
+        </div>
+        <p style="margin: 0; padding: 10px 14px; border-top: 1px solid #ECECE6; background: #FAFAF7; font-size: 12px; line-height: 16px; color: #5E636B">ρ 0,0225 Ω·mm²/m · ε 3 % · section normalisée supérieure, puis contrôle de l'intensité admissible.</p>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <h2 style="margin: 0 0 2px; font-size: 18px; line-height: 24px; font-weight: 600">Protections</h2>
+      <ul style="margin: 0; padding: 0; list-style: none; background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; overflow: hidden; font-size: 14px; line-height: 20px">
+        <li style="display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px"><span>Sectionneur DC</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">16 A</span></li>
+        <li style="display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span>Parafoudre DC</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">1</span></li>
+        <li style="display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span>Fusible de chaîne</span><span style="font-family: 'IBM Plex Mono', monospace; color: #5E636B">non requis · 1P</span></li>
+        <li style="display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span>Fusible batterie</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">63 A</span></li>
+        <li style="display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span>Disjoncteur sortie AC</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">10 A</span></li>
+        <li style="display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span>Différentiel</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">30 mA</span></li>
+        <li style="display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span>Parafoudre AC</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">1</span></li>
+        <li style="display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span>Terre cadres et masses</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500">✓</span></li>
+      </ul>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <h2 style="margin: 0 0 2px; font-size: 18px; line-height: 24px; font-weight: 600">Variantes d'autonomie</h2>
+      <div style="background: #FFFFFF; border: 1px solid #E2E2DC; border-radius: 12px; overflow: hidden; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 18px">
+        <div style="display: grid; grid-template-columns: 56px 1fr 72px; gap: 8px; padding: 8px 14px; background: #EFEFEA; font-size: 11px; color: #3D4149"><span>Palier</span><span>Batteries</span><span style="text-align: right">A_eff</span></div>
+        <div style="display: grid; grid-template-columns: 56px 1fr 72px; gap: 8px; padding: 10px 14px"><span>0,5 j</span><span>1 × 24 V 100 Ah</span><span style="text-align: right">0,53 j</span></div>
+        <div style="display: grid; grid-template-columns: 56px 1fr 72px; gap: 8px; padding: 10px 14px; border-top: 1px solid #ECECE6; background: #FFF5D6; font-weight: 500"><span>1 j</span><span>1 × 24 V 200 Ah</span><span style="text-align: right">1,05 j</span></div>
+        <div style="display: grid; grid-template-columns: 56px 1fr 72px; gap: 8px; padding: 10px 14px; border-top: 1px solid #ECECE6"><span>1,5 j</span><span>3 × 24 V 100 Ah</span><span style="text-align: right">1,58 j</span></div>
+        <p style="margin: 0; padding: 10px 14px; border-top: 1px solid #ECECE6; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12px; line-height: 16px; color: #5E636B">Champ PV, régulateur et onduleur inchangés.</p>
+      </div>
+    </section>
+
+    <div style="display: flex; gap: 10px; padding: 14px; background: #EEF0F3; border-radius: 12px; font-size: 14px; line-height: 20px; color: #2A2D33">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 15a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 7a3.75 3.75 0 0 1 .5 8z"></path><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"></path></svg>
+      <span><strong style="font-weight: 600">Saison des pluies&#160;:</strong> production réduite de 20 à 30&#160;% par rapport à la moyenne annuelle.</span>
+    </div>
+
+    <p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 16px; color: #5E636B">Moteur [version] · paramètres v[n] · réf. [identifiant de simulation]</p>
+  </main>
+
+  <div style="flex: none; padding: 12px 16px 16px; background: #FFFFFF; border-top: 1px solid #E2E2DC; box-shadow: 0 -6px 16px rgba(22, 24, 29, 0.06); display: flex; flex-direction: column; gap: 8px">
+    <button type="button" style="height: 52px; border: 0; border-radius: 12px; background: #15803D; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
+      Exporter la nomenclature (PDF)
+    </button>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <button type="button" style="height: 48px; border-radius: 12px; border: 1px solid #C9CAC3; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; color: #16181D; cursor: pointer">Partager le lien</button>
+      <a href="Configurateur.dc.html" style="height: 48px; box-sizing: border-box; border-radius: 12px; border: 1px solid #C9CAC3; background: #FFFFFF; font-size: 14px; font-weight: 600; color: #16181D; display: flex; align-items: center; justify-content: center; text-decoration: none">Configurateur</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":2160}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
