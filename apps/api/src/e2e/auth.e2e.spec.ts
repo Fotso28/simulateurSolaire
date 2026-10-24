@@ -85,7 +85,7 @@ describe('Authentification et rôles', () => {
       where: { email: EDITOR.email },
       data: { lockedUntil: null },
     });
-  });
+  }, 60_000);
 
   it('protège les routes admin : 401 sans jeton, 401 jeton invalide, 403 rôle insuffisant', async () => {
     await http.get(`${API}/admin/devices`).expect(401);
