@@ -5,7 +5,7 @@
 | L0 | terminé | L0 |
 | L1 | terminé | L1 |
 | L2 | terminé | L2 |
-| L3 | à faire | |
+| L3 | terminé | L3 |
 | L4 | à faire | |
 | L5 | à faire | |
 | L6 | à faire | |
@@ -207,3 +207,73 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
 - Prisma interdit `migrate reset` lancé par un agent : les e2e utilisent `migrate deploy` + `TRUNCATE`.
 - Unicité du panneau `isDefault` non imposée côté API (plusieurs panneaux peuvent être « par défaut »).
 - `package.json#prisma` (chemin du schéma) est déprécié pour Prisma 7 : migrer vers `prisma.config.ts` lors d'une montée.
+
+### L3 — Front parcours particulier (terminé)
+
+**Fait**
+- Routes (`apps/web/src/app/app.routes.ts`, toutes en `loadComponent`) : `/` localisation, `/mode`, `/besoins`,
+  `/autonomie`, `/resultat`, `/configurateur`, `/recapitulatif` (liste du matériel, maquette Recap ; route ajoutée,
+  absente du TRD), `/s/:shareToken` (provisoire, L5), `/admin` (L4). `features/home` supprimé.
+- Mobile 360 px d'abord, desktop ≥ 1024 px (`core/breakpoint.ts`, signal `isDesktop`) : `/besoins` = catégories à
+  gauche + grille + récapitulatif latéral (DesktopBesoins) ; `/resultat` = résultat + configurateur côte à côte
+  (DesktopResultat). Les écrans simples (lieu, profil, autonomie, configurateur) sont centrés (`max-w-xl`).
+- Résultat : fourchette min–max (barre), proposition médiane en cartes `<details>` (chiffre clé + détail),
+  indicateurs, alertes, « comparer sans » pour les appareils > 1 500 W (alerte `HEAVY_DEVICE` → simulation sans la
+  ligne, bouton « Retirer cet appareil »), trois colonnes de variantes (choisir une variante = changer de palier),
+  saison des pluies. Configurateur : ‹ › via `inverterNeighbors` / `storageNeighbors` / `panelCountNeighbors`
+  fusionnés dans `overrides`, badge « Modifié », « Revenir à la proposition ». Récapitulatif : synthèse, schéma de
+  câblage en SVG (`features/particulier/wiring-diagram.ts`, réutilisable pour le PDF), nomenclature
+  (équipements, câbles en longueur aller + retour, protections), avertissement.
+- Accessibilité : vrais `button`/`a`, `aria-pressed` (choix), `aria-expanded` (catégories, durées),
+  `aria-current` (étapes), `aria-live` (récapitulatifs, indicateurs), cibles ≥ 44 px, focus visible global
+  (`styles.css`), schéma SVG avec `role="img"` + description textuelle complète.
+- Icônes : `shared/icons/icon-paths.ts` (grille 24, trait 1,5, `currentColor`) — interface, 8 catégories,
+  28 glyphes d'appareils, matériel (`panel`, `battery`, `inverter`, `controller`, `cable`, `protection`, `board`).
+  `resolveIcon(iconKey)` mappe les `iconKey` du catalogue (ids d'appareils/catégories), repli `plug`.
+- Tests (26) : format, store (dont cas de Douala à 1 %), service catalogue, écrans Besoins / Résultat /
+  Configurateur / Récapitulatif, routes. Bundle initial 291 kB (79 kB transférés) ; écrans en chunks de 1 à 25 kB.
+- Vérifié avec Playwright à 360 et 1440 px : parcours complet sans erreur console ni défilement horizontal ;
+  avec les puissances du cas de référence → 3,3 kWh/j, 3 × 450 Wc, 1 batterie 24 V 200 Ah, onduleur 1 000 W.
+
+**Structure** (`apps/web/src/app`)
+- `core/` : `catalog.service.ts` (signals `catalog`, `params`, `source` ; démarre sur `DEFAULT_CATALOG` /
+  `DEFAULT_PARAMETER_SET`, puis `fetch('/api/v1/catalog')` une fois au démarrage, repli silencieux ; URL via le
+  jeton `CATALOG_URL`), `simulation.store.ts`, `format.ts` (FR : virgule, espace fine U+202F entre milliers,
+  insécable avant l'unité), `breakpoint.ts`, `extensions.ts`, `test-helpers.ts`.
+- `shared/` : `icons/`, `layout/step-header.ts` (barre d'étapes mobile / étapes numérotées desktop),
+  `ui/notices.ts` (`app-rain-notice`, `app-alert-list` avec messages simples par code d'alerte).
+  Classes utilitaires dans `styles.css` : `btn-primary`, `btn-secondary`, `action-bar`, `card`, `choice`,
+  `radio-dot` ; jetons ajoutés : `track`, `track-soft`, `divider`, `ring`, `highlight`, `text-caption`, `text-lead`.
+- `features/particulier/` : un fichier par écran + `configurator-panel.ts` (mobile et `compact` desktop),
+  `result-view.ts` (textes des cartes, protections, câbles : fonctions pures), `wiring-diagram.ts`.
+
+**Store (`SimulationStore`, root)**
+- Signals saisis : `countryId`, `regionId`, `mode`, `loads: LoadEntry[]` (`key`, `deviceId?`, `label`, `powerW?`,
+  `quantity`, `hoursPerDay`), `autonomyDays`, `batteryTech`, `overrides`, `options`, `totals`. Persistés en
+  sessionStorage (`simulateur.state.v1`, schéma versionné `v: 1`) par un `effect`.
+- Dérivés : `dailyEnergy` (immédiat, `computeDailyEnergy`), `baseInput` / `input` (lisent une copie de `loads`
+  temporisée à 150 ms ; `flush()` force), `outcome` (`empty | ok | error` avec message de `EngineError`), `result`,
+  `proposal` (sans forçages), `neighbors`. Toute modification des appareils ou de la région efface les forçages ;
+  changer d'autonomie ou de technologie efface les forçages de batterie.
+- « Autre appareil » sans puissance : envoyé au moteur avec `powerW = 100` (`CUSTOM_DEFAULT_POWER_W`, affiché
+  « ≈ 100 W (estimation) ») — le moteur exige une puissance hors catalogue, et un appareil fictif casserait le
+  rejeu de l'API.
+
+**Points d'extension**
+- L4 : `/besoins` a deux routes ; la première, gardée par `canMatch: [isProMode]`, charge pour l'instant le
+  placeholder → la remplacer par `features/pro/…`. Le store accepte déjà `setMode('pro')` (moteur en mode `pro`),
+  `setOptions()` (tension, onduleur, simultanéité, longueurs de câbles — reprises par la nomenclature et le schéma)
+  et `setTotals()`. `/admin` inchangé (`features/admin/admin.routes.ts`).
+- L5 : jeton `RESULT_ACTIONS` (`core/extensions.ts`) : `exportPdf` (repli actuel : `window.print()`), `share` (doit
+  renvoyer l'URL `/s/:token` ; repli : partage de l'origine), `requestCallback` (la carte « Besoin d'un devis ? »
+  n'apparaît que s'il est fourni). `store.input()` / `store.result()` = charge utile de `POST /simulations` ;
+  `store.restore(state)` recharge un état (`/s/:shareToken`). Service worker : mettre en cache l'app et
+  `/api/v1/catalog` (le service accepte la réponse en cache, aucune autre condition). Polices Google à auto-héberger.
+
+**Écarts / à signaler**
+- `powerTypW` des appareils = milieu de la fourchette min–max (choix L1, le TRD ne donne que min–max) : le cas de
+  Douala saisi depuis le catalogue donne 3,7 kWh/j (TV 105 W, frigo 140 W…) et 3 × 100 Ah ; les 3 277 Wh/j du TRD
+  supposent les puissances typiques des maquettes (TV 80 W, frigo 120 W). À arbitrer en L6 (ou par l'admin).
+- Schéma de câblage d'un onduleur hybride dessiné en chaîne panneaux → onduleur → batterie (simplification).
+- Formulaires du « Autre appareil » sans quantité initiale (1, puis − / +) ; durée d'usage modifiable par crans
+  (0,1 h → 24 h) comme la maquette, pas de saisie libre pour les appareils du catalogue.
