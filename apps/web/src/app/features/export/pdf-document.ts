@@ -38,11 +38,11 @@ const LEVEL_LABEL: Record<SimulationResult['alerts'][number]['level'], string> =
  */
 export function pdfText(s: string): string {
   return s
-    .replace(/[  ]/g, ' ')
-    .replace(/≈/g, '~')
-    .replace(/→/g, '->')
-    .replace(/←/g, '<-')
-    .replace(/[−‑]/g, '-');
+    .replace(/[\u202F\u2009]/g, '\u00A0')
+    .replace(/\u2248/g, '~')
+    .replace(/\u2192/g, '->')
+    .replace(/\u2190/g, '<-')
+    .replace(/[\u2212\u2011]/g, '-');
 }
 
 /** Logo : soleil stylisé (SVG au trait, couleurs de la marque). */

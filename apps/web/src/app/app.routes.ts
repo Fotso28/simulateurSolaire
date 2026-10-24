@@ -2,9 +2,6 @@ import { inject } from '@angular/core';
 import { Route } from '@angular/router';
 import { SimulationStore } from './core/simulation.store';
 
-const placeholder = () =>
-  import('./shared/placeholder-page').then((m) => m.PlaceholderPage);
-
 /** Vrai quand l'utilisateur a choisi le profil professionnel sur `/mode`. */
 export const isProMode = () => inject(SimulationStore).mode() === 'pro';
 
