@@ -491,6 +491,6 @@ Fait en L6b :
 5. Test e2e API « verrouille le compte après 5 échecs » fiabilisé : `password.ts` utilise un coût argon2
    minimal (`timeCost` 2, `memoryCost` 1 024 Kio, `parallelism` 1) quand `NODE_ENV=test` (Jest), `verify`
    lisant les paramètres du hash ; timeout explicite de 60 s sur le test. `nx e2e api` : 31/31, 3 runs de suite.
-6. CI GitHub : revérifiée après le push L6b (voir ci-dessous).
+6. CI GitHub : run 21 (commit e57faff) **vert**, jobs `ci` et `e2e`.
 7. `npx nx e2e web-e2e` (build prod) relancé : 14/14, aucune spec à ajuster après les nouvelles puissances
    typiques du catalogue.
