@@ -28,6 +28,8 @@ export interface SimulationInput {
     powerW?: number;
     quantity: number;
     hoursPerDay: number;
+    /** Facteur de démarrage k saisi (mode pro) ; sinon celui du catalogue. */
+    surgeFactor?: number;
   }[];
   totals?: { powerW: number; dailyEnergyWh: number; surgeFactor?: number };
   options?: {

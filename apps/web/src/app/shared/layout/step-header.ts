@@ -18,6 +18,14 @@ export const STEPS = [
   { label: 'Résultat', link: '/resultat' },
 ] as const;
 
+/** Parcours professionnel : l'autonomie se règle sur l'écran de saisie. */
+export const PRO_STEPS = [
+  { label: 'Lieu', link: '/' },
+  { label: 'Profil', link: '/mode' },
+  { label: 'Saisie', link: '/besoins' },
+  { label: 'Résultat', link: '/resultat' },
+] as const;
+
 /**
  * En-tête du parcours. Mobile : titre, retour, « ÉTAPE n / 5 » et barre
  * d'étapes. Desktop (≥ 1024 px) : logo, étapes numérotées, lieu choisi.
@@ -50,15 +58,21 @@ export const STEPS = [
         <span class="flex-1 text-base/5 font-semibold">{{
           title() || 'Simulateur solaire'
         }}</span>
+        @if (isPro()) {
+          <span
+            class="mr-2 rounded-[5px] bg-ink px-1.5 py-0.5 font-mono text-[11px]/4 tracking-[.04em] text-white"
+            >PRO</span
+          >
+        }
         @if (step(); as s) {
           <span class="font-mono text-mono font-normal text-muted"
-            >ÉTAPE {{ s }} / {{ steps.length }}</span
+            >ÉTAPE {{ s }} / {{ steps().length }}</span
           >
         }
       </header>
       @if (step(); as s) {
         <div class="flex gap-1 bg-surface px-4 py-2.5" aria-hidden="true">
-          @for (st of steps; track st.label; let i = $index) {
+          @for (st of steps(); track st.label; let i = $index) {
             <span
               class="h-1 flex-1 rounded-sm"
               [class.bg-solar]="i < s"
@@ -87,12 +101,18 @@ export const STEPS = [
           <span class="text-[17px]/[22px] font-semibold"
             >Simulateur solaire</span
           >
+          @if (isPro()) {
+            <span
+              class="rounded-[5px] bg-ink px-1.5 py-0.5 font-mono text-[11px]/4 tracking-[.04em] text-white"
+              >PRO</span
+            >
+          }
         </a>
         <ol
           class="m-0 flex flex-1 list-none flex-wrap items-center justify-center gap-x-5 gap-y-2 p-0 text-small"
           aria-label="Étapes"
         >
-          @for (st of steps; track st.label; let i = $index) {
+          @for (st of steps(); track st.label; let i = $index) {
             @let n = i + 1;
             <li
               class="flex items-center gap-2"
@@ -146,7 +166,8 @@ export class StepHeader {
   readonly backLink = input<string>();
   readonly backLabel = input('Retour');
 
-  protected readonly steps = STEPS;
+  protected readonly isPro = computed(() => this.store.mode() === 'pro');
+  protected readonly steps = computed(() => (this.isPro() ? PRO_STEPS : STEPS));
   protected readonly place = computed(() => {
     const r = this.store.region();
     return r

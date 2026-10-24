@@ -22,14 +22,21 @@ describe('App', () => {
     );
   });
 
-  it('mène le profil professionnel vers l’écran provisoire de L4', async () => {
+  it('mène le profil professionnel vers la saisie technique et le dimensionnement', async () => {
     const fixture = TestBed.createComponent(App);
     TestBed.inject(SimulationStore).setMode('pro');
     await TestBed.inject(Router).navigateByUrl('/besoins');
     await fixture.whenStable();
     expect(
       (fixture.nativeElement as HTMLElement).querySelector('h1')?.textContent,
-    ).toContain('Saisie professionnelle');
+    ).toContain('Saisie technique');
+    await TestBed.inject(Router).navigateByUrl('/resultat');
+    await fixture.whenStable();
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector(
+        'app-pro-result-page',
+      ),
+    ).not.toBeNull();
     TestBed.inject(SimulationStore).reset();
   });
 

@@ -25,12 +25,12 @@ export const appRoutes: Route[] = [
       import('./features/particulier/mode-page').then((m) => m.ModePage),
   },
   {
-    // Point d'extension L4 : saisie professionnelle (tableau ou totaux).
-    // Remplacer `placeholder` par `features/pro/…` ; le garde reste le même.
+    // Mode pro : saisie technique (appareils ou totaux) et paramètres du système.
     path: 'besoins',
     canMatch: [isProMode],
-    title: 'Saisie professionnelle · Simulateur solaire',
-    loadComponent: placeholder,
+    title: 'Saisie technique · Simulateur solaire',
+    loadComponent: () =>
+      import('./features/pro/pro-input-page').then((m) => m.ProInputPage),
   },
   {
     path: 'besoins',
@@ -45,6 +45,13 @@ export const appRoutes: Route[] = [
       import('./features/particulier/autonomy-page').then(
         (m) => m.AutonomyPage,
       ),
+  },
+  {
+    path: 'resultat',
+    canMatch: [isProMode],
+    title: 'Dimensionnement · Simulateur solaire',
+    loadComponent: () =>
+      import('./features/pro/pro-result-page').then((m) => m.ProResultPage),
   },
   {
     path: 'resultat',

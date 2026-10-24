@@ -78,6 +78,12 @@ export class LoadDto {
   @Min(0)
   @Max(24)
   hoursPerDay!: number;
+
+  @IsOptional()
+  @IsNumber({ allowNaN: false, allowInfinity: false })
+  @Min(1)
+  @Max(10)
+  surgeFactor?: number;
 }
 
 export class TotalsDto {

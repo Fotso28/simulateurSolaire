@@ -26,6 +26,8 @@ export interface LoadEntry {
   powerW?: number;
   quantity: number;
   hoursPerDay: number;
+  /** Facteur de démarrage k saisi (mode pro). */
+  surgeFactor?: number;
 }
 
 export type Overrides = NonNullable<SimulationInput['overrides']>;
@@ -42,6 +44,8 @@ interface PersistedState {
   overrides: Overrides;
   options?: SimulationInput['options'];
   totals?: SimulationInput['totals'];
+  /** Modèle de panneau choisi en mode pro. */
+  panelModelId?: string;
 }
 
 export type SimulationOutcome =
@@ -69,9 +73,9 @@ export function toEngineLoads(
 ): NonNullable<SimulationInput['loads']> {
   return loads
     .filter((l) => l.quantity > 0)
-    .map(({ deviceId, label, powerW, quantity, hoursPerDay }) => ({
+    .map(({ deviceId, label, powerW, quantity, hoursPerDay, surgeFactor }) => ({
       ...(deviceId ? { deviceId } : {}),
-      label,
+      label: label.trim() || 'Appareil',
       ...(powerW
         ? { powerW }
         : deviceId
@@ -79,6 +83,9 @@ export function toEngineLoads(
           : { powerW: CUSTOM_DEFAULT_POWER_W }),
       quantity,
       hoursPerDay,
+      ...(surgeFactor !== undefined && surgeFactor !== 1
+        ? { surgeFactor }
+        : {}),
     }));
 }
 
@@ -122,6 +129,8 @@ export class SimulationStore {
   readonly overrides = signal<Overrides>({});
   readonly options = signal<SimulationInput['options']>(undefined);
   readonly totals = signal<SimulationInput['totals']>(undefined);
+  /** Modèle de panneau imposé (mode pro) ; reste valable après les forçages. */
+  readonly panelModelId = signal<string | undefined>(undefined);
 
   private settleTimer?: ReturnType<typeof setTimeout>;
 
@@ -162,7 +171,7 @@ export class SimulationStore {
     if (!loads.length) return empty;
     try {
       return computeDailyEnergy(
-        toEngineLoads(loads),
+        toEngineLoads(this.usable(loads)),
         this.catalog(),
         this.engineMode(),
       );
@@ -178,10 +187,11 @@ export class SimulationStore {
   /** Entrée du moteur sans les forçages du configurateur. */
   readonly baseInput = computed<SimulationInput | null>(() => {
     const regionId = this.region()?.id;
-    const loads = toEngineLoads(this.settledLoads());
+    const loads = toEngineLoads(this.usable(this.settledLoads()));
     const totals = this.totals();
     if (!regionId || (!loads.length && !totals)) return null;
     const options = this.options();
+    const panelModelId = this.panelModelId();
     return {
       mode: this.engineMode(),
       regionId,
@@ -190,6 +200,7 @@ export class SimulationStore {
       ...(loads.length ? { loads } : {}),
       ...(totals ? { totals } : {}),
       ...(options ? { options } : {}),
+      ...(panelModelId ? { overrides: { panelModelId } } : {}),
     };
   });
 
@@ -198,7 +209,9 @@ export class SimulationStore {
     const base = this.baseInput();
     if (!base) return null;
     const overrides = this.overrides();
-    return Object.keys(overrides).length ? { ...base, overrides } : base;
+    return Object.keys(overrides).length
+      ? { ...base, overrides: { ...base.overrides, ...overrides } }
+      : base;
   });
 
   readonly hasOverrides = computed(
@@ -259,7 +272,14 @@ export class SimulationStore {
   }
 
   setMode(mode: SimulationMode): void {
+    if (mode !== this.mode()) this.overrides.set({});
     this.mode.set(mode);
+    if (mode === 'particulier') {
+      // Les réglages techniques du mode pro ne s'appliquent pas au particulier.
+      this.options.set(undefined);
+      this.totals.set(undefined);
+      this.panelModelId.set(undefined);
+    }
   }
 
   // ——— Besoins ———
@@ -372,10 +392,46 @@ export class SimulationStore {
   // ——— Pro (L4) ———
   setOptions(options: SimulationInput['options']): void {
     this.options.set(options);
+    this.overrides.set({});
   }
 
   setTotals(totals: SimulationInput['totals']): void {
     this.totals.set(totals);
+    this.overrides.set({});
+  }
+
+  setPanelModel(panelModelId: string | undefined): void {
+    this.panelModelId.set(panelModelId);
+    this.overrides.set({});
+  }
+
+  /** Ligne pro : appareil du catalogue (puissance typique) ou ligne libre. */
+  addProLoad(device?: Device): string {
+    const key = `${device ? 'pro-' + device.id : 'custom'}-${Date.now().toString(36)}-${this.loads().length}`;
+    this.commitLoads([
+      ...this.loads(),
+      device
+        ? {
+            key,
+            deviceId: device.id,
+            label: device.name,
+            powerW: device.powerTypW,
+            quantity: 1,
+            hoursPerDay: device.defaultHoursPerDay,
+            ...(device.surgeFactor && device.surgeFactor !== 1
+              ? { surgeFactor: device.surgeFactor }
+              : {}),
+          }
+        : { key, label: '', quantity: 1, hoursPerDay: 1 },
+    ]);
+    return key;
+  }
+
+  /** Modifie une ligne (mode pro : désignation, puissance, k…). */
+  updateLoad(key: string, patch: Partial<Omit<LoadEntry, 'key'>>): void {
+    this.commitLoads(
+      this.loads().map((l) => (l.key === key ? { ...l, ...patch } : l)),
+    );
   }
 
   // ——— Configurateur ———
@@ -407,6 +463,13 @@ export class SimulationStore {
   }
 
   // ——— Interne ———
+  /** En mode pro, une ligne libre sans puissance n'est pas encore calculable. */
+  private usable(loads: LoadEntry[]): LoadEntry[] {
+    return this.mode() === 'pro'
+      ? loads.filter((l) => (l.powerW ?? 0) > 0 || l.deviceId)
+      : loads;
+  }
+
   private run(input: SimulationInput | null): SimulationOutcome {
     if (!input) return { status: 'empty' };
     try {
@@ -455,6 +518,7 @@ export class SimulationStore {
       overrides: this.overrides(),
       options: this.options(),
       totals: this.totals(),
+      panelModelId: this.panelModelId(),
     };
   }
 
@@ -470,6 +534,7 @@ export class SimulationStore {
     this.overrides.set(s.overrides ?? {});
     this.options.set(s.options);
     this.totals.set(s.totals);
+    this.panelModelId.set(s.panelModelId);
   }
 
   private hydrate(): void {

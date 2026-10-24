@@ -70,6 +70,15 @@ export function resolveLoads(
         `Valeur invalide pour « ${label} » : heures par jour > 24.`,
       );
     }
+    if (
+      load.surgeFactor !== undefined &&
+      !(Number.isFinite(load.surgeFactor) && load.surgeFactor >= 1)
+    ) {
+      throw new EngineError(
+        'INVALID_INPUT',
+        `Valeur invalide pour « ${label} » : facteur de démarrage < 1.`,
+      );
+    }
     const device = load.deviceId
       ? catalog.devices.find((d) => d.id === load.deviceId)
       : undefined;
@@ -109,7 +118,7 @@ export function resolveLoads(
       quantity: load.quantity,
       hoursPerDay: load.hoursPerDay,
       dutyCycle: device?.dutyCycle ?? 1,
-      surgeFactor: device?.surgeFactor ?? 1,
+      surgeFactor: load.surgeFactor ?? device?.surgeFactor ?? 1,
       powerW,
     };
   });

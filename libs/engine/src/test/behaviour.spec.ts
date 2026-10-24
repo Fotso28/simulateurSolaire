@@ -436,6 +436,29 @@ describe('cas limites et erreurs', () => {
   });
 });
 
+describe('facteur de démarrage saisi', () => {
+  const pro: SimulationInput = {
+    mode: 'pro',
+    regionId: 'cm-littoral',
+    autonomyDays: 1,
+    batteryTech: 'lithium',
+    loads: [{ label: 'Pompe', powerW: 500, quantity: 1, hoursPerDay: 2 }],
+  };
+
+  it('remplace le facteur du catalogue dans la pointe', () => {
+    expect(run(pro).peakW.surge).toBe(500);
+    const r = run({ ...pro, loads: [{ ...pro.loads![0], surgeFactor: 3 }] });
+    expect(r.peakW.surge).toBe(1500);
+  });
+
+  it('refuse un facteur inférieur à 1', () => {
+    expectEngineError(
+      () => run({ ...pro, loads: [{ ...pro.loads![0], surgeFactor: 0.5 }] }),
+      'INVALID_INPUT',
+    );
+  });
+});
+
 describe('paramètres', () => {
   it('complète un jeu partiel avec les valeurs par défaut', () => {
     const p = resolveParameters({
