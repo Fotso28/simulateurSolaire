@@ -9,7 +9,7 @@
 | L4 | en cours (L4a terminé, L4b partiel) | L4a, L4b |
 | L4b | partiel — mode pro (saisie + résultat livrés, tests à compléter) | L4b |
 | L4a | terminé — back-office `/admin` | L4a |
-| L5 | à faire | |
+| L5 | partiel (1–4 faits ; 5, 6, 7 à finir) | L5 |
 | L6 | à faire | |
 
 ## Notes par lot
@@ -370,3 +370,47 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
   store pro (`addProLoad`, `panelModelId`, `setMode`), `pro-view` / `pro-validation`.
 - Rejouer Playwright après correctif : cas puissance totale à 360 px, les deux cas à 1440 px, configurateur depuis pro.
 - `/recapitulatif` réutilisé tel quel (formulation particulier : « Consommation ≈ ») — à adapter éventuellement.
+
+### L5 — Hors-ligne, PDF, partage, leads, déploiement (partiel)
+
+**Fait**
+- `apps/web/src/app/core` : `simulation-api.ts` (fetch `/api/v1` : `saveSimulation`, `getSimulation`, `sendLead` ;
+  `NetworkError` / `ApiError {status, code, message, field}`), `network-status.ts` (signal `online`),
+  `offline-queue.ts` (file IndexedDB `simulateur/pending-simulations`, repli mémoire ; vidée au démarrage
+  (`provideAppInitializer`) et au retour du réseau ; 4xx → écartée, réseau/5xx → conservée ; signals `pending`,
+  `lastSentToken`), `share.service.ts` (`save()` dédoublonné, `shareUrl()` → `/s/:token`, hors-ligne → file +
+  `QueuedOfflineError`, `open(token)` → `store.restore(stateFromInput(...))`, `knownUrl()`).
+- `RESULT_ACTIONS` fourni dans `app.config.ts` : `share` (Web Share API, repli copie — le récapitulatif affiche
+  maintenant erreurs et mise en file), `exportPdf`, `requestCallback` → `/devis`.
+- Synthèse + nomenclature du récapitulatif extraites en fonctions pures : `features/particulier/recap-data.ts`.
+- `/s/:shareToken` : `features/share/shared-page.ts` (chargement, bandeau, récapitulatif, erreurs 404/réseau).
+  `/devis` : `features/lead/lead-page.ts` (nom, téléphone, e-mail?, ville?, message?, consentement obligatoire,
+  simulation jointe si possible → `POST /leads`). Classe `.field` ajoutée dans `styles.css`.
+- PDF : `features/export/pdf-document.ts` (pur : logo SVG, région, chiffres clés, hypothèses, appareils, nomenclature,
+  schéma simplifié depuis `wiringItems`, alertes hors `RAINY_SEASON`, saison des pluies, lien de partage) +
+  `pdf-export.service.ts` (`import()` de pdfmake + police standard Helvetica, pas de vfs Roboto ; chunk paresseux
+  786 kB / 251 kB transférés). Caractères hors WinAnsi remplacés (`pdfText`).
+- PWA : `provideServiceWorker` (prod), `apps/web/ngsw-config.json` (app, tous les JS et polices en prefetch → PDF
+  hors-ligne ; `/api/v1/catalog` freshness 4 s + repli cache, l'ETag est revalidé par le cache HTTP ;
+  `/api/v1/simulations/*` freshness), `public/manifest.webmanifest`, `public/icons/*`, indicateur
+  `shared/ui/offline-indicator.ts`. IBM Plex auto-hébergé (`public/fonts`, latin, 6 woff2, 140 Ko), Google Fonts retiré.
+- `shared/placeholder-page.ts` supprimé (plus utilisé).
+- Tests unitaires : `offline-queue.spec.ts`, `share.service.spec.ts`, `pdf-document.spec.ts` (web : 60 verts).
+- Build : initial 383 kB brut / 108 kB transférés (estimation Angular ; mesure réelle à faire).
+- Dépendances : `pdfmake`, `@angular/service-worker`, dev `@types/pdfmake`, `@playwright/test@1.63.0` (épinglé sur
+  le Chromium préinstallé, révision 1243 ; en CI `npx playwright install chromium`).
+
+**Reste à faire**
+- 5. Mesure réelle de la première page (CDP, somme `encodedDataLength`) et note ici.
+- 7. Playwright : seul `apps/web-e2e/serve.mjs` existe (sert `dist/apps/web/browser`, repli SPA, relais `/api` vers
+  `E2E_API_URL`, sinon 503 → catalogue local). À créer : `apps/web-e2e/project.json` (projet `web-e2e`),
+  `playwright.config.ts` (viewport 360, `serviceWorkers: 'block'` sauf test hors-ligne), specs : parcours
+  particulier en 3G CDP, partage (mock `page.route` de `POST/GET /simulations`), PDF (`waitForEvent('download')`),
+  hors-ligne (`context.setOffline`). Étape CI.
+  ⚠ Observé en script exploratoire : sur `/`, après clic sur « Littoral », le clic sur le lien « Continuer » n'a
+  pas navigué (alors que `/mode` direct marche) — vérifier (attente insuffisante ou bug).
+- 6. Déploiement : rien fait — `apps/web/vercel.json` (build, rewrite `/api/(.*)`, en-têtes de sécurité, cache
+  immuable, `ngsw-worker.js`/`ngsw.json` no-cache), `apps/api/vercel.json` (`serverless.js`, `regions: ["fra1"]`,
+  `prisma migrate deploy`), règles pare-feu (rate limit `POST /simulations` et `/leads`),
+  `.github/workflows/backup.yml` (pg_dump hebdo, `DATABASE_URL_UNPOOLED`, artefact), `docs/DEPLOIEMENT.md`.
+- Facultatif : tests de `lead-page` et `shared-page`.
