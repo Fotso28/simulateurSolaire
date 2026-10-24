@@ -10,7 +10,7 @@
 | L4b | terminé — mode pro (saisie, résultat, récapitulatif technique, tests ; finalisé en L4c) | L4b |
 | L4a | terminé — back-office `/admin` | L4a |
 | L5 | terminé (1–4 et 6 faits — déploiement : L5b ; 5, 7 : L5c) | L5, L5b, L5c |
-| L6 | en cours — L6a partiel (points 1 à 4 faits ; reste 5 à 7) | L6a |
+| L6 | en cours — L6a/L6b : points 1 à 7 faits | L6a, L6b |
 
 ## Notes par lot
 
@@ -463,7 +463,7 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
     versionnables dans `vercel.json` (script CLI à lancer une fois par projet).
 - Facultatif : tests de `lead-page` et `shared-page`.
 
-## L6a — correctifs de recette (partiel)
+## L6a — correctifs de recette
 
 Fait :
 1. **Catalogue** : `p_typ` explicite et réaliste pour les 36 appareils (`libs/engine/src/data/devices.ts`,
@@ -487,12 +487,10 @@ Fait :
    n'écrit en production », branche Neon dédiée). `.vercel` ignoré par ESLint.
    À vérifier au premier déploiement réel : que Vercel prend bien `apps/web/.vercel/output` (non testable ici).
 
-Reste à faire :
-5. Test e2e API « verrouille le compte après 5 échecs » (`apps/api/src/e2e/auth.e2e.spec.ts`) : le fiabiliser
-   — piste : coût argon2 réduit quand `NODE_ENV=test` dans `apps/api/src/app/auth/password.ts`
-   (`timeCost`/`memoryCost` minimaux, `verify` lit les paramètres du hash) et/ou timeout explicite du test.
-   Non commencé.
-6. CI GitHub : dernier run vérifié (run 19, commit 16b7380) **vert** ; à revérifier sur les commits L6a
-   après push (`mcp__github__actions_list`, dépôt fotso28/simulateursolaire).
-7. `npx nx e2e web-e2e` non relancé en L6a (lint/test/build passent) ; les specs e2e pro/particulier qui
-   affichent des puissances typiques du catalogue peuvent avoir à être ajustées.
+Fait en L6b :
+5. Test e2e API « verrouille le compte après 5 échecs » fiabilisé : `password.ts` utilise un coût argon2
+   minimal (`timeCost` 2, `memoryCost` 1 024 Kio, `parallelism` 1) quand `NODE_ENV=test` (Jest), `verify`
+   lisant les paramètres du hash ; timeout explicite de 60 s sur le test. `nx e2e api` : 31/31, 3 runs de suite.
+6. CI GitHub : revérifiée après le push L6b (voir ci-dessous).
+7. `npx nx e2e web-e2e` (build prod) relancé : 14/14, aucune spec à ajuster après les nouvelles puissances
+   typiques du catalogue.
