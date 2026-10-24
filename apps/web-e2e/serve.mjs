@@ -5,6 +5,7 @@ import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer, request } from 'node:http';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createGzip } from 'node:zlib';
 
 const root = fileURLToPath(
   new URL('../../dist/apps/web/browser/', import.meta.url),
@@ -57,12 +58,18 @@ createServer((req, res) => {
     file = join(root, 'index.html');
   }
   const ext = extname(file);
+  // Compression comme en production (Vercel), pour que les poids mesurés soient réalistes.
+  const gzip =
+    /\bgzip\b/.test(req.headers['accept-encoding'] ?? '') &&
+    !['.woff2', '.png', '.ico'].includes(ext);
   res.writeHead(200, {
+    ...(gzip ? { 'Content-Encoding': 'gzip', Vary: 'Accept-Encoding' } : {}),
     'Content-Type': types[ext] ?? 'application/octet-stream',
     'Cache-Control':
       ext === '.html' || file.endsWith('ngsw.json')
         ? 'no-cache'
         : 'public, max-age=31536000, immutable',
   });
-  createReadStream(file).pipe(res);
+  const body = createReadStream(file);
+  (gzip ? body.pipe(createGzip()) : body).pipe(res);
 }).listen(port, () => console.log(`e2e : http://localhost:${port}`));
