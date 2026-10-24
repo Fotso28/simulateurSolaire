@@ -206,4 +206,4 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
 - `@nestjs/jwt` 11 et `@nestjs/mapped-types` 2 (les versions suivantes sont ESM-only et cassent Jest/CommonJS).
 - Prisma interdit `migrate reset` lancé par un agent : les e2e utilisent `migrate deploy` + `TRUNCATE`.
 - Unicité du panneau `isDefault` non imposée côté API (plusieurs panneaux peuvent être « par défaut »).
-- `package.json#prisma` (schéma, seed) est déprécié pour Prisma 7 : migrer vers `prisma.config.ts` lors d'une montée.
+- `package.json#prisma` (chemin du schéma) est déprécié pour Prisma 7 : migrer vers `prisma.config.ts` lors d'une montée.
