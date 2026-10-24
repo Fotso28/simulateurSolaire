@@ -9,7 +9,7 @@
 | L4 | terminé (L4a, L4b + L4c) | L4a, L4b |
 | L4b | terminé — mode pro (saisie, résultat, récapitulatif technique, tests ; finalisé en L4c) | L4b |
 | L4a | terminé — back-office `/admin` | L4a |
-| L5 | partiel (1–4 faits ; 5, 6, 7 à finir) | L5 |
+| L5 | partiel (1–4 et 6 faits — déploiement : L5b ; 5, 7 : L5c) | L5, L5b |
 | L6 | à faire | |
 
 ## Notes par lot
@@ -421,8 +421,25 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
   hors-ligne (`context.setOffline`). Étape CI.
   ⚠ Observé en script exploratoire : sur `/`, après clic sur « Littoral », le clic sur le lien « Continuer » n'a
   pas navigué (alors que `/mode` direct marche) — vérifier (attente insuffisante ou bug).
-- 6. Déploiement : rien fait — `apps/web/vercel.json` (build, rewrite `/api/(.*)`, en-têtes de sécurité, cache
-  immuable, `ngsw-worker.js`/`ngsw.json` no-cache), `apps/api/vercel.json` (`serverless.js`, `regions: ["fra1"]`,
-  `prisma migrate deploy`), règles pare-feu (rate limit `POST /simulations` et `/leads`),
-  `.github/workflows/backup.yml` (pg_dump hebdo, `DATABASE_URL_UNPOOLED`, artefact), `docs/DEPLOIEMENT.md`.
+- 6. Déploiement (L5b) : **fait** (configuration seulement, aucun déploiement réel) — voir `docs/DEPLOIEMENT.md`.
+  - `apps/web/vercel.json` : Root Directory `apps/web`, `framework: null`, install `npx npm@11.6.2 ci` à la racine,
+    build `nx build web` copié dans `apps/web/vercel-dist` (sortie, ignorée par Git : pas de `outputDirectory` en `../`),
+    réécritures `/api/:path*` → `https://simulateur-solaire-api.vercel.app` (*placeholder* documenté : Vercel
+    n'interpole pas les variables dans `vercel.json`) puis repli SPA ; en-têtes (hors `/api/*`) CSP tout `'self'`
+    (+ Blob pour les images, `'unsafe-inline'` en style, `'unsafe-hashes'` + sha256 du seul `onload="this.media='all'"`
+    d'Angular), HSTS, nosniff, DENY, Referrer/Permissions-Policy, COOP ; cache immuable `main|chunk|polyfills|styles-*`,
+    `index.html`/`ngsw-worker.js`/`ngsw.json`/`safety-worker.js`/manifeste en no-store. Vérifié dans Chromium avec un
+    serveur appliquant ces en-têtes : aucune violation CSP, feuille de style chargée, service worker enregistré.
+  - `apps/api/vercel.json` : fonction unique `api/index.js` (réexporte `dist/apps/api/serverless.js`), `regions: ["fra1"]`,
+    1024 Mo / 30 s, toutes routes réécrites vers elle ; `scripts/vercel-build.sh` = `prisma generate` →
+    `prisma migrate deploy` (`DATABASE_URL_UNPOOLED`, échoue si absente ; `SKIP_DB_MIGRATIONS=1`) → seed si
+    `SEED_ON_BUILD=1` → `nx build api`. Taille tracée par `@vercel/nft` : **≈ 83 Mo** (2 080 fichiers ; Prisma 35 Mo,
+    libvips 19 Mo ×2 en local) < 250 Mo.
+  - Pare-feu : `vercel.json` ne gère pas `rate_limit` → `apps/api/scripts/firewall-rules.sh <apps/web|apps/api>`
+    (CLI `vercel firewall rules add` + `publish`) : `POST /api/v1/simulations` 20/60 s/IP → 429, `POST /api/v1/leads`
+    5/600 s/IP → refus 15 min ; procédure tableau de bord équivalente dans la doc.
+  - `.github/workflows/backup.yml` : lundi 02:17 UTC + manuel, `pg_dump -Fc` 17 (PGDG) via secret
+    `DATABASE_URL_UNPOOLED`, vérifié par `pg_restore --list`, artefact 90 jours.
+  - Écarts : les prévisualisations du web relaient vers l'API de production (URL statique) ; règles du pare-feu non
+    versionnables dans `vercel.json` (script CLI à lancer une fois par projet).
 - Facultatif : tests de `lead-page` et `shared-page`.

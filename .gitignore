@@ -12,3 +12,4 @@ coverage/
 .vercel
 
 .angular
+apps/web/vercel-dist

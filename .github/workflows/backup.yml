@@ -1,0 +1,60 @@
+name: Sauvegarde base
+
+# Export pg_dump hebdomadaire de la base Neon de production, conservé hors de Neon
+# (artefact GitHub, 90 jours). Restauration : docs/DEPLOIEMENT.md, § Sauvegardes.
+on:
+  schedule:
+    # Chaque lundi à 02:17 UTC (minute décalée pour éviter le pic de l'heure pile).
+    - cron: '17 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+jobs:
+  pg-dump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Client PostgreSQL 17
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list > /dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
+
+      - name: pg_dump
+        env:
+          # Connexion directe (non poolée) : pg_dump n'est pas compatible avec PgBouncer.
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+        run: |
+          if [ -z "$DATABASE_URL_UNPOOLED" ]; then
+            echo "::error::Secret DATABASE_URL_UNPOOLED manquant (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          echo "STAMP=$stamp" >> "$GITHUB_ENV"
+          mkdir -p backup
+          pg_dump --version
+          pg_dump "$DATABASE_URL_UNPOOLED" \
+            --format=custom --compress=9 --no-owner --no-privileges \
+            --file "backup/simulateur-$stamp.dump"
+          pg_restore --list "backup/simulateur-$stamp.dump" > /dev/null
+          ls -lh backup
+
+      - name: Artefact (90 jours)
+        uses: actions/upload-artifact@v4
+        with:
+          name: pg-dump-${{ env.STAMP }}
+          path: backup/*.dump
+          retention-days: 90
+          if-no-files-found: error
+          compression-level: 0
