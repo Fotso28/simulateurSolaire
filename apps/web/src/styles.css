@@ -1,5 +1,49 @@
 @import 'tailwindcss';
 
+/* IBM Plex auto-hébergé (sous-ensemble latin, mis en cache par le service worker). */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+}
+
 /*
  * Jetons de design — design/maquettes/Fondations.dc.html.
  * Les noms se reportent tels quels en classes Tailwind : bg-bg, text-ink, bg-action, border-line…
@@ -164,6 +208,22 @@
   .btn-secondary:hover {
     color: var(--color-ink);
     background: var(--color-surface-2);
+  }
+
+  /* Champ de saisie (formulaire de devis). */
+  .field {
+    min-height: 48px;
+    width: 100%;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    padding: 10px 14px;
+    color: var(--color-ink);
+    font: inherit;
+    font-size: 16px;
+  }
+  .field[aria-invalid='true'] {
+    border-color: var(--color-crit);
   }
 
   /* Barre d'action collée en bas de l'écran (mobile). */

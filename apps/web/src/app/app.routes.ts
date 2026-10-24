@@ -74,10 +74,16 @@ export const appRoutes: Route[] = [
       import('./features/particulier/recap-page').then((m) => m.RecapPage),
   },
   {
-    // Point d'extension L5 : simulation partagée en lecture.
     path: 's/:shareToken',
-    title: 'Simulation partagée',
-    loadComponent: placeholder,
+    title: 'Simulation partagée · Simulateur solaire',
+    loadComponent: () =>
+      import('./features/share/shared-page').then((m) => m.SharedPage),
+  },
+  {
+    path: 'devis',
+    title: 'Être recontacté · Simulateur solaire',
+    loadComponent: () =>
+      import('./features/lead/lead-page').then((m) => m.LeadPage),
   },
   {
     path: 'admin',

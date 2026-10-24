@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CatalogService } from './core/catalog.service';
+import { OfflineIndicator } from './shared/ui/offline-indicator';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, OfflineIndicator],
   selector: 'app-root',
-  template: '<router-outlet />',
+  template: '<app-offline-indicator /><router-outlet />',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
