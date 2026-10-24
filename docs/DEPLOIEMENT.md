@@ -20,7 +20,8 @@ navigateur ──► projet web (CDN Vercel, apps/web/vercel.json)
 
 | Fichier | Rôle |
 |---|---|
-| `apps/web/vercel.json` | Installation (npm 11), build `nx build web`, sortie `apps/web/vercel-dist`, réécritures `/api/*` et SPA, en-têtes de sécurité (CSP), cache. |
+| `apps/web/vercel.json` | Installation (npm 11), build `nx build web` puis `apps/web/scripts/vercel-output.mjs`. |
+| `apps/web/scripts/vercel-output.mjs` | Génère au build la sortie Vercel (Build Output API v3, `apps/web/.vercel/output`) : réécriture `/api/*` vers `API_ORIGIN`, repli SPA, en-têtes de sécurité (CSP avec empreintes calculées), cache. |
 | `apps/api/vercel.json` | Installation, build par `scripts/vercel-build.sh`, fonction unique `api/index.js` en `fra1`, réécriture de toutes les routes vers elle. |
 | `apps/api/api/index.js` | Point d'entrée de la fonction : réexporte le handler NestJS construit (`dist/apps/api/serverless.js`). |
 | `apps/api/scripts/vercel-build.sh` | `prisma generate` → `prisma migrate deploy` (→ seed facultatif) → `nx build api`. |
@@ -41,8 +42,8 @@ Créer l'API en premier : le projet web a besoin de son URL.
 
 1. Vercel → **Add New… → Project** → importer le dépôt.
 2. **Project Name** : `simulateur-solaire-api` (ce nom donne le domaine
-   `simulateur-solaire-api.vercel.app` utilisé par la réécriture du projet web ; si vous
-   choisissez un autre nom, modifiez `destination` dans `apps/web/vercel.json`, voir § 3).
+   `simulateur-solaire-api.vercel.app`, à reporter dans la variable `API_ORIGIN` du projet
+   web, voir § 3).
 3. **Root Directory** : `apps/api`. Laisser cochée « Include files outside the root
    directory in the Build Step » (le build lit `package.json`, `node_modules` et `dist` à
    la racine du dépôt).
@@ -65,25 +66,32 @@ fichier prime).
 3. **Root Directory** : `apps/web`, « Include files outside the root directory » coché.
 4. **Framework Preset** : *Other* (le fichier fixe `framework: null`, build Nx et sortie).
 5. **Node.js Version** : `22.x`.
-6. URL de l'API : `apps/web/vercel.json` contient
+6. **Variable `API_ORIGIN`** (Settings → Environment Variables du projet web) : origine de
+   l'API vers laquelle `/api/*` est relayé. Rien n'est codé en dur dans le dépôt ; le build
+   échoue si elle manque.
 
-   ```json
-   { "source": "/api/:path*", "destination": "https://simulateur-solaire-api.vercel.app/api/:path*" }
-   ```
+   | Environnement | Valeur |
+   |---|---|
+   | Production | `https://simulateur-solaire-api.vercel.app` (ou `https://api.<votre-domaine>` après le § 7) |
+   | Preview | `https://simulateur-solaire-api-git-{branch}-<équipe>.vercel.app` |
 
-   Vercel n'interpole pas les variables d'environnement dans `vercel.json` : c'est un
-   *placeholder* documenté à remplacer par le domaine de production réel de l'API (domaine
-   `*.vercel.app` du projet api, ou `api.<votre-domaine>` une fois le § 7 fait), puis
-   commiter. Les prévisualisations du projet web relaient aussi vers cette URL : pour tester
-   une API de prévisualisation, appeler directement son URL de déploiement.
-7. Aucune variable d'environnement n'est nécessaire côté web (le front appelle `/api/v1`
-   en relatif).
-8. **Deploy**. Le build lance `nx build web --configuration=production` puis copie
-   `dist/apps/web/browser` dans `apps/web/vercel-dist` (dossier de sortie, ignoré par Git).
+   `{branch}` est remplacé au build par la branche Git du déploiement (minuscules, tout
+   caractère hors `a-z0-9` → `-`, comme les alias de branche Vercel) : la prévisualisation
+   du web d'une branche parle à la prévisualisation de l'API de la **même branche**, elle-même
+   reliée à sa branche Neon dédiée (§ 4). Une prévisualisation n'écrit donc jamais dans la
+   base de production. Vercel abrège les alias de branche très longs : pour une telle
+   branche, mettre une valeur Preview fixe propre à la branche (Environment Variables →
+   *Preview* → *Branch*).
+7. Aucune autre variable n'est nécessaire côté web (le front appelle `/api/v1` en relatif).
+8. **Deploy**. Le build lance `nx build web --configuration=production` puis
+   `node apps/web/scripts/vercel-output.mjs`, qui copie `dist/apps/web/browser` dans
+   `apps/web/.vercel/output/static` et écrit `apps/web/.vercel/output/config.json`
+   (Build Output API v3 : Vercel déploie ce dossier tel quel ; ignoré par Git). Vérification
+   locale : `API_ORIGIN=https://exemple.test node apps/web/scripts/vercel-output.mjs`.
 
-Ce que fait `apps/web/vercel.json` :
+Ce que contient la configuration générée (`config.json`) :
 
-- **Réécritures** : `/api/*` → projet api ; tout le reste → `index.html` si aucun fichier
+- **Réécritures** : `/api/*` → `API_ORIGIN` ; tout le reste → `index.html` si aucun fichier
   statique ne correspond (routes Angular `/mode`, `/s/:token`, `/admin`…).
 - **En-têtes de sécurité** (toutes les routes sauf `/api/*`, qui garde ceux de l'API/Helmet) :
   `Content-Security-Policy`, `Strict-Transport-Security` (2 ans), `X-Content-Type-Options`,
@@ -94,16 +102,16 @@ Ce que fait `apps/web/vercel.json` :
   téléversées par le back-office), `connect-src 'self'` (API via la réécriture),
   `worker-src 'self'` (service worker), `frame-ancestors 'none'`, `object-src 'none'`.
   `style-src` autorise `'unsafe-inline'` (CSS critique incorporé par Angular et styles de
-  composants). `script-src` n'autorise que `'self'` plus l'empreinte du seul gestionnaire
-  en ligne généré par Angular, `onload="this.media='all'"` (chargement non bloquant de la
-  feuille de style) : `'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc='`.
-  Si une montée d'Angular change ce code, recalculer :
-  `printf "%s" "this.media='all'" | openssl dgst -sha256 -binary | base64`.
+  composants). `script-src` n'autorise que `'self'` plus les empreintes sha256 des scripts
+  et gestionnaires en ligne **trouvés dans l'`index.html` construit** (aujourd'hui le seul
+  `onload="this.media='all'"` du chargement non bloquant de la feuille de style, d'où
+  `'unsafe-hashes'`). Elles sont recalculées à chaque build : une montée d'Angular qui
+  change ce code ne casse plus la CSP.
 - **Cache** : `main-*.js`, `chunk-*.js`, `polyfills-*.js`, `styles-*.css` (noms hachés) →
   `public, max-age=31536000, immutable` ; `/fonts/*` 30 jours ; `/icons/*` 1 jour ;
   `index.html`, `ngsw-worker.js`, `ngsw.json`, `safety-worker.js`, `worker-basic.min.js`,
-  `manifest.webmanifest` → `no-cache, no-store, must-revalidate` (sinon le service worker
-  ne voit pas les nouvelles versions) ; le reste → `no-cache`.
+  `manifest.webmanifest` et le repli SPA → `no-cache, no-store, must-revalidate` (sinon le
+  service worker ne voit pas les nouvelles versions) ; le reste → `no-cache`.
 
 ## 4. Base Neon (Francfort) et branches de prévisualisation
 
@@ -118,6 +126,19 @@ Ce que fait `apps/web/vercel.json` :
    `vercel-build.sh` y applique les migrations de la branche, sans toucher à la production.
    Activer aussi la suppression automatique des branches Neon des branches Git supprimées
    (option de l'intégration) pour ne pas accumuler de branches.
+
+   **Règle : aucune prévisualisation n'écrit en production.** Concrètement :
+   - les `DATABASE_URL*` de l'environnement *Preview* du projet api sont **uniquement**
+     celles injectées par l'intégration (branche Neon de la branche Git) : ne jamais copier
+     à la main l'URL de production dans *Preview* ;
+   - si l'option de branche par déploiement n'est pas disponible (plan, quota), créer dans
+     Neon une branche unique `preview` (Branches → New branch, parent `main`), et mettre ses
+     chaînes poolée / directe dans `DATABASE_URL` / `DATABASE_URL_UNPOOLED` en *Preview*
+     seulement. La réinitialiser depuis `main` quand nécessaire (Branches → Reset from parent) ;
+   - côté web, `API_ORIGIN` *Preview* vise l'API de prévisualisation (§ 3, `{branch}`), jamais
+     le domaine de production ;
+   - les branches Neon de prévisualisation contiennent une copie des données de production
+     (comptes, demandes de devis) : leur accès est aussi sensible que la production.
 5. L'intégration crée notamment `DATABASE_URL` (connexion **poolée**, PgBouncer : utilisée
    par l'application via Prisma `url`) et `DATABASE_URL_UNPOOLED` (connexion **directe** :
    utilisée par `prisma migrate deploy` via `directUrl`, et par `pg_dump`). Ce sont
