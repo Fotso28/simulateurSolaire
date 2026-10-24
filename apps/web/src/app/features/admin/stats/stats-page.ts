@@ -198,6 +198,7 @@ function isoDay(date: Date): string {
       </div>
     }
   `,
+  host: { class: 'flex flex-col gap-5' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsPage {

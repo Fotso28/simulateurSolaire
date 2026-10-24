@@ -62,7 +62,7 @@ export const ADMIN_NAV: NavItem[] = [
           <span
             class="flex size-8 items-center justify-center rounded-sm bg-solar text-ink"
           >
-            <app-icon name="sun" [size]="20" [stroke]="1.75" />
+            <app-admin-icon name="sun" [size]="20" [stroke]="1.75" />
           </span>
           <span class="flex flex-col">
             <span class="text-[15px] leading-5 font-semibold"
@@ -85,7 +85,7 @@ export const ADMIN_NAV: NavItem[] = [
                 ariaCurrentWhenActive="page"
                 class="flex min-h-11 items-center gap-2.5 rounded-sm px-2.5 text-[#D7D8D2] no-underline hover:bg-[#2E3138] focus-visible:outline-2 focus-visible:outline-solar"
               >
-                <app-icon [name]="item.icon" />
+                <app-admin-icon [name]="item.icon" />
                 {{ item.label }}
               </a>
             </li>
@@ -109,7 +109,7 @@ export const ADMIN_NAV: NavItem[] = [
             class="flex min-h-11 items-center gap-2.5 rounded-sm px-0.5 text-left text-[#D7D8D2] hover:text-white focus-visible:outline-2 focus-visible:outline-solar"
             (click)="logout()"
           >
-            <app-icon name="logout" />
+            <app-admin-icon name="logout" />
             Se déconnecter
           </button>
         </div>

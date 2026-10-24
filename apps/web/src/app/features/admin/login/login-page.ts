@@ -29,7 +29,7 @@ import { fieldError } from '../ui/validators';
           <span
             class="flex size-8 items-center justify-center rounded-sm bg-solar text-ink"
           >
-            <app-icon name="sun" [size]="20" [stroke]="1.75" />
+            <app-admin-icon name="sun" [size]="20" [stroke]="1.75" />
           </span>
           <span class="flex flex-col">
             <span class="text-[15px] leading-5 font-semibold"

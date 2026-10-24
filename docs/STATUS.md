@@ -6,7 +6,8 @@
 | L1 | terminé | L1 |
 | L2 | terminé | L2 |
 | L3 | terminé | L3 |
-| L4 | à faire | |
+| L4 | en cours (L4a back-office : terminé) | L4a |
+| L4a | terminé — back-office `/admin` | L4a |
 | L5 | à faire | |
 | L6 | à faire | |
 
@@ -277,3 +278,64 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
 - Schéma de câblage d'un onduleur hybride dessiné en chaîne panneaux → onduleur → batterie (simplification).
 - Formulaires du « Autre appareil » sans quantité initiale (1, puis − / +) ; durée d'usage modifiable par crans
   (0,1 h → 24 h) comme la maquette, pas de saisie libre pour les appareils du catalogue.
+
+### L4a — Back-office Angular (terminé)
+
+**Fait** (tout dans `apps/web/src/app/features/admin/**`, chargé à la demande)
+- Routes (`admin.routes.ts`) : `/admin/login` ; coque gardée (`canActivate` + `canActivateChild`) avec `appareils`
+  (défaut), `categories` (ADMIN + EDITEUR), `statistiques`, `pays`, `materiel`, `parametres`, `comptes`, `journal`
+  (`data.roles = ['ADMIN']`). Chaque écran est un `loadComponent` séparé.
+- **Fournisseurs au niveau de la route** `/admin` : `provideHttpClient(withInterceptors([adminAuthInterceptor]))`,
+  `AdminAuthService`, `AdminApiService`, `ConfirmService` — rien dans `app.config.ts`, rien dans le bundle initial
+  (vérifié : aucune chaîne admin dans `main`/chunks initiaux). Si une autre lot fournit `HttpClient` en racine,
+  le back-office garde le sien.
+- Auth (`core/`) : jeton d'accès **en mémoire uniquement** (rien dans localStorage), `refresh()` partagé entre appels
+  simultanés (la rotation interdit de rejouer le cookie), `ensureSession()` (renouvellement par cookie après
+  rechargement), `logout()`. Intercepteur limité à `/api/v1/admin/**` (Bearer + sur 401 : un renouvellement puis
+  rejeu ; échec → `/admin/login?expired=1&returnUrl=…`) et `/api/v1/auth/*` (`withCredentials`) ; le reste passe
+  intact. Garde : sans session → `/admin/login?returnUrl=…`, rôle insuffisant → `/admin/appareils`. Menu filtré
+  par rôle (l'EDITEUR ne voit qu'Appareils et Catégories). Messages : `message` FR de `{ code, message, field }`,
+  `field` rattaché au contrôle du formulaire (`applyServerError`) ; `ACCOUNT_LOCKED` (423) affiché avec
+  l'explication du verrouillage de 15 min.
+- Écrans (langage visuel de `AdminCatalogue.dc.html` : barre latérale encre, tableaux mono, panneau latéral
+  d'édition, interrupteurs `role="switch"`, confirmations `<dialog>` natif) :
+  - Appareils : recherche (sans accents), filtre catégorie, « Afficher les désactivés », pagination 12, panneau
+    d'ajout/modification (formulaire réactif typé : puissance min/typ/max avec contrôle min ≤ typ ≤ max, typique
+    vide = moyenne, heures, taux, facteur k, ordre, actif), téléversement icône SVG / image WebP via
+    `/admin/media` avec aperçu, désactivation/réactivation confirmées (`DELETE` logique / `PATCH active`),
+    « Dernière modification » lue dans le journal (ADMIN). Icône : SVG téléversé, sinon icône L3 par `iconKey`.
+  - Catégories, Pays et régions (filtre par pays), Matériel (onglets panneaux, batteries, onduleurs, régulateurs,
+    sections de câbles, protections) : composant générique `resource/resource-table.ts` piloté par configuration
+    (colonnes, champs, bornes = celles des DTO de l'API). Suppression de catégorie (refusée par l'API si non vide).
+  - Paramètres : liste des versions (active, ancienne, jamais activée), « Nouvelle version à partir de l'active »
+    (formulaire de toutes les valeurs aplaties, seules les valeurs modifiées sont envoyées avec `baseVersion`),
+    comparaison A/B (différences seules par défaut), activation confirmée. Jamais d'édition en place.
+  - Comptes : création (e-mail, rôle, mot de passe ≥ 10 car. lettre + chiffre), changement de rôle / mot de passe,
+    activation ; son propre compte ne peut être ni désactivé ni rétrogradé ; badge « Verrouillé ».
+  - Statistiques : période, total, par mode, simulations par jour (barres), régions, appareils les plus choisis.
+  - Journal : filtres élément / action / identifiant, pagination 25, détail avant/après champ par champ.
+- États chargement / erreur (« Réessayer ») / vide partout ; libellés associés, `aria-invalid`, `aria-live`,
+  cibles 44 px, contrastes AA (gris d'interrupteur éteint foncé à `#8a8d86` au lieu de `#A7AAA2` de la maquette,
+  insuffisant pour un composant d'interface). Utilisable sur tablette (barre latérale passe en bandeau < 1024 px).
+- Tests (Jest, 22 dans `features/admin`) : service d'auth (mémoire, refresh partagé, échec, déconnexion),
+  intercepteur (périmètre, 401 → refresh → rejeu, échec → connexion, pas de refresh sur 403), garde (session,
+  refresh après rechargement, returnUrl, rôle), formulaire d'appareil (pré-remplissage, min > max, création avec
+  typique calculé, PATCH + erreur serveur sur le champ), helpers (erreurs, décimaux, paramètres, diff).
+- Test manuel Playwright (chromium) contre l'API locale (Postgres local, seed, `admin@example.com`) : garde +
+  returnUrl, échec puis connexion, session restaurée au rechargement, ajout d'un appareil avec icône SVG (nettoyée
+  par l'API), désactivation confirmée, nouvelle version de paramètres + comparaison + activation, création d'un
+  éditeur, menu restreint et route ADMIN refusée pour l'éditeur, vue tablette 820 px. Aucune erreur console hors
+  401 attendus.
+
+**Hors périmètre touché (strict nécessaire)**
+- `apps/api/src/app/bootstrap.ts` : en stockage `local`, `/media` envoie `Cross-Origin-Resource-Policy:
+  cross-origin` (Helmet imposait `same-origin`, le front sur `:4200` ne pouvait pas afficher les icônes servies
+  par `:3000`). Sans effet avec Vercel Blob. e2e API : 31/31.
+
+**Écarts / reste à faire**
+- Pas de rafraîchissement proactif du jeton avant expiration : le 401 déclenche le renouvellement (transparent).
+- Le premier accès à `/admin` sans cookie produit un 401 sur `/auth/refresh` dans la console (attendu).
+- Un pays ajouté n'apparaît dans la liste déroulante des régions qu'après rechargement de l'écran.
+- Ordre des appareils/catégories par champ « Ordre » (pas de glisser-déposer).
+- `AdminCatalogue` : la maquette n'a pas d'icône de catégorie dans la liste ; colonnes génériques ailleurs.
+

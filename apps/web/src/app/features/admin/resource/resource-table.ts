@@ -104,7 +104,7 @@ type AnyForm = FormGroup<Record<string, FormControl<unknown>>>;
           [class]="ui.primary + ' ml-auto'"
           (click)="openNew()"
         >
-          <app-icon name="plus" [stroke]="2" />
+          <app-admin-icon name="plus" [stroke]="2" />
           {{ config().addLabel }}
         </button>
       </div>
@@ -168,7 +168,7 @@ type AnyForm = FormGroup<Record<string, FormControl<unknown>>>;
                       [attr.aria-label]="'Modifier : ' + config().rowLabel(row)"
                       (click)="edit(row)"
                     >
-                      <app-icon name="pencil" />
+                      <app-admin-icon name="pencil" />
                     </button>
                     @if (config().deletable) {
                       <button
@@ -179,7 +179,7 @@ type AnyForm = FormGroup<Record<string, FormControl<unknown>>>;
                         "
                         (click)="remove(row)"
                       >
-                        <app-icon name="trash" />
+                        <app-admin-icon name="trash" />
                       </button>
                     }
                   </td>
@@ -222,7 +222,7 @@ type AnyForm = FormGroup<Record<string, FormControl<unknown>>>;
                 aria-label="Fermer"
                 (click)="close()"
               >
-                <app-icon name="close" [size]="20" [stroke]="1.75" />
+                <app-admin-icon name="close" [size]="20" [stroke]="1.75" />
               </button>
             </div>
             <form

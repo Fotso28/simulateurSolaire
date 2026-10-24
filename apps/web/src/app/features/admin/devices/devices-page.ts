@@ -13,6 +13,7 @@ import { ConfirmService } from '../core/confirm.service';
 import { Loader } from '../core/loader';
 import { DeviceCategoryRow, DeviceRow } from '../core/models';
 import { formatNumber } from '../ui/format';
+import { Icon as CatalogIcon } from '../../../shared/icons/icon';
 import { Icon } from '../ui/icon';
 import { PageHeader, UI } from '../ui/page-header';
 import { FormMessage, ListState, Switch } from '../ui/state';
@@ -23,11 +24,19 @@ const PAGE_SIZE = 12;
 /** Catalogue d'appareils (RF-19) : liste filtrable, activation, panneau d'édition. */
 @Component({
   selector: 'app-devices-page',
-  imports: [PageHeader, Icon, Switch, ListState, FormMessage, DeviceForm],
+  imports: [
+    PageHeader,
+    Icon,
+    CatalogIcon,
+    Switch,
+    ListState,
+    FormMessage,
+    DeviceForm,
+  ],
   template: `
     <app-page-header title="Appareils" [subtitle]="subtitle()">
       <button type="button" [class]="ui.primary" (click)="openNew()">
-        <app-icon name="plus" [stroke]="2" />
+        <app-admin-icon name="plus" [stroke]="2" />
         Ajouter un appareil
       </button>
     </app-page-header>
@@ -43,7 +52,7 @@ const PAGE_SIZE = 12;
           <label
             class="flex h-11 grow basis-60 items-center gap-2 rounded-md border border-line-strong bg-surface px-3 text-muted"
           >
-            <app-icon name="search" />
+            <app-admin-icon name="search" />
             <span class="sr-only">Rechercher un appareil</span>
             <input
               type="search"
@@ -128,9 +137,9 @@ const PAGE_SIZE = 12;
                           />
                         } @else {
                           <app-icon
-                            name="bulb"
-                            [size]="20"
-                            class="text-muted"
+                            [name]="device.iconKey"
+                            [size]="22"
+                            class="text-ink-2"
                           />
                         }
                       </span>
@@ -171,7 +180,7 @@ const PAGE_SIZE = 12;
                       [attr.aria-label]="'Modifier : ' + device.name"
                       (click)="edit(device)"
                     >
-                      <app-icon name="pencil" />
+                      <app-admin-icon name="pencil" />
                     </button>
                   </td>
                 </tr>
@@ -198,7 +207,7 @@ const PAGE_SIZE = 12;
                   [disabled]="page() === 0"
                   (click)="page.set(page() - 1)"
                 >
-                  <app-icon name="chevronLeft" [stroke]="1.75" />
+                  <app-admin-icon name="chevronLeft" [stroke]="1.75" />
                 </button>
                 <button
                   type="button"
@@ -207,7 +216,7 @@ const PAGE_SIZE = 12;
                   [disabled]="page() >= pageCount() - 1"
                   (click)="page.set(page() + 1)"
                 >
-                  <app-icon name="chevronRight" [stroke]="1.75" />
+                  <app-admin-icon name="chevronRight" [stroke]="1.75" />
                 </button>
               </span>
             </div>
@@ -226,6 +235,7 @@ const PAGE_SIZE = 12;
       }
     </div>
   `,
+  host: { class: 'flex flex-col gap-5' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DevicesPage {

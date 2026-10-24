@@ -31,7 +31,12 @@ export function configureApp(
   if (env.STORAGE_DRIVER === 'local') {
     app.use(
       '/media',
-      express.static(resolve(env.LOCAL_MEDIA_DIR), { fallthrough: false }),
+      express.static(resolve(env.LOCAL_MEDIA_DIR), {
+        fallthrough: false,
+        // Le front (autre origine en dev) affiche ces fichiers : Helmet impose sinon same-origin.
+        setHeaders: (res) =>
+          res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin'),
+      }),
     );
   }
   app.enableShutdownHooks();

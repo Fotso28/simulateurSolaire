@@ -33,7 +33,7 @@ const PATHS = {
 export type IconName = keyof typeof PATHS;
 
 @Component({
-  selector: 'app-icon',
+  selector: 'app-admin-icon',
   template: `
     <svg
       viewBox="0 0 24 24"

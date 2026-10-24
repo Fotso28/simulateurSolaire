@@ -24,7 +24,7 @@ import { Icon } from './icon';
         class="m-3 flex flex-wrap items-center gap-2 rounded-md bg-crit-soft px-3 py-2.5 text-[13px] leading-[18px] text-crit-ink"
         role="alert"
       >
-        <app-icon name="alert" />
+        <app-admin-icon name="alert" />
         <span><strong>Erreur :</strong> {{ error() }}</span>
         <button
           type="button"
@@ -66,7 +66,7 @@ export class ListState {
         [attr.role]="kind() === 'error' ? 'alert' : 'status'"
       >
         @if (kind() === 'error') {
-          <app-icon name="alert" />
+          <app-admin-icon name="alert" />
         }
         <span>{{ message() }}</span>
       </div>

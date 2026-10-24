@@ -59,7 +59,7 @@ const controlKey = (path: string) => path.replace(/\./g, '__');
           [disabled]="!activeSet()"
           (click)="startNewVersion()"
         >
-          <app-icon name="plus" [stroke]="2" />
+          <app-admin-icon name="plus" [stroke]="2" />
           Nouvelle version à partir de l'active
         </button>
       }
@@ -290,6 +290,7 @@ const controlKey = (path: string) => path.replace(/\./g, '__');
       </section>
     }
   `,
+  host: { class: 'flex flex-col gap-5' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ParametersPage {

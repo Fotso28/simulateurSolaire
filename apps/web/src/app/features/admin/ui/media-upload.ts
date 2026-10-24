@@ -64,7 +64,7 @@ const MAX_BYTES = 2 * 1024 * 1024;
           [disabled]="busy()"
           (click)="fileInput().nativeElement.click()"
         >
-          <app-icon name="upload" [size]="16" />
+          <app-admin-icon name="upload" [size]="16" />
           {{ busy() ? 'Envoi…' : url() ? 'Remplacer' : 'Téléverser' }}
           <span class="sr-only">{{ label() }}</span>
         </button>
@@ -75,7 +75,7 @@ const MAX_BYTES = 2 * 1024 * 1024;
             [attr.aria-label]="'Retirer : ' + label()"
             (click)="changed.emit(null)"
           >
-            <app-icon name="trash" [size]="16" />
+            <app-admin-icon name="trash" [size]="16" />
           </button>
         }
       </div>

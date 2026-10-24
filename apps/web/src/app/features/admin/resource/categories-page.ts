@@ -50,6 +50,7 @@ const CATEGORIES: ResourceConfig<DeviceCategoryRow> = {
     />
     <app-resource-table [config]="config" />
   `,
+  host: { class: 'flex flex-col gap-5' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriesPage {

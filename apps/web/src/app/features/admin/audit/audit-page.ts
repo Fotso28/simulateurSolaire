@@ -150,7 +150,7 @@ export function diffEntries(before: unknown, after: unknown): DiffRow[] {
                   (click)="openId.set(openId() === item.id ? null : item.id)"
                 >
                   Avant / après
-                  <app-icon
+                  <app-admin-icon
                     [name]="
                       openId() === item.id ? 'chevronLeft' : 'chevronRight'
                     "
@@ -250,7 +250,7 @@ export function diffEntries(before: unknown, after: unknown): DiffRow[] {
               [disabled]="page() <= 1"
               (click)="go(page() - 1)"
             >
-              <app-icon name="chevronLeft" [stroke]="1.75" />
+              <app-admin-icon name="chevronLeft" [stroke]="1.75" />
             </button>
             <button
               type="button"
@@ -259,13 +259,14 @@ export function diffEntries(before: unknown, after: unknown): DiffRow[] {
               [disabled]="page() >= pageCount()"
               (click)="go(page() + 1)"
             >
-              <app-icon name="chevronRight" [stroke]="1.75" />
+              <app-admin-icon name="chevronRight" [stroke]="1.75" />
             </button>
           </span>
         </div>
       }
     </div>
   `,
+  host: { class: 'flex flex-col gap-5' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuditPage {

@@ -201,6 +201,7 @@ function regionsConfig(countries: CountryRow[]): ResourceConfig<RegionRow> {
       }
     </section>
   `,
+  host: { class: 'flex flex-col gap-5' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GeoPage {

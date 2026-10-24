@@ -87,7 +87,7 @@ function powerOrder(group: AbstractControl): ValidationErrors | null {
           aria-label="Fermer"
           (click)="closed.emit()"
         >
-          <app-icon name="close" [size]="20" [stroke]="1.75" />
+          <app-admin-icon name="close" [size]="20" [stroke]="1.75" />
         </button>
       </div>
 

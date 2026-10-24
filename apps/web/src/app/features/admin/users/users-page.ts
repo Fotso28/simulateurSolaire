@@ -46,7 +46,7 @@ const ROLE_LABEL: Record<AdminRole, string> = {
       subtitle="L'administrateur gère tout ; l'éditeur ne gère que les catégories et les appareils."
     >
       <button type="button" [class]="ui.primary" (click)="openNew()">
-        <app-icon name="plus" [stroke]="2" />
+        <app-admin-icon name="plus" [stroke]="2" />
         Ajouter un compte
       </button>
     </app-page-header>
@@ -106,7 +106,7 @@ const ROLE_LABEL: Record<AdminRole, string> = {
                     [attr.aria-label]="'Modifier : ' + user.email"
                     (click)="edit(user)"
                   >
-                    <app-icon name="pencil" />
+                    <app-admin-icon name="pencil" />
                   </button>
                 </td>
               </tr>
@@ -146,7 +146,7 @@ const ROLE_LABEL: Record<AdminRole, string> = {
               aria-label="Fermer"
               (click)="close()"
             >
-              <app-icon name="close" [size]="20" [stroke]="1.75" />
+              <app-admin-icon name="close" [size]="20" [stroke]="1.75" />
             </button>
           </div>
           <form
@@ -225,6 +225,7 @@ const ROLE_LABEL: Record<AdminRole, string> = {
       }
     </div>
   `,
+  host: { class: 'flex flex-col gap-5' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersPage {
@@ -336,10 +337,9 @@ export class UsersPage {
       next: (row) => {
         this.busy.set(false);
         this.upsert(row);
-        this.selectedId.set(row.id);
-        this.form.controls.password.reset('');
+        // Après création, le panneau passe en mode modification du nouveau compte.
+        this.edit(row);
         this.success.set(current ? 'Compte mis à jour.' : 'Compte créé.');
-        if (!current) this.edit(row);
       },
       error: (error: unknown) => {
         this.busy.set(false);
