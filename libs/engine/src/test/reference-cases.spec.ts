@@ -280,9 +280,9 @@ describe('cas 4 : plomb / gel (Ebolowa, particulier)', () => {
 
   it('énergie min / typ / max', () => {
     expectWithin1pct(r.energyWhPerDay.min, 1428);
-    expectWithin1pct(r.energyWhPerDay.typ, 2364);
+    expectWithin1pct(r.energyWhPerDay.typ, 2132);
     expectWithin1pct(r.energyWhPerDay.max, 3300);
-    expect(r.peakW).toEqual({ installed: 310, surge: 730 });
+    expect(r.peakW).toEqual({ installed: 280, surge: 640 });
   });
 
   it('proposition typique en 12 V', () => {
@@ -291,13 +291,13 @@ describe('cas 4 : plomb / gel (Ebolowa, particulier)', () => {
     expect(r.pv).toMatchObject({ count: 2, series: 2, strings: 1 });
     expect(r.controller?.modelId).toBe('mppt-100a-250v');
     expect(r.battery).toEqual({
-      modelId: 'bat-pb-12v-150ah',
+      modelId: 'bat-pb-12v-200ah',
       series: 1,
-      parallel: 3,
-      capacityWh: 5400,
+      parallel: 2,
+      capacityWh: 4800,
     });
-    expectWithin1pct(r.effectiveAutonomyDays, 1.028);
-    expectWithin1pct(r.pvCoverage, 1.146);
+    expectWithin1pct(r.effectiveAutonomyDays, 1.013);
+    expectWithin1pct(r.pvCoverage, 1.271);
     expect(r.cables.map((c) => c.sectionMm2)).toEqual([4, 25, 25, 1.5]);
     expect(protection(r, 'battery_fuse')?.ratingA).toBe(80);
   });
@@ -325,14 +325,44 @@ describe('cas 4 : plomb / gel (Ebolowa, particulier)', () => {
 
   it('variantes 0,5 et 1,5 jour', () => {
     expect(r.variants.lower?.battery).toMatchObject({
-      modelId: 'bat-pb-12v-250ah',
+      modelId: 'bat-pb-12v-200ah',
       parallel: 1,
     });
-    expectWithin1pct(r.variants.lower?.effectiveAutonomyDays, 0.571);
+    expectWithin1pct(r.variants.lower?.effectiveAutonomyDays, 0.507);
     expect(r.variants.upper?.battery).toMatchObject({
-      modelId: 'bat-pb-12v-100ah',
-      parallel: 7,
+      modelId: 'bat-pb-12v-200ah',
+      parallel: 3,
     });
-    expectWithin1pct(r.variants.upper?.effectiveAutonomyDays, 1.599);
+    expectWithin1pct(r.variants.upper?.effectiveAutonomyDays, 1.52);
+  });
+});
+
+describe('foyer de Douala saisi depuis le catalogue (mode particulier)', () => {
+  // Mêmes appareils et quantités que le cas de référence, sans puissance
+  // ni durée saisies : le moteur prend P_typ et les heures par défaut.
+  const r = run({
+    ...DOUALA,
+    loads: DOUALA.loads?.map(({ deviceId, label, quantity }) => ({
+      deviceId,
+      label,
+      quantity,
+      hoursPerDay: DEFAULT_CATALOG.devices.find((d) => d.id === deviceId)
+        ?.defaultHoursPerDay as number,
+    })),
+  });
+
+  it('énergie typique ≈ 3 277 Wh/j', () => {
+    expectWithin1pct(r.energyWhPerDay.typ, 3277);
+  });
+
+  it('même proposition que le cas de référence', () => {
+    expect(r.systemVoltage).toBe(24);
+    expect(r.pv).toMatchObject({ panelModelId: 'panel-450', count: 3 });
+    expect(r.inverter.nominalW).toBe(1000);
+    expect(r.battery).toMatchObject({
+      modelId: 'bat-li-24v-200ah',
+      series: 1,
+      parallel: 1,
+    });
   });
 });

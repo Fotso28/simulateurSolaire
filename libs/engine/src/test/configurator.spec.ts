@@ -70,19 +70,19 @@ describe('configurateur : tailles voisines', () => {
 describe('récapitulatif : énergie journalière', () => {
   it('total min / typ / max et détail par ligne', () => {
     const e = computeDailyEnergy(EBOLOWA_LEAD.loads ?? [], C);
-    expect([e.min, e.typ, e.max]).toEqual([1428, 2364, 3300]);
+    expect([e.min, e.typ, e.max]).toEqual([1428, 2132, 3300]);
     expect(e.perLoad[4]).toEqual({
       index: 4,
       label: 'Réfrigérateur',
       min: 768,
-      typ: 1344,
+      typ: 1152,
       max: 1920,
     });
   });
 
   it('mode pro : puissance typique', () => {
     const e = computeDailyEnergy(EBOLOWA_LEAD.loads ?? [], C, 'pro');
-    expect([e.min, e.typ, e.max]).toEqual([2364, 2364, 2364]);
+    expect([e.min, e.typ, e.max]).toEqual([2132, 2132, 2132]);
   });
 
   it('liste vide : zéro', () => {

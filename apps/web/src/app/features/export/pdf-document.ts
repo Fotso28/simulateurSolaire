@@ -11,7 +11,17 @@ import type {
   TDocumentDefinitions,
 } from 'pdfmake/interfaces';
 import { formatDays, formatNumber, formatPercent } from '../../core/format';
-import { billOfMaterials, recapSummary } from '../particulier/recap-data';
+import {
+  billOfMaterials,
+  type BomGroup,
+  recapSummary,
+  type RecapSummary,
+} from '../particulier/recap-data';
+import {
+  proBillOfMaterials,
+  type ProContext,
+  proRecapSummary,
+} from '../pro/pro-view';
 import { wiringItems } from '../particulier/wiring-diagram';
 
 /** Données nécessaires au PDF (toutes issues du store). */
@@ -42,6 +52,8 @@ export function pdfText(s: string): string {
     .replace(/\u2248/g, '~')
     .replace(/\u2192/g, '->')
     .replace(/\u2190/g, '<-')
+    .replace(/\u2264/g, '<=')
+    .replace(/\u2265/g, '>=')
     .replace(/[\u2212\u2011]/g, '-');
 }
 
@@ -98,6 +110,93 @@ function hypotheses(d: PdfData): Content {
   };
 }
 
+/** Contexte technique (mode pro) ou `null` en mode particulier. */
+function proContext(d: PdfData): ProContext | null {
+  if (d.input.mode !== 'pro') return null;
+  return {
+    catalog: d.catalog,
+    params: d.params,
+    region: d.region,
+    input: d.input,
+  };
+}
+
+/** Hypothèses en vocabulaire technique (mode pro). */
+function proHypotheses(d: PdfData, summary: RecapSummary): Content {
+  const r = d.result;
+  const rows: [string, string][] = [
+    ...summary.facts.map((f): [string, string] => [f.label, f.value]),
+    ['Autonomie demandée', `${formatDays(d.input.autonomyDays)} j`],
+    [
+      'Technologie de batterie',
+      d.input.batteryTech === 'lithium' ? 'Lithium' : 'Plomb',
+    ],
+    [
+      'Paramètres de calcul',
+      `version ${r.paramsVersion} · PR ${formatPercent(d.params.values.performanceRatio)}`,
+    ],
+  ];
+  return {
+    table: {
+      widths: [150, '*'],
+      body: rows.map(([k, val]) => [{ text: k, color: MUTED }, { text: val }]),
+    },
+    layout: 'lightHorizontalLines',
+  };
+}
+
+/** Bilan de charge (mode pro) : P unitaire, quantité, durée, k — ou totaux. */
+function proLoads(d: PdfData): Content | null {
+  const loads = d.input.loads ?? [];
+  const totals = d.input.totals;
+  if (!loads.length && totals) {
+    const rows: [string, string][] = [
+      ['P_inst saisie', `${formatNumber(totals.powerW)} W`],
+      ['E_j saisie', `${formatNumber(totals.dailyEnergyWh)} Wh/j`],
+      ['Facteur de démarrage k', formatNumber(totals.surgeFactor ?? 1, 1)],
+    ];
+    return {
+      table: {
+        widths: [150, '*'],
+        body: rows.map(([k, v]) => [{ text: k, color: MUTED }, { text: v }]),
+      },
+      layout: 'lightHorizontalLines',
+    };
+  }
+  if (!loads.length) return null;
+  const right = (text: string): TableCell => ({ text, alignment: 'right' });
+  return {
+    table: {
+      headerRows: 1,
+      widths: ['*', 55, 35, 45, 35],
+      body: [
+        [
+          { text: 'Désignation', style: 'th' },
+          { text: 'P (W)', style: 'th', alignment: 'right' },
+          { text: 'Qté', style: 'th', alignment: 'right' },
+          { text: 'h/j', style: 'th', alignment: 'right' },
+          { text: 'k', style: 'th', alignment: 'right' },
+        ],
+        ...loads.map((l): TableCell[] => {
+          const device = l.deviceId
+            ? d.catalog.devices.find((dv) => dv.id === l.deviceId)
+            : undefined;
+          const power = l.powerW ?? device?.powerTypW;
+          const k = l.surgeFactor ?? device?.surgeFactor ?? 1;
+          return [
+            { text: l.label },
+            right(power !== undefined ? formatNumber(power) : '—'),
+            right(formatNumber(l.quantity)),
+            right(formatNumber(l.hoursPerDay, 1)),
+            right(formatNumber(k, 1)),
+          ];
+        }),
+      ],
+    },
+    layout: 'lightHorizontalLines',
+  };
+}
+
 function appliances(d: PdfData): Content | null {
   const loads = d.input.loads ?? [];
   if (!loads.length) return null;
@@ -129,14 +228,9 @@ function appliances(d: PdfData): Content | null {
   };
 }
 
-function bom(d: PdfData): Content[] {
+function bom(groups: BomGroup[]): Content[] {
   const th = (text: string): TableCell => ({ text, style: 'th', colSpan: 2 });
-  return billOfMaterials(
-    d.result,
-    d.catalog,
-    d.params,
-    d.input.options?.cableLengthsM,
-  )
+  return groups
     .filter((g) => g.lines.length)
     .map((g): Content => ({
       margin: [0, 0, 0, 8],
@@ -257,7 +351,19 @@ function deepSanitize<T>(value: T): T {
 
 /** Document pdfmake du récapitulatif (RF-17). */
 export function buildPdfDocument(d: PdfData): TDocumentDefinitions {
-  const summary = recapSummary(d.result, d.catalog, d.region);
+  const pro = proContext(d);
+  const summary = pro
+    ? proRecapSummary(d.result, pro)
+    : recapSummary(d.result, d.catalog, d.region);
+  const groups = pro
+    ? proBillOfMaterials(d.result, pro)
+    : billOfMaterials(
+        d.result,
+        d.catalog,
+        d.params,
+        d.input.options?.cableLengthsM,
+      );
+  const loads = pro ? proLoads(d) : appliances(d);
   const date = new Intl.DateTimeFormat('fr-FR').format(d.date);
   const content: (Content | null)[] = [
     {
@@ -268,7 +374,7 @@ export function buildPdfDocument(d: PdfData): TDocumentDefinitions {
           stack: [
             { text: 'Simulateur solaire', bold: true, fontSize: 13 },
             {
-              text: `Dimensionnement indicatif · ${date}`,
+              text: `${pro ? 'Dimensionnement technique' : 'Dimensionnement indicatif'} · ${date}`,
               color: MUTED,
               fontSize: 9,
             },
@@ -308,10 +414,12 @@ export function buildPdfDocument(d: PdfData): TDocumentDefinitions {
       })),
     },
     sectionTitle('Hypothèses'),
-    hypotheses(d),
-    ...(appliances(d) ? [sectionTitle('Appareils'), appliances(d)] : []),
-    sectionTitle('Liste du matériel'),
-    ...bom(d),
+    pro ? proHypotheses(d, summary) : hypotheses(d),
+    ...(loads
+      ? [sectionTitle(pro ? 'Bilan de charge' : 'Appareils'), loads]
+      : []),
+    sectionTitle(pro ? 'Nomenclature technique' : 'Liste du matériel'),
+    ...bom(groups),
     sectionTitle('Schéma de câblage simplifié'),
     wiring(d),
     ...(alerts(d) ? [sectionTitle('Alertes'), alerts(d)] : []),

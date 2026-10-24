@@ -11,8 +11,8 @@ export const DOUALA_LOADS = [
 ];
 
 /**
- * Le réfrigérateur du cas de référence (120 W, 24 h, cycle 0,4, démarrage ×4)
- * vient du catalogue pour garder son taux de fonctionnement : on le force à 120 W.
+ * Le réfrigérateur du cas de référence (120 W typiques, 24 h, cycle 0,4,
+ * démarrage ×4) vient du catalogue pour garder son taux de fonctionnement.
  */
 export function enterDouala(store: SimulationStore): void {
   store.reset();
@@ -22,8 +22,5 @@ export function enterDouala(store: SimulationStore): void {
   const fridge = store.catalog().devices.find((d) => d.id === 'fridge');
   if (!fridge) throw new Error('fridge absent du catalogue');
   store.setQuantity(fridge, 1);
-  store.loads.update((loads) =>
-    loads.map((l) => (l.deviceId === 'fridge' ? { ...l, powerW: 120 } : l)),
-  );
   store.flush();
 }

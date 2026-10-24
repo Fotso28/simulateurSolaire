@@ -25,18 +25,19 @@ describe('données de référence', () => {
     }
   });
 
-  it('8 catégories et 36 appareils, p_typ = (min + max) / 2, iconKey stables', () => {
+  it('8 catégories et 36 appareils, min ≤ p_typ ≤ max, iconKey stables', () => {
     expect(C.deviceCategories).toHaveLength(8);
     expect(C.devices).toHaveLength(36);
     expect(unique(C.devices.map((d) => d.id))).toBe(true);
     const categoryIds = new Set(C.deviceCategories.map((c) => c.id));
     for (const d of C.devices) {
       expect(categoryIds.has(d.categoryId)).toBe(true);
-      expect(d.powerTypW).toBe((d.powerMinW + d.powerMaxW) / 2);
+      expect(d.powerTypW).toBeGreaterThanOrEqual(d.powerMinW);
+      expect(d.powerTypW).toBeLessThanOrEqual(d.powerMaxW);
       expect(d.iconKey).toMatch(/^[a-z0-9-]+$/);
     }
     const heavy = C.devices.filter((d) => d.powerTypW > 1500).map((d) => d.id);
-    expect(heavy.sort()).toEqual(['ac-2hp', 'iron', 'kettle', 'water-heater']);
+    expect(heavy.sort()).toEqual(['ac-2hp', 'kettle', 'water-heater']);
   });
 
   it('matériel de référence du cas de Douala', () => {

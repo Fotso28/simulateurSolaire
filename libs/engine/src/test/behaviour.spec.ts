@@ -62,8 +62,8 @@ describe('alertes', () => {
     const loads = [
       ...(DOUALA.loads ?? []),
       {
-        deviceId: 'iron',
-        label: 'Fer à repasser',
+        deviceId: 'water-heater',
+        label: 'Chauffe-eau',
         quantity: 1,
         hoursPerDay: 0.5,
       },
@@ -260,7 +260,7 @@ describe('options', () => {
 
   it('mode pro sans puissance saisie : puissance typique du catalogue', () => {
     const r = run({ ...EBOLOWA_LEAD, mode: 'pro' });
-    expect(r.energyWhPerDay).toEqual({ min: 2364, typ: 2364, max: 2364 });
+    expect(r.energyWhPerDay).toEqual({ min: 2132, typ: 2132, max: 2132 });
   });
 
   it('appareil libre (sans deviceId) : taux et facteur de démarrage à 1', () => {

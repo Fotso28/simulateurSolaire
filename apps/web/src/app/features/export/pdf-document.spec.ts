@@ -43,6 +43,32 @@ describe('Export PDF', () => {
     expect(doc.defaultStyle?.font).toBe('Helvetica');
   });
 
+  it('mode pro : formulation technique (E_j, P_inst, P_dem, câblage, calibres)', () => {
+    TestBed.configureTestingModule({});
+    const store = TestBed.inject(SimulationStore);
+    enterDouala(store);
+    store.setMode('pro');
+    const data = TestBed.inject(PdfExportService).data();
+    expect(data?.input.mode).toBe('pro');
+    if (!data) return;
+    const text = JSON.stringify(buildPdfDocument(data).content);
+    for (const expected of [
+      'dimensionnement technique',
+      'Énergie journalière E_j',
+      'P_inst / P_dem',
+      'BILAN DE CHARGE',
+      'NOMENCLATURE TECHNIQUE',
+      '3S × 1P',
+      'Calibre',
+      'mm²',
+      'Désignation',
+    ]) {
+      expect(text).toContain(expected);
+    }
+    expect(text).not.toContain('Liste du matériel'.toUpperCase());
+    expect(text).not.toMatch(/[\u202F≈→≤≥]/);
+  });
+
   it('ne produit rien sans simulation', () => {
     TestBed.configureTestingModule({});
     expect(TestBed.inject(PdfExportService).data()).toBeNull();
