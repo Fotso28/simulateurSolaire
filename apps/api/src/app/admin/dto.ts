@@ -37,6 +37,14 @@ export class CreateDeviceCategoryDto {
   @IsOptional()
   @emptyToNull
   @ValidateIf((_, v) => v !== null)
+  @Matches(/^[a-z0-9-]{1,64}$/, {
+    message: 'La clé d’icône est invalide (a-z, 0-9, tirets).',
+  })
+  iconKey?: string | null;
+
+  @IsOptional()
+  @emptyToNull
+  @ValidateIf((_, v) => v !== null)
   @IsUrl(URL_OPTS)
   @MaxLength(500)
   iconUrl?: string | null;
@@ -59,6 +67,14 @@ export class CreateDeviceDto {
   @MinLength(1)
   @MaxLength(120)
   name!: string;
+
+  @IsOptional()
+  @emptyToNull
+  @ValidateIf((_, v) => v !== null)
+  @Matches(/^[a-z0-9-]{1,64}$/, {
+    message: 'La clé d’icône est invalide (a-z, 0-9, tirets).',
+  })
+  iconKey?: string | null;
 
   @IsOptional()
   @emptyToNull
@@ -217,6 +233,8 @@ export class CreatePanelDto {
 export class UpdatePanelDto extends PartialType(CreatePanelDto) {}
 
 export class CreateBatteryDto {
+  @IsOptional() @IsString() @MaxLength(120) label?: string;
+
   @IsIn(['lithium', 'plomb'])
   technology!: 'lithium' | 'plomb';
 
@@ -229,6 +247,8 @@ export class CreateBatteryDto {
 export class UpdateBatteryDto extends PartialType(CreateBatteryDto) {}
 
 export class CreateInverterDto {
+  @IsOptional() @IsString() @MaxLength(120) label?: string;
+
   @IsIn(['hybride', 'autonome'])
   type!: 'hybride' | 'autonome';
 
@@ -256,6 +276,8 @@ export class CreateInverterDto {
 export class UpdateInverterDto extends PartialType(CreateInverterDto) {}
 
 export class CreateControllerDto {
+  @IsOptional() @IsString() @MaxLength(120) label?: string;
+
   @IsIn(['MPPT', 'PWM'])
   type!: 'MPPT' | 'PWM';
 

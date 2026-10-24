@@ -14,11 +14,12 @@ export class CatalogService {
 
   /**
    * Agrégat des données de référence.
-   * `includeInactiveDevices` sert au rejeu serveur : un appareil désactivé depuis
-   * reste résoluble dans une simulation construite avant sa désactivation.
+   * `includeInactive` sert au rejeu serveur : le moteur filtre lui-même sur `active`,
+   * sauf pour les identifiants forcés ou les appareils désactivés depuis la simulation.
    */
-  async getCatalog(includeInactiveDevices = false): Promise<Catalog> {
+  async getCatalog(includeInactive = false): Promise<Catalog> {
     const p = this.prisma;
+    const active = includeInactive ? {} : { active: true };
     const [
       countries,
       regions,
@@ -37,15 +38,15 @@ export class CatalogService {
         orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
       }),
       p.device.findMany({
-        where: includeInactiveDevices ? {} : { active: true },
+        where: active,
         orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
       }),
       p.panelModel.findMany({
-        where: { active: true },
+        where: active,
         orderBy: { powerWp: 'asc' },
       }),
       p.batteryModel.findMany({
-        where: { active: true },
+        where: active,
         orderBy: [
           { technology: 'asc' },
           { nominalVoltageV: 'asc' },
@@ -53,11 +54,11 @@ export class CatalogService {
         ],
       }),
       p.inverterModel.findMany({
-        where: { active: true },
+        where: active,
         orderBy: [{ nominalPowerW: 'asc' }, { dcVoltageV: 'asc' }],
       }),
       p.controllerModel.findMany({
-        where: { active: true },
+        where: active,
         orderBy: { maxCurrentA: 'asc' },
       }),
       p.cableSection.findMany({ orderBy: { sectionMm2: 'asc' } }),

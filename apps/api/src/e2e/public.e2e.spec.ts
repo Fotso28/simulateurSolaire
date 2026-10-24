@@ -1,14 +1,12 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
-import { simulate } from '@simulateur/engine';
+import { DEFAULT_CABLE_SECTIONS, simulate } from '@simulateur/engine';
 import type {
-  ParameterSet,
   SimulationInput,
   SimulationResult,
 } from '@simulateur/shared-types';
 import request from 'supertest';
 import { PrismaService } from '../app/prisma/prisma.service';
 import { CatalogResponse } from '../app/catalog/catalog.service';
-import { FIXTURE_DATA } from '../test/fixtures';
 import { API, createTestApp, resetDatabase } from './helpers';
 
 const INPUT: SimulationInput = {
@@ -26,25 +24,6 @@ const INPUT: SimulationInput = {
     },
   ],
 };
-
-/** Le rejeu n'est testable qu'une fois `simulate()` implémenté par L1. */
-const engineReady = (() => {
-  try {
-    const params: ParameterSet = {
-      id: 'p',
-      version: 1,
-      values: FIXTURE_DATA.parameters,
-      activeSince: new Date().toISOString(),
-      createdBy: null,
-    };
-    simulate(INPUT, FIXTURE_DATA, params);
-    return true;
-  } catch {
-    return false;
-  }
-})();
-const itEngine = (name: string, fn: () => Promise<void>) =>
-  engineReady ? it(name, fn) : it.todo(name);
 
 describe('API publique', () => {
   let app: NestExpressApplication;
@@ -91,10 +70,7 @@ describe('API publique', () => {
       ].sort(),
     );
     expect(body.parameterSet.version).toBe(1);
-    expect(body.cableSections[0]).toEqual({
-      sectionMm2: 4,
-      allowableCurrentA: 32,
-    });
+    expect(body.cableSections[0]).toEqual(DEFAULT_CABLE_SECTIONS[0]);
     const etag = res.headers['etag'];
     expect(etag).toMatch(/^".+"$/);
     expect(res.headers['content-security-policy']).toBeDefined();
@@ -172,40 +148,52 @@ describe('API publique', () => {
       expect(version.body.code).toBe('UNKNOWN_PARAMS_VERSION');
     });
 
-    itEngine(
-      'rejoue le moteur, stocke la simulation et refuse un résultat divergent',
-      async () => {
-        const catalog = (await http.get(`${API}/catalog`))
-          .body as CatalogResponse;
-        const result: SimulationResult = simulate(
-          INPUT,
-          catalog,
-          catalog.parameterSet,
-        );
+    it('rejoue le moteur, stocke la simulation et refuse un résultat divergent', async () => {
+      const catalog = (await http.get(`${API}/catalog`))
+        .body as CatalogResponse;
+      const result: SimulationResult = simulate(
+        INPUT,
+        catalog,
+        catalog.parameterSet,
+      );
 
-        const tampered = structuredClone(result);
-        tampered.pv.totalWp *= 1.05;
-        const refused = await http
-          .post(`${API}/simulations`)
-          .send({ input: INPUT, result: tampered })
-          .expect(422);
-        expect(refused.body).toMatchObject({
-          code: 'RESULT_MISMATCH',
-          field: 'result.pv.totalWp',
-        });
+      const tampered = structuredClone(result);
+      tampered.pv.totalWp *= 1.05;
+      const refused = await http
+        .post(`${API}/simulations`)
+        .send({ input: INPUT, result: tampered })
+        .expect(422);
+      expect(refused.body).toMatchObject({
+        code: 'RESULT_MISMATCH',
+        field: 'result.pv.totalWp',
+      });
 
-        const res = await http
-          .post(`${API}/simulations`)
-          .send({ input: INPUT, result })
-          .expect(201);
-        expect(res.body.shareToken).toMatch(/^[A-Za-z0-9_-]{24}$/);
-        const shared = await http
-          .get(`${API}/simulations/${res.body.shareToken}`)
-          .expect(200);
-        expect(shared.body.input).toEqual(INPUT);
-        expect(shared.body.paramsVersion).toBe(1);
-      },
-    );
+      const res = await http
+        .post(`${API}/simulations`)
+        .send({ input: INPUT, result })
+        .expect(201);
+      expect(res.body.shareToken).toMatch(/^[A-Za-z0-9_-]{24}$/);
+      const shared = await http
+        .get(`${API}/simulations/${res.body.shareToken}`)
+        .expect(200);
+      expect(shared.body.input).toEqual(INPUT);
+      expect(shared.body.paramsVersion).toBe(1);
+      expect(shared.body.result.pv.totalWp).toBe(result.pv.totalWp);
+    });
+
+    it('traduit une erreur du moteur en 422 avec son code', async () => {
+      const res = await http
+        .post(`${API}/simulations`)
+        .send({
+          input: { ...INPUT, overrides: { inverterId: 'inconnu' } },
+          result: { paramsVersion: 1 },
+        })
+        .expect(422);
+      expect(res.body).toEqual({
+        code: 'OVERRIDE_NOT_FOUND',
+        message: expect.any(String),
+      });
+    });
   });
 
   it('GET /simulations/:shareToken ouvre une simulation stockée, 404 sinon', async () => {

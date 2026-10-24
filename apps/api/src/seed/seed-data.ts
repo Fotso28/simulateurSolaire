@@ -1,10 +1,7 @@
-import { FIXTURE_DATA } from '../test/fixtures';
+import { DEFAULT_CATALOG, DEFAULT_PARAMETER_SET } from '@simulateur/engine';
 import type { SeedData } from './seed';
 
-/**
- * Source des données du seed.
- * TODO(L2) : remplacer par les données de référence de `@simulateur/engine` (L1) dès leur publication.
- */
+/** Données de référence par défaut du moteur (`libs/engine/src/data`, lot L1). */
 export function loadSeedData(): SeedData {
-  return FIXTURE_DATA;
+  return { ...DEFAULT_CATALOG, parameters: DEFAULT_PARAMETER_SET.values };
 }

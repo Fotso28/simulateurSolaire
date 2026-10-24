@@ -1,4 +1,5 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
+import { DEFAULT_CABLE_SECTIONS } from '@simulateur/engine';
 import sharp from 'sharp';
 import request from 'supertest';
 import { PrismaService } from '../app/prisma/prisma.service';
@@ -295,7 +296,7 @@ describe('Back-office', () => {
         .get(`${API}/admin/equipment/cable-sections`)
         .set(as(admin))
         .expect(200);
-      expect(sections.body).toHaveLength(5);
+      expect(sections.body).toHaveLength(DEFAULT_CABLE_SECTIONS.length);
     });
 
     it('versionne les paramètres sans modification en place, puis active', async () => {

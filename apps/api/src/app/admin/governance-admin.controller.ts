@@ -9,6 +9,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { resolveParameters } from '@simulateur/engine';
+import type { EngineParameters } from '@simulateur/shared-types';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
@@ -86,8 +88,12 @@ export class ParameterSetsController {
             'baseVersion',
           );
         }
+        // Base complétée des valeurs par défaut : tout paramètre connu du moteur est modifiable.
+        const resolved = resolveParameters(
+          base.values as Partial<EngineParameters>,
+        );
         const values = mergeParameters(
-          base.values as Record<string, unknown>,
+          resolved as unknown as Record<string, unknown>,
           dto.values,
         );
         const last = await tx.parameterSet.findFirst({

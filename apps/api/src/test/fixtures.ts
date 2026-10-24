@@ -1,6 +1,10 @@
+import {
+  DEFAULT_CABLE_SECTIONS,
+  DEFAULT_PROTECTION_RATINGS,
+} from '@simulateur/engine';
 import type { SeedData } from '../seed/seed';
 
-/** Jeu de données minimal et stable pour les tests de l'API (indépendant des données de L1). */
+/** Jeu de données minimal et stable pour les tests de l'API (catalogue réduit, identifiants dédiés). */
 export const FIXTURE_DATA: SeedData = {
   countries: [
     {
@@ -89,6 +93,14 @@ export const FIXTURE_DATA: SeedData = {
   ],
   batteries: [
     {
+      id: 'bat-li-12-100',
+      technology: 'lithium',
+      nominalVoltageV: 12,
+      capacityAh: 100,
+      dod: 0.9,
+      active: true,
+    },
+    {
       id: 'bat-li-48-100',
       technology: 'lithium',
       nominalVoltageV: 48,
@@ -107,6 +119,17 @@ export const FIXTURE_DATA: SeedData = {
   ],
   inverters: [
     {
+      id: 'inv-sa-1000-12',
+      type: 'autonome',
+      nominalPowerW: 1000,
+      surgeFactor: 2,
+      dcVoltageV: 12,
+      efficiency: 0.9,
+      mpptMaxCurrentA: null,
+      mpptMaxPvVoltageV: null,
+      active: true,
+    },
+    {
       id: 'inv-hyb-3000-24',
       type: 'hybride',
       nominalPowerW: 3000,
@@ -120,27 +143,18 @@ export const FIXTURE_DATA: SeedData = {
   ],
   controllers: [
     {
-      id: 'mppt-60',
+      id: 'mppt-100',
       type: 'MPPT',
-      maxCurrentA: 60,
+      maxCurrentA: 100,
       maxPvVoltageV: 150,
-      maxInputCurrentA: 40,
+      maxInputCurrentA: 60,
       supportedVoltages: [12, 24, 48],
       active: true,
     },
   ],
-  cableSections: [
-    { sectionMm2: 4, allowableCurrentA: 32 },
-    { sectionMm2: 6, allowableCurrentA: 41 },
-    { sectionMm2: 10, allowableCurrentA: 57 },
-    { sectionMm2: 16, allowableCurrentA: 76 },
-    { sectionMm2: 25, allowableCurrentA: 101 },
-  ],
-  protectionRatings: [
-    { type: 'fusible', ratingA: 16 },
-    { type: 'fusible', ratingA: 32 },
-    { type: 'disjoncteur_dc', ratingA: 63 },
-  ],
+  // Tables électriques du moteur (L1) : elles conditionnent la faisabilité du calcul.
+  cableSections: DEFAULT_CABLE_SECTIONS,
+  protectionRatings: DEFAULT_PROTECTION_RATINGS,
   parameters: {
     dodLithium: 0.9,
     dodLead: 0.5,

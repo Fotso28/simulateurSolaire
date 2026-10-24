@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { simulate } from '@simulateur/engine';
+import { EngineError, simulate } from '@simulateur/engine';
 import type {
   SimulationInput,
   SimulationResult,
@@ -68,6 +68,13 @@ export class SimulationsService {
     try {
       replayed = simulate(input, catalog, params);
     } catch (error) {
+      if (error instanceof EngineError) {
+        throw new ApiError(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+          error.code,
+          error.message,
+        );
+      }
       this.logger.warn(`Rejeu impossible : ${(error as Error).message}`);
       throw new ApiError(
         HttpStatus.UNPROCESSABLE_ENTITY,

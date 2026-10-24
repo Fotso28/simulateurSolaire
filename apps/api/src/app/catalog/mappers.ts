@@ -43,6 +43,7 @@ export const toRegion = (r: Db.Region): Region => ({
 export const toDeviceCategory = (c: Db.DeviceCategory): DeviceCategory => ({
   id: c.id,
   name: c.name,
+  ...(c.iconKey ? { iconKey: c.iconKey } : {}),
   iconUrl: c.iconUrl,
   sortOrder: c.sortOrder,
 });
@@ -51,6 +52,7 @@ export const toDevice = (d: Db.Device): Device => ({
   id: d.id,
   categoryId: d.categoryId,
   name: d.name,
+  ...(d.iconKey ? { iconKey: d.iconKey } : {}),
   iconUrl: d.iconUrl,
   imageUrl: d.imageUrl,
   powerMinW: d.powerMinW,
@@ -77,6 +79,7 @@ export const toPanel = (p: Db.PanelModel): PanelModel => ({
 
 export const toBattery = (b: Db.BatteryModel): BatteryModel => ({
   id: b.id,
+  ...(b.label ? { label: b.label } : {}),
   technology: b.technology as BatteryTech,
   nominalVoltageV: b.nominalVoltageV,
   capacityAh: b.capacityAh,
@@ -86,6 +89,7 @@ export const toBattery = (b: Db.BatteryModel): BatteryModel => ({
 
 export const toInverter = (i: Db.InverterModel): InverterModel => ({
   id: i.id,
+  ...(i.label ? { label: i.label } : {}),
   type: i.type as InverterModelType,
   nominalPowerW: i.nominalPowerW,
   surgeFactor: i.surgeFactor,
@@ -98,6 +102,7 @@ export const toInverter = (i: Db.InverterModel): InverterModel => ({
 
 export const toController = (c: Db.ControllerModel): ControllerModel => ({
   id: c.id,
+  ...(c.label ? { label: c.label } : {}),
   type: c.type as ControllerModelType,
   maxCurrentA: c.maxCurrentA,
   maxPvVoltageV: c.maxPvVoltageV,
