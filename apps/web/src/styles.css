@@ -18,6 +18,12 @@
   --color-solar-soft: #fff5d6;
   --color-solar-ink: #8a5800;
   --color-action: #15803d;
+  /* Neutres secondaires des maquettes : pistes, séparateurs, anneaux. */
+  --color-track: #dcdcd5;
+  --color-track-soft: #ebebe5;
+  --color-divider: #ecece6;
+  --color-ring: #a7aaa2;
+  --color-highlight: #fffbeb;
 
   --color-ok: #1d7a46;
   --color-ok-soft: #e5f3ea;
@@ -49,6 +55,10 @@
   --text-body--line-height: 1.5rem;
   --text-small: 0.875rem;
   --text-small--line-height: 1.25rem;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.125rem;
+  --text-lead: 0.9375rem;
+  --text-lead--line-height: 1.375rem;
   --text-mono: 0.75rem;
   --text-mono--line-height: 1rem;
   --text-mono--font-weight: 500;
@@ -76,5 +86,140 @@
 
   a {
     color: var(--color-solar-ink);
+  }
+}
+
+@layer base {
+  /* Focus visible (WCAG AA) : contour encre, décalé de 2 px. */
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+
+  a:hover {
+    color: #6b4400;
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Action principale (une par écran). */
+  .btn-primary {
+    display: flex;
+    height: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--color-action);
+    color: #fff;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    color: #fff;
+    background: #126c34;
+  }
+  .btn-primary:disabled {
+    background: var(--color-line);
+    color: var(--color-muted);
+  }
+
+  .btn-secondary {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .btn-secondary:hover {
+    color: var(--color-ink);
+    background: var(--color-surface-2);
+  }
+
+  /* Barre d'action collée en bas de l'écran (mobile). */
+  .action-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 16px 16px;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-line);
+    box-shadow: 0 -6px 16px rgb(22 24 29 / 0.06);
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-xl);
+  }
+
+  /* Cercle de sélection (radio visuel des boutons aria-pressed). */
+  .radio-dot {
+    display: flex;
+    width: 20px;
+    height: 20px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #a7aaa2;
+    border-radius: 9999px;
+  }
+  .radio-dot::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+  }
+  [aria-pressed='true'] .radio-dot {
+    border-color: var(--color-ink);
+  }
+  [aria-pressed='true'] .radio-dot::after {
+    background: var(--color-ink);
+  }
+
+  /* Bouton à bascule (carte sélectionnable). */
+  .choice {
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    font: inherit;
+    color: inherit;
+    text-align: left;
+  }
+  .choice[aria-pressed='true'] {
+    border: 1.5px solid var(--color-ink);
+    background: var(--color-solar-soft);
   }
 }

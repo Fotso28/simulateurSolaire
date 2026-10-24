@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CatalogService } from './core/catalog.service';
 
 @Component({
   imports: [RouterOutlet],
@@ -7,4 +8,9 @@ import { RouterOutlet } from '@angular/router';
   template: '<router-outlet />',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {}
+export class App {
+  constructor() {
+    // Données embarquées tout de suite, catalogue de l'API dès qu'il arrive.
+    void inject(CatalogService).load();
+  }
+}

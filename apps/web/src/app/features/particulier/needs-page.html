@@ -1,0 +1,560 @@
+<div class="flex min-h-dvh flex-col">
+  <app-step-header
+    [step]="3"
+    title="Vos appareils"
+    backLink="/mode"
+    backLabel="Retour au choix du profil"
+  />
+
+  <!-- Formulaire « Autre appareil » (RF-06), partagé mobile / desktop -->
+  <ng-template #customForm>
+    <form
+      class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-3.5"
+      aria-label="Ajouter un autre appareil"
+      (submit)="addCustom($event, cLabel, cPower, cHours)"
+    >
+      <label class="flex flex-col gap-1 text-small font-semibold">
+        Nom de l'appareil
+        <input
+          #cLabel
+          name="label"
+          type="text"
+          required
+          autocomplete="off"
+          placeholder="Ex. : machine à coudre"
+          class="h-11 rounded-md border border-line-strong bg-surface px-3 text-body font-normal"
+        />
+      </label>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="flex flex-col gap-1 text-small font-semibold">
+          Puissance (W)
+          <input
+            #cPower
+            name="power"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            placeholder="Si connue"
+            class="h-11 rounded-md border border-line-strong bg-surface px-3 text-body font-normal"
+          />
+        </label>
+        <label class="flex flex-col gap-1 text-small font-semibold">
+          Heures par jour
+          <input
+            #cHours
+            name="hours"
+            type="number"
+            inputmode="decimal"
+            min="0.1"
+            max="24"
+            step="0.5"
+            value="4"
+            class="h-11 rounded-md border border-line-strong bg-surface px-3 text-body font-normal"
+          />
+        </label>
+      </div>
+      <p class="m-0 text-caption text-muted">
+        Sans puissance, nous comptons environ 100&#160;W. La puissance figure
+        sur l'étiquette de l'appareil.
+      </p>
+      <div class="flex gap-2">
+        <button type="submit" class="btn-secondary flex-1">
+          <app-icon name="plus" [size]="18" [strokeWidth]="2" />
+          Ajouter l'appareil
+        </button>
+        <button
+          type="button"
+          class="min-h-12 rounded-lg border-0 bg-transparent px-3 text-[15px] font-semibold text-solar-ink"
+          (click)="customOpen.set(false)"
+        >
+          Annuler
+        </button>
+      </div>
+    </form>
+  </ng-template>
+
+  <!-- Lignes « Autre appareil » déjà ajoutées -->
+  <ng-template #customList>
+    @for (l of customLoads(); track l.key) {
+    <div
+      class="flex items-center gap-3 rounded-lg border border-line bg-highlight p-3"
+    >
+      <span
+        class="flex size-11 shrink-0 items-center justify-center rounded-md border border-line bg-surface"
+      >
+        <app-icon name="other" [size]="26" />
+      </span>
+      <span class="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span class="text-[15px]/5 font-medium">{{ l.label }}</span>
+        <span class="text-caption text-muted">{{ customSub(l) }}</span>
+      </span>
+      <div
+        class="flex items-center overflow-hidden rounded-md border-[1.5px] border-ink bg-surface"
+      >
+        <button
+          type="button"
+          class="flex size-11 items-center justify-center border-0 bg-transparent text-ink"
+          [attr.aria-label]="'Retirer un appareil : ' + l.label"
+          (click)="store.setLoadQuantity(l.key, l.quantity - 1)"
+        >
+          <app-icon name="minus" [size]="18" [strokeWidth]="2" />
+        </button>
+        <span
+          class="tnum min-w-8 text-center text-base font-semibold"
+          aria-live="polite"
+          >{{ l.quantity }}</span
+        >
+        <button
+          type="button"
+          class="flex size-11 items-center justify-center border-0 bg-transparent text-ink"
+          [attr.aria-label]="'Ajouter un appareil : ' + l.label"
+          (click)="store.setLoadQuantity(l.key, l.quantity + 1)"
+        >
+          <app-icon name="plus" [size]="18" [strokeWidth]="2" />
+        </button>
+      </div>
+    </div>
+    }
+  </ng-template>
+
+  @if (!isDesktop()) {
+  <!-- ——— Mobile : catégories dépliables ——— -->
+  <main class="flex flex-1 flex-col gap-2 px-4 pt-4 pb-6">
+    <p class="m-0 mb-2 text-lead text-ink-2">
+      Ouvrez une catégorie et ajoutez vos appareils. Les heures d'usage sont
+      pré-remplies&#160;: modifiez-les si besoin.
+    </p>
+    @for (c of categories(); track c.id) { @let open = openCategory() === c.id;
+    <section
+      class="overflow-hidden rounded-lg border bg-surface"
+      [class.border-line-strong]="open"
+      [class.border-line]="!open"
+    >
+      <button
+        type="button"
+        class="flex min-h-15 w-full items-center gap-3 border-0 bg-transparent py-2 pr-3 pl-2.5 text-left text-inherit"
+        [attr.aria-expanded]="open"
+        [attr.aria-controls]="'cat-' + c.id"
+        (click)="toggleCategory(c.id)"
+      >
+        <span
+          class="flex size-10 shrink-0 items-center justify-center rounded-md bg-surface-2"
+        >
+          <app-icon [name]="c.iconKey" />
+        </span>
+        <span class="min-w-0 flex-1 text-base/[22px] font-semibold"
+          >{{ c.name }}</span
+        >
+        @if (c.count) {
+        <span
+          class="tnum h-6 min-w-6 rounded-xl bg-ink px-2 text-center text-caption/6 font-semibold text-white"
+          [attr.aria-label]="c.count + ' ajoutés'"
+          >{{ c.count }}</span
+        >
+        }
+        <app-icon
+          [name]="open ? 'chevron-up' : 'chevron-down'"
+          [size]="22"
+          [strokeWidth]="1.75"
+        />
+      </button>
+      @if (open) {
+      <div [id]="'cat-' + c.id">
+        @for (d of c.devices; track d.id) { @let q = store.quantityOf(d.id);
+        <div
+          class="flex flex-col gap-2.5 border-t border-divider p-3"
+          [class.bg-highlight]="q > 0"
+        >
+          <div class="flex items-center gap-3">
+            <span
+              class="flex size-11 shrink-0 items-center justify-center rounded-md border border-line bg-surface"
+            >
+              <app-icon [name]="d.iconKey ?? d.id" [size]="28" />
+            </span>
+            <span class="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span class="text-[15px]/5 font-medium">{{ d.name }}</span>
+              <span class="text-caption text-muted">{{ rangeLabel(d) }}</span>
+            </span>
+            @if (q === 0) {
+            <button
+              type="button"
+              class="flex h-11 shrink-0 items-center gap-1 rounded-md border border-line-strong bg-surface pr-3 pl-2.5 text-small font-semibold text-ink"
+              [attr.aria-label]="'Ajouter : ' + d.name"
+              (click)="inc(d)"
+            >
+              <app-icon name="plus" [size]="18" [strokeWidth]="2" />
+              Ajouter
+            </button>
+            } @else {
+            <span class="tnum shrink-0 font-mono text-mono text-ink-2"
+              >≈&#160;{{ energyLabel(d.id) }}</span
+            >
+            }
+          </div>
+          @if (q > 0) {
+          <div class="flex items-center justify-between gap-2 pl-14">
+            <button
+              type="button"
+              class="-ml-1 flex min-h-11 items-center gap-1.5 border-0 bg-transparent px-1 text-small font-semibold text-solar-ink"
+              [attr.aria-expanded]="editing() === d.id"
+              [attr.aria-label]="
+                          'Durée d’usage : ' +
+                          formatHours(store.hoursOf(d)) +
+                          ' par jour, modifier'
+                        "
+              (click)="toggleEdit(d.id)"
+            >
+              <app-icon name="clock" [size]="18" />
+              {{ formatHours(store.hoursOf(d)) }} / jour
+            </button>
+            <div
+              class="flex items-center overflow-hidden rounded-md border-[1.5px] border-ink bg-surface"
+            >
+              <button
+                type="button"
+                class="flex size-11 items-center justify-center border-0 bg-transparent text-ink"
+                [attr.aria-label]="'Retirer un appareil : ' + d.name"
+                (click)="dec(d)"
+              >
+                <app-icon name="minus" [size]="18" [strokeWidth]="2" />
+              </button>
+              <span
+                class="tnum min-w-8 text-center text-base font-semibold"
+                aria-live="polite"
+                >{{ q }}</span
+              >
+              <button
+                type="button"
+                class="flex size-11 items-center justify-center border-0 bg-transparent text-ink"
+                [attr.aria-label]="'Ajouter un appareil : ' + d.name"
+                (click)="inc(d)"
+              >
+                <app-icon name="plus" [size]="18" [strokeWidth]="2" />
+              </button>
+            </div>
+          </div>
+          } @if (q > 0 && editing() === d.id) {
+          <div
+            class="ml-14 flex items-center justify-between gap-2 rounded-md border border-line bg-surface py-1.5 pr-1.5 pl-3"
+          >
+            <span class="text-caption text-ink-2">Durée d'usage par jour</span>
+            <div class="flex items-center">
+              <button
+                type="button"
+                class="flex size-11 items-center justify-center rounded-sm border-0 bg-surface-2 text-ink"
+                aria-label="Réduire la durée"
+                (click)="store.stepHours(d.id, -1)"
+              >
+                <app-icon name="minus" [size]="16" [strokeWidth]="2" />
+              </button>
+              <span
+                class="tnum min-w-16 text-center text-[15px] font-semibold"
+                aria-live="polite"
+                >{{ formatHours(store.hoursOf(d)) }}</span
+              >
+              <button
+                type="button"
+                class="flex size-11 items-center justify-center rounded-sm border-0 bg-surface-2 text-ink"
+                aria-label="Augmenter la durée"
+                (click)="store.stepHours(d.id, 1)"
+              >
+                <app-icon name="plus" [size]="16" [strokeWidth]="2" />
+              </button>
+            </div>
+          </div>
+          } @if (isHeavy(d)) {
+          <div
+            class="ml-14 flex gap-2 rounded-md bg-info-soft px-3 py-2.5 text-caption text-info-ink"
+          >
+            <app-icon name="info" [size]="18" />
+            <span
+              >Cet appareil pèse lourd sur l'onduleur et le stockage. Le
+              résultat vous proposera de comparer sans lui.</span
+            >
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
+    </section>
+    }
+
+    <ng-container [ngTemplateOutlet]="customList" />
+    @if (customOpen()) {
+    <ng-container [ngTemplateOutlet]="customForm" />
+    } @else {
+    <button
+      type="button"
+      class="mt-1 flex min-h-16 w-full items-center gap-3 rounded-lg border-[1.5px] border-dashed border-ring bg-transparent py-2.5 pr-3 pl-2.5 text-left text-inherit"
+      (click)="openCustom()"
+    >
+      <span
+        class="flex size-10 shrink-0 items-center justify-center rounded-md bg-surface-2"
+      >
+        <app-icon name="other" />
+      </span>
+      <span class="flex flex-1 flex-col gap-0.5">
+        <span class="text-[15px]/5 font-semibold">Autre appareil</span>
+        <span class="text-caption text-muted"
+          >Absent de la liste&#160;? Ajoutez-le, avec sa puissance si vous la
+          connaissez.</span
+        >
+      </span>
+    </button>
+    }
+  </main>
+
+  <div class="action-bar gap-3" aria-live="polite">
+    <div class="flex items-end justify-between gap-3">
+      <div class="flex flex-col gap-0.5">
+        <span class="text-caption text-muted"
+          >{{ countLabel() }} · consommation estimée</span
+        >
+        <span class="tnum text-[22px]/7 font-semibold"
+          >≈&#160;{{ energy().typ }}&#160;kWh
+          <span class="text-small font-medium text-ink-2">/ jour</span></span
+        >
+      </div>
+      <div class="flex flex-col items-end gap-0.5">
+        <span class="text-mono font-normal text-muted">Fourchette</span>
+        <span class="tnum text-small font-semibold"
+          >{{ energy().min }} – {{ energy().max }}&#160;kWh</span
+        >
+      </div>
+    </div>
+    @if (store.deviceCount() > 0) {
+    <button type="button" class="btn-primary" (click)="next()">
+      Continuer
+      <app-icon name="arrow-right" [size]="20" [strokeWidth]="1.75" />
+    </button>
+    } @else {
+    <button type="button" class="btn-primary" disabled>
+      Ajoutez au moins un appareil
+    </button>
+    }
+  </div>
+  } @else {
+  <!-- ——— Desktop : catégories, grille, récapitulatif latéral ——— -->
+  <main class="mx-auto flex w-full max-w-[1280px] flex-col gap-6 p-8">
+    <div class="flex flex-col gap-1.5">
+      <h1 class="m-0 text-[28px]/[34px] font-semibold tracking-[-0.01em]">
+        Vos appareils
+      </h1>
+      <p class="m-0 max-w-[680px] text-body text-muted">
+        Choisissez une catégorie, ajoutez vos appareils et leur nombre. Les
+        heures d'usage sont pré-remplies et modifiables.
+      </p>
+    </div>
+    <div class="flex flex-wrap items-start gap-6">
+      <nav
+        aria-label="Catégories"
+        class="flex max-w-[260px] flex-[1_1_200px] flex-col gap-1"
+      >
+        @for (c of categories(); track c.id) { @let cur = activeCategory() !==
+        'other' && currentCategory()?.id === c.id;
+        <button
+          type="button"
+          class="flex min-h-12 items-center gap-2.5 rounded-md border-0 px-2.5 py-1.5 text-left text-[15px] text-ink"
+          [class]="cur ? 'bg-solar-soft font-semibold' : 'bg-transparent'"
+          [attr.aria-current]="cur ? 'true' : null"
+          (click)="activeCategory.set(c.id)"
+        >
+          <app-icon [name]="c.iconKey" [size]="22" />
+          <span class="flex-1">{{ c.name }}</span>
+          @if (c.count) {
+          <span
+            class="h-[22px] min-w-[22px] rounded-[11px] bg-ink px-[7px] text-center text-mono/[22px] font-semibold text-white"
+            >{{ c.count }}</span
+          >
+          }
+        </button>
+        }
+        <button
+          type="button"
+          class="mt-2 flex min-h-12 items-center gap-2.5 rounded-md border-[1.5px] border-dashed border-ring px-2.5 py-1.5 text-left text-[15px] font-semibold text-ink"
+          [class]="activeCategory() === 'other' ? 'bg-solar-soft' : 'bg-transparent'"
+          [attr.aria-current]="activeCategory() === 'other' ? 'true' : null"
+          (click)="openCustom()"
+        >
+          <app-icon name="other" [size]="22" />
+          Autre appareil
+        </button>
+      </nav>
+
+      <section class="flex min-w-0 flex-[999_1_520px] flex-col gap-3.5">
+        @if (activeCategory() === 'other') {
+        <div class="flex items-baseline justify-between gap-3">
+          <h2 class="m-0 text-h2">Autre appareil</h2>
+          <span class="text-small text-muted"
+            >Absent de la liste&#160;? Ajoutez-le ici.</span
+          >
+        </div>
+        <ng-container [ngTemplateOutlet]="customList" />
+        <ng-container [ngTemplateOutlet]="customForm" />
+        } @else if (currentCategory(); as cat) {
+        <div class="flex items-baseline justify-between gap-3">
+          <h2 class="m-0 text-h2">{{ cat.name }}</h2>
+          <span class="text-small text-muted"
+            >{{ cat.devices.length }} appareils au catalogue</span
+          >
+        </div>
+        <div
+          class="grid gap-3"
+          style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))"
+        >
+          @for (d of cat.devices; track d.id) { @let q = store.quantityOf(d.id);
+          <div
+            class="flex flex-col gap-3 rounded-xl border p-3.5"
+            [class]="q > 0 ? 'border-line-strong bg-highlight' : 'border-line bg-surface'"
+          >
+            <div class="flex items-start justify-between gap-2">
+              <span
+                class="flex size-12 items-center justify-center rounded-lg border border-line bg-surface"
+              >
+                <app-icon [name]="d.iconKey ?? d.id" [size]="30" />
+              </span>
+              @if (q > 0) {
+              <span class="font-mono text-mono font-normal text-ink-2"
+                >≈ {{ energyLabel(d.id) }}</span
+              >
+              }
+            </div>
+            <div class="flex flex-1 flex-col gap-0.5">
+              <span class="text-[15px]/5 font-semibold">{{ d.name }}</span>
+              <span class="text-caption text-muted">{{ rangeLabel(d) }}</span>
+            </div>
+            @if (q === 0) {
+            <button
+              type="button"
+              class="flex h-11 items-center justify-center gap-1.5 rounded-md border border-line-strong bg-surface text-small font-semibold text-ink"
+              [attr.aria-label]="'Ajouter : ' + d.name"
+              (click)="inc(d)"
+            >
+              <app-icon name="plus" [size]="16" [strokeWidth]="2" />
+              Ajouter
+            </button>
+            } @else {
+            <div class="flex flex-col gap-2">
+              <div
+                class="flex items-center justify-between overflow-hidden rounded-md border-[1.5px] border-ink bg-surface"
+              >
+                <button
+                  type="button"
+                  class="flex h-11 w-11 items-center justify-center border-0 bg-transparent text-ink"
+                  [attr.aria-label]="'Retirer un appareil : ' + d.name"
+                  (click)="dec(d)"
+                >
+                  <app-icon name="minus" [size]="16" [strokeWidth]="2" />
+                </button>
+                <span class="tnum text-base font-semibold" aria-live="polite"
+                  >{{ q }}</span
+                >
+                <button
+                  type="button"
+                  class="flex h-11 w-11 items-center justify-center border-0 bg-transparent text-ink"
+                  [attr.aria-label]="'Ajouter un appareil : ' + d.name"
+                  (click)="inc(d)"
+                >
+                  <app-icon name="plus" [size]="16" [strokeWidth]="2" />
+                </button>
+              </div>
+              <div
+                class="flex items-center justify-between gap-1 text-caption text-ink-2"
+              >
+                <button
+                  type="button"
+                  class="flex size-11 items-center justify-center rounded-sm border-0 bg-surface-2 text-ink"
+                  aria-label="Réduire la durée d'usage"
+                  (click)="store.stepHours(d.id, -1)"
+                >
+                  <app-icon name="minus" [size]="14" [strokeWidth]="2" />
+                </button>
+                <span class="tnum flex items-center gap-1" aria-live="polite"
+                  ><app-icon name="clock" [size]="14" [strokeWidth]="1.75" />{{
+                  formatHours(store.hoursOf(d)) }} / jour</span
+                >
+                <button
+                  type="button"
+                  class="flex size-11 items-center justify-center rounded-sm border-0 bg-surface-2 text-ink"
+                  aria-label="Augmenter la durée d'usage"
+                  (click)="store.stepHours(d.id, 1)"
+                >
+                  <app-icon name="plus" [size]="14" [strokeWidth]="2" />
+                </button>
+              </div>
+              @if (isHeavy(d)) {
+              <p
+                class="m-0 rounded-md bg-info-soft px-2.5 py-2 text-caption text-info-ink"
+              >
+                Appareil gourmand&#160;: le résultat proposera de comparer sans
+                lui.
+              </p>
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+      </section>
+
+      <aside
+        aria-label="Récapitulatif"
+        class="flex max-w-[360px] flex-[1_1_300px] flex-col gap-4 rounded-2xl border border-line bg-surface p-5"
+      >
+        <div class="flex items-baseline justify-between">
+          <h2 class="m-0 text-[18px]/6 font-semibold">Récapitulatif</h2>
+          <span class="text-small text-muted">{{ countLabel() }}</span>
+        </div>
+        @if (chosen().length) {
+        <ul class="m-0 flex list-none flex-col p-0">
+          @for (x of chosen(); track x.key) {
+          <li
+            class="flex items-center gap-2.5 border-b border-divider py-2 text-small"
+          >
+            <app-icon [name]="x.icon" [size]="20" />
+            <span class="min-w-0 flex-1">{{ x.label }}</span>
+            <span class="font-mono text-[13px] text-ink-2"
+              >×&#160;{{ x.quantity }}</span
+            >
+            <span class="w-[72px] text-right font-mono text-[13px] text-muted"
+              >{{ x.energy }}</span
+            >
+          </li>
+          }
+        </ul>
+        } @else {
+        <p class="m-0 text-small text-muted">
+          Aucun appareil pour l'instant. Choisissez une catégorie et ajoutez vos
+          appareils.
+        </p>
+        }
+        <div class="flex flex-col gap-1.5" aria-live="polite">
+          <span class="text-caption text-muted">Consommation estimée</span>
+          <span class="tnum text-[30px]/9 font-semibold"
+            >≈ {{ energy().typ }}&#160;kWh
+            <span class="text-[15px] font-medium text-ink-2">/ jour</span></span
+          >
+          <span class="text-small text-ink-2"
+            >Fourchette
+            <strong class="tnum font-semibold"
+              >{{ energy().min }} – {{ energy().max }}&#160;kWh</strong
+            ></span
+          >
+        </div>
+        @if (store.deviceCount() > 0) {
+        <button type="button" class="btn-primary" (click)="next()">
+          Continuer
+          <app-icon name="arrow-right" [size]="20" [strokeWidth]="1.75" />
+        </button>
+        } @else {
+        <button type="button" class="btn-primary" disabled>
+          Ajoutez au moins un appareil
+        </button>
+        }
+      </aside>
+    </div>
+  </main>
+  }
+</div>

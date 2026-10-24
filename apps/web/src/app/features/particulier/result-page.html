@@ -1,0 +1,444 @@
+<div class="flex min-h-dvh flex-col">
+  <app-step-header
+    [step]="5"
+    title="Votre installation"
+    backLink="/autonomie"
+    backLabel="Retour à l'autonomie"
+  />
+
+  @switch (store.outcome().status) { @case ('empty') {
+  <main class="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 py-8">
+    <h1 class="m-0 text-h1">Il manque vos appareils</h1>
+    <p class="m-0 text-lead text-muted">
+      Ajoutez au moins un appareil pour obtenir une proposition.
+    </p>
+    <a routerLink="/besoins" class="btn-primary">Choisir mes appareils</a>
+  </main>
+  } @case ('error') {
+  <main class="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 py-8">
+    <h1 class="m-0 text-h1">Calcul impossible</h1>
+    @if (store.outcome(); as o) { @if (o.status === 'error') {
+    <div
+      role="alert"
+      class="rounded-lg bg-crit-soft p-3.5 text-small text-crit-ink"
+    >
+      {{ o.message }}
+    </div>
+    } }
+    <a routerLink="/besoins" class="btn-secondary">Modifier mes appareils</a>
+  </main>
+  } @default { @if (store.result(); as r) {
+  <!-- Blocs partagés mobile / desktop -->
+  <ng-template #rangeBar>
+    @if (range(); as g) {
+    <div class="relative h-11" role="img" [attr.aria-label]="g.aria">
+      <div
+        class="absolute inset-x-0 top-[18px] h-2 rounded bg-track-soft"
+      ></div>
+      <div
+        class="absolute top-[18px] h-2 rounded bg-solar"
+        [style.left.%]="g.minPct"
+        [style.width.%]="g.widthPct"
+      ></div>
+      <div
+        class="absolute top-3 -ml-0.5 h-5 w-1 rounded-sm bg-ink"
+        [style.left.%]="g.typPct"
+      ></div>
+      @if (isDesktop()) {
+      <span
+        class="absolute top-0 -translate-x-1/2 text-mono/3 font-semibold"
+        [style.left.%]="g.typPct"
+        >typique {{ g.typ }}</span
+      >
+      }
+      <span
+        class="absolute top-[30px] left-0 text-mono/[14px] font-normal text-muted"
+        >0</span
+      >
+      @if (g.isRange) {
+      <span
+        class="tnum absolute top-[30px] -translate-x-1/2 text-mono/[14px] font-normal text-ink-2"
+        [style.left.%]="g.minPct"
+        >{{ g.min }}</span
+      >
+      <span
+        class="tnum absolute top-[30px] -translate-x-1/2 text-mono/[14px] font-normal text-ink-2"
+        [style.left.%]="g.maxPct"
+        >{{ g.max }}</span
+      >
+      } @if (g.maxPct < 80) {
+      <span
+        class="absolute top-[30px] right-0 text-mono/[14px] font-normal text-muted"
+        >{{ g.scale }}</span
+      >
+      }
+    </div>
+    }
+  </ng-template>
+
+  <ng-template #cardList>
+    @for (c of cards(); track c.key; let first = $first) {
+    <details class="card group overflow-hidden" [open]="first">
+      <summary class="flex gap-3 p-3.5">
+        <span
+          class="flex size-11 shrink-0 items-center justify-center rounded-md bg-solar-soft"
+        >
+          <app-icon [name]="c.icon" [size]="28" />
+        </span>
+        <span class="flex flex-1 flex-col gap-0.5">
+          <span class="text-caption text-muted">{{ c.title }}</span>
+          <span class="tnum text-h1">{{ c.value }}</span>
+          <span class="text-small text-ink-2">{{ c.sub }}</span>
+          @if (c.badge) {
+          <span
+            class="mt-1.5 self-start rounded-[6px] bg-surface-2 px-2 py-[3px] text-mono font-normal text-ink-2"
+            >{{ c.badge }}</span
+          >
+          }
+        </span>
+        <app-icon
+          name="chevron-down"
+          [size]="22"
+          [strokeWidth]="1.75"
+          class="mt-2.5 transition-transform group-open:rotate-180"
+        />
+      </summary>
+      <dl
+        class="m-0 flex flex-col gap-2 pt-1 pr-3.5 pb-3.5 pl-[70px] text-small"
+      >
+        @for (d of c.details; track d.label) {
+        <div class="flex justify-between gap-2">
+          <dt class="text-muted">{{ d.label }}</dt>
+          <dd class="tnum m-0 text-right font-semibold">{{ d.value }}</dd>
+        </div>
+        }
+      </dl>
+    </details>
+    }
+  </ng-template>
+
+  <ng-template #heavyBlock>
+    @for (h of heavy(); track h.index) {
+    <div
+      class="flex flex-col gap-2.5 rounded-lg bg-info-soft p-3.5 text-small text-info-ink"
+    >
+      <div class="flex gap-2.5">
+        <app-icon [name]="h.deviceId ?? 'other'" [size]="22" />
+        <span
+          ><strong class="font-semibold">{{ h.label }}</strong> pèse lourd. Sans
+          lui&#160;: onduleur {{ h.inverter }}, stockage {{ h.storage }}, {{
+          h.panels }}&#160;panneau{{ h.panels > 1 ? 'x' : '' }}. @if (!h.saving)
+          { Le matériel ne change pas. }</span
+        >
+      </div>
+      @if (h.saving) {
+      <button
+        type="button"
+        class="btn-secondary self-start px-3.5"
+        (click)="removeHeavy(h.deviceId, h.label)"
+      >
+        Retirer cet appareil
+      </button>
+      }
+    </div>
+    }
+  </ng-template>
+
+  @if (!isDesktop()) {
+  <!-- ——— Mobile ——— -->
+  <main class="flex flex-1 flex-col gap-6 px-4 pt-4 pb-6">
+    <div class="grid grid-cols-3 rounded-lg border border-line bg-surface">
+      <a
+        routerLink="/"
+        class="flex min-h-13 flex-col justify-center gap-px px-2.5 py-2 text-ink no-underline"
+      >
+        <span class="font-mono text-[11px]/[14px] tracking-[0.04em] text-muted"
+          >LIEU</span
+        >
+        <span class="text-small font-semibold">{{ store.region()?.name }}</span>
+      </a>
+      <a
+        routerLink="/besoins"
+        class="flex min-h-13 flex-col justify-center gap-px border-l border-divider px-2.5 py-2 text-ink no-underline"
+      >
+        <span class="font-mono text-[11px]/[14px] tracking-[0.04em] text-muted"
+          >APPAREILS</span
+        >
+        <span class="text-small font-semibold">{{ store.deviceCount() }}</span>
+      </a>
+      <a
+        routerLink="/autonomie"
+        class="flex min-h-13 flex-col justify-center gap-px border-l border-divider px-2.5 py-2 text-ink no-underline"
+      >
+        <span class="font-mono text-[11px]/[14px] tracking-[0.04em] text-muted"
+          >BATTERIE</span
+        >
+        <span class="text-small font-semibold">{{ batteryLabel() }}</span>
+      </a>
+    </div>
+
+    @if (range(); as g) {
+    <section class="card flex flex-col gap-3 p-4">
+      <span class="text-small text-muted">Consommation estimée</span>
+      <span class="tnum text-key tracking-[-0.01em]"
+        >{{ g.typ }}&#160;kWh
+        <span class="text-base font-medium text-ink-2">par jour</span></span
+      >
+      @if (g.isRange) {
+      <div class="mt-1"><ng-container [ngTemplateOutlet]="rangeBar" /></div>
+      <p class="m-0 text-small text-ink-2">
+        Selon la puissance réelle de vos appareils, entre {{ g.min }} et {{
+        g.max }}&#160;kWh par jour. La proposition repose sur la valeur typique.
+      </p>
+      }
+    </section>
+    }
+
+    <section class="flex flex-col gap-2.5" aria-labelledby="proposal-title">
+      <h2 id="proposal-title" class="m-0 text-h2">Notre proposition</h2>
+      <ng-container [ngTemplateOutlet]="cardList" />
+    </section>
+
+    @if (indicators(); as k) {
+    <section class="grid grid-cols-2 gap-2" aria-label="Indicateurs">
+      <div class="card flex flex-col gap-1 p-3.5">
+        <span class="text-caption text-muted">Autonomie réelle</span>
+        <span class="tnum text-[22px]/7 font-semibold"
+          >{{ k.autonomy }} jour</span
+        >
+        <span
+          class="flex items-center gap-1 text-caption font-semibold"
+          [class]="k.autonomyOk ? 'text-ok' : 'text-warn'"
+        >
+          <app-icon
+            [name]="k.autonomyOk ? 'check' : 'alert-triangle'"
+            [size]="16"
+            [strokeWidth]="2"
+          />
+          {{ k.autonomyState }}
+        </span>
+      </div>
+      <div class="card flex flex-col gap-1 p-3.5">
+        <span class="text-caption text-muted">Couverture solaire</span>
+        <span class="tnum text-[22px]/7 font-semibold">{{ k.coverage }}</span>
+        <span
+          class="flex items-center gap-1 text-caption font-semibold"
+          [class]="k.coverageOk ? 'text-ok' : 'text-warn'"
+        >
+          <app-icon
+            [name]="k.coverageOk ? 'check' : 'alert-triangle'"
+            [size]="16"
+            [strokeWidth]="2"
+          />
+          {{ k.coverageOk ? 'Recharge complète' : 'Recharge incomplète' }}
+        </span>
+      </div>
+    </section>
+    }
+
+    <app-alert-list [alerts]="r.alerts" [showOk]="false" />
+    <ng-container [ngTemplateOutlet]="heavyBlock" />
+
+    <section class="flex flex-col gap-2.5" aria-labelledby="variants-title">
+      <div class="flex flex-col gap-1">
+        <h2 id="variants-title" class="m-0 text-h2">
+          Plus ou moins d'autonomie&#160;?
+        </h2>
+        <p class="m-0 text-small text-muted">
+          Seules les batteries changent&#160;; panneaux, régulateur et onduleur
+          restent identiques.
+        </p>
+      </div>
+      <div
+        class="grid gap-1.5"
+        [style.grid-template-columns]="'repeat(' + variants().length + ', minmax(0, 1fr))'"
+      >
+        @for (x of variants(); track x.days) {
+        <button
+          type="button"
+          class="choice flex min-h-[150px] flex-col gap-1 rounded-lg px-2 py-2.5"
+          [attr.aria-pressed]="x.on"
+          (click)="store.setAutonomy(x.days)"
+        >
+          <span class="text-caption font-semibold">{{ x.label }}</span>
+          <span class="tnum text-h2"
+            >{{ x.kwh }}<span class="text-caption font-medium"> kWh</span></span
+          >
+          <span class="text-mono font-normal text-ink-2">{{ x.units }}</span>
+          <span class="text-mono font-normal text-ink-2"
+            >Tient {{ x.aeff }}&#160;j</span
+          >
+          @if (!x.on) {
+          <span class="sr-only">{{ x.delta }}</span>
+          }
+          <span
+            class="mt-auto text-mono font-semibold"
+            [class]="x.on ? 'text-ink' : 'text-solar-ink'"
+            >{{ x.on ? 'Votre choix' : 'Choisir' }}</span
+          >
+        </button>
+        }
+      </div>
+    </section>
+
+    <app-rain-notice [detailed]="true" />
+  </main>
+
+  <div class="action-bar gap-2">
+    <a routerLink="/recapitulatif" class="btn-primary">
+      Voir la liste du matériel
+      <app-icon name="arrow-right" [size]="20" [strokeWidth]="1.75" />
+    </a>
+    <a routerLink="/configurateur" class="btn-secondary">
+      <app-icon name="sliders" [size]="20" />
+      Ajuster l'installation
+    </a>
+  </div>
+  } @else {
+  <!-- ——— Desktop : résultat + configurateur côte à côte ——— -->
+  <main class="mx-auto flex w-full max-w-[1280px] flex-col gap-6 p-8">
+    <div class="flex flex-col gap-1.5">
+      <h1 class="m-0 text-[28px]/[34px] font-semibold tracking-[-0.01em]">
+        Votre installation recommandée
+      </h1>
+      <p class="m-0 text-body text-muted">
+        {{ store.region()?.name }} ({{ store.region()?.capital }}) · {{
+        store.deviceCount() }} appareils · batterie {{
+        batteryLabel().toLowerCase() }} ·
+        <a routerLink="/besoins">modifier les appareils</a>
+      </p>
+    </div>
+    <div class="flex flex-wrap items-start gap-6">
+      <div class="flex min-w-0 flex-[999_1_600px] flex-col gap-5">
+        @if (range(); as g) {
+        <section
+          class="flex flex-wrap items-center gap-x-8 gap-y-4 rounded-2xl border border-line bg-surface p-5"
+        >
+          <div class="flex flex-[0_1_220px] flex-col gap-0.5">
+            <span class="text-small text-muted">Consommation estimée</span>
+            <span class="tnum text-key"
+              >{{ g.typ }}&#160;kWh
+              <span class="text-base font-medium text-ink-2">/ jour</span></span
+            >
+          </div>
+          @if (g.isRange) {
+          <div class="flex flex-[1_1_320px] flex-col gap-1.5">
+            <ng-container [ngTemplateOutlet]="rangeBar" />
+            <span class="text-caption text-muted"
+              >Selon la puissance réelle de vos appareils. La proposition repose
+              sur la valeur typique.</span
+            >
+          </div>
+          }
+        </section>
+        }
+
+        <section class="flex flex-col gap-3" aria-labelledby="variants-title-d">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 id="variants-title-d" class="m-0 text-h2">
+              {{ variants().length > 1 ? 'Trois niveaux d’autonomie' :
+              'Autonomie' }}
+            </h2>
+            <span class="text-small text-muted"
+              >Seules les batteries changent d'une colonne à l'autre.</span
+            >
+          </div>
+          <div
+            class="grid gap-3"
+            style="grid-template-columns: repeat(auto-fit, minmax(190px, 1fr))"
+          >
+            @for (x of variants(); track x.days) {
+            <button
+              type="button"
+              class="choice flex flex-col gap-3.5 rounded-2xl p-[18px]"
+              [attr.aria-pressed]="x.on"
+              (click)="store.setAutonomy(x.days)"
+            >
+              <span class="flex w-full items-center justify-between gap-2">
+                <span class="text-base/[22px] font-semibold"
+                  >{{ x.label }}</span
+                >
+                <span
+                  class="rounded-[6px] px-2 py-0.5 text-mono/[18px] font-semibold"
+                  [class]="x.on ? 'bg-ink text-white' : 'bg-surface-2 text-solar-ink'"
+                  >{{ x.on ? 'Votre choix' : 'Choisir' }}</span
+                >
+              </span>
+              <span class="flex flex-col gap-0.5">
+                <span class="text-caption text-muted">Stockage</span>
+                <span class="tnum text-[28px]/[34px] font-semibold"
+                  >{{ x.kwh }}&#160;kWh</span
+                >
+                <span class="text-small text-ink-2">{{ x.units }}</span>
+                @if (!x.on) {
+                <span class="text-mono font-semibold text-solar-ink"
+                  >{{ x.delta }}</span
+                >
+                }
+              </span>
+              <span
+                class="flex w-full flex-col gap-1.5 border-t border-line pt-3 text-small"
+              >
+                <span class="flex justify-between gap-2"
+                  ><span class="text-muted">Autonomie réelle</span
+                  ><span class="tnum font-semibold"
+                    >{{ x.aeff }}&#160;j</span
+                  ></span
+                >
+                <span class="flex justify-between gap-2"
+                  ><span class="text-muted">Panneaux</span
+                  ><span>{{ x.panels }}</span></span
+                >
+                <span class="flex justify-between gap-2"
+                  ><span class="text-muted">Onduleur</span
+                  ><span>{{ x.inverter }}</span></span
+                >
+                <span class="flex justify-between gap-2"
+                  ><span class="text-muted">Régulateur</span
+                  ><span>{{ x.controller }}</span></span
+                >
+              </span>
+            </button>
+            }
+          </div>
+        </section>
+
+        <section
+          class="flex flex-col gap-2.5"
+          aria-labelledby="proposal-title-d"
+        >
+          <h2 id="proposal-title-d" class="m-0 text-h2">Détail du matériel</h2>
+          <div
+            class="grid items-start gap-2.5"
+            style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"
+          >
+            <ng-container [ngTemplateOutlet]="cardList" />
+          </div>
+        </section>
+
+        <ng-container [ngTemplateOutlet]="heavyBlock" />
+        <app-rain-notice [detailed]="true" />
+      </div>
+
+      <aside
+        aria-label="Configurateur"
+        class="flex max-w-[420px] flex-[1_1_340px] flex-col gap-4 rounded-2xl border border-line bg-surface p-5"
+      >
+        <div class="flex flex-col gap-0.5">
+          <h2 class="m-0 text-[18px]/6 font-semibold">
+            Ajuster l'installation
+          </h2>
+          <span class="text-caption text-muted"
+            >Une taille standard à chaque clic, recalcul immédiat.</span
+          >
+        </div>
+        <app-configurator-panel [compact]="true" />
+        <a routerLink="/recapitulatif" class="btn-primary">
+          Voir la liste du matériel
+          <app-icon name="arrow-right" [size]="20" [strokeWidth]="1.75" />
+        </a>
+      </aside>
+    </div>
+  </main>
+  } } } }
+</div>
