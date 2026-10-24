@@ -43,7 +43,10 @@ export function detectType(buf: Buffer): DetectedType | null {
   }
   if (buf.length >= 6 && /^GIF8[79]a$/.test(buf.toString('ascii', 0, 6)))
     return 'image/gif';
-  const head = buf.subarray(0, 4096).toString('utf8').replace(/^\uFEFF/, '');
+  const head = buf
+    .subarray(0, 4096)
+    .toString('utf8')
+    .replace(/^\uFEFF/, '');
   const stripped = head
     .replace(/<\?xml[\s\S]*?\?>/g, '')
     .replace(/<!--[\s\S]*?-->/g, '')
