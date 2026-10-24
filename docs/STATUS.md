@@ -9,7 +9,7 @@
 | L4 | terminé (L4a, L4b + L4c) | L4a, L4b |
 | L4b | terminé — mode pro (saisie, résultat, récapitulatif technique, tests ; finalisé en L4c) | L4b |
 | L4a | terminé — back-office `/admin` | L4a |
-| L5 | partiel (1–4 et 6 faits — déploiement : L5b ; 5, 7 : L5c) | L5, L5b |
+| L5 | terminé (1–4 et 6 faits — déploiement : L5b ; 5, 7 : L5c) | L5, L5b, L5c |
 | L6 | à faire | |
 
 ## Notes par lot
@@ -383,7 +383,7 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
 - L'export PDF reste en formulation particulier (périmètre L5) ; à harmoniser en L6 si souhaité.
 - Les champs des totaux affichent la saisie brute (« 3277 ») sans séparateur de milliers.
 
-### L5 — Hors-ligne, PDF, partage, leads, déploiement (partiel)
+### L5 — Hors-ligne, PDF, partage, leads, déploiement (terminé : L5, L5b, L5c)
 
 **Fait**
 - `apps/web/src/app/core` : `simulation-api.ts` (fetch `/api/v1` : `saveSimulation`, `getSimulation`, `sendLead` ;
@@ -413,14 +413,33 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
   le Chromium préinstallé, révision 1243 ; en CI `npx playwright install chromium`).
 
 **Reste à faire**
-- 5. Mesure réelle de la première page (CDP, somme `encodedDataLength`) et note ici.
-- 7. Playwright : seul `apps/web-e2e/serve.mjs` existe (sert `dist/apps/web/browser`, repli SPA, relais `/api` vers
-  `E2E_API_URL`, sinon 503 → catalogue local). À créer : `apps/web-e2e/project.json` (projet `web-e2e`),
-  `playwright.config.ts` (viewport 360, `serviceWorkers: 'block'` sauf test hors-ligne), specs : parcours
-  particulier en 3G CDP, partage (mock `page.route` de `POST/GET /simulations`), PDF (`waitForEvent('download')`),
-  hors-ligne (`context.setOffline`). Étape CI.
-  ⚠ Observé en script exploratoire : sur `/`, après clic sur « Littoral », le clic sur le lien « Continuer » n'a
-  pas navigué (alors que `/mode` direct marche) — vérifier (attente insuffisante ou bug).
+- 5. (L5c, fait) Mesure réelle de la première page, cache vide, service worker bloqué (CDP, somme
+  `encodedDataLength` jusqu'à `networkidle`, `apps/web-e2e/src/performance.spec.ts`, échoue au-delà de 1 Mo) :
+  **190 Ko** transférés en gzip (461 Ko non compressés). `serve.mjs` compresse désormais en gzip comme Vercel.
+  En plus, à la première visite, ngsw précharge en arrière-plan le groupe `app` (tous les JS dont pdfmake, polices) :
+  ≈ 480 Ko supplémentaires, hors chemin critique.
+- 7. (L5c, fait) Playwright : projet Nx `web-e2e` (`apps/web-e2e/project.json`, cible `e2e` dépendant de
+  `web:build`, `playwright.config.ts` : serveur `serve.mjs`, projets `mobile` 360 × 800 tactile et `desktop`
+  1440 × 900, `serviceWorkers: 'block'` sauf test hors-ligne, rapport HTML/traces dans `dist/.playwright`).
+  Specs (`apps/web-e2e/src`, 7 × 2 projets, ≈ 26 s) : `particulier` (Littoral → particulier → foyer de Douala
+  saisi en « Autre appareil » + réfrigérateur du catalogue → 1 jour lithium → résultat → configurateur ‹ › →
+  récapitulatif, Fast 3G CDP, ni défilement horizontal ni erreur console hors 503 `/api`), `share-pdf` (partage
+  avec `navigator.share` simulé et `page.route` de POST/GET `/api/v1/simulations`, puis `/s/:token` restitue la
+  même synthèse ; lien inconnu → 404 ; export PDF via `waitForEvent('download')`, fichier `%PDF-`), `offline`
+  (ngsw actif, `context.setOffline` après préchargement : parcours complet servi par le SW, partage mis en file,
+  indicateur « 1 simulation en attente », retour réseau → envoi via `context.route`, lien `/s/enFile`), `pro`
+  (puissance totale 435 W / 3 277 Wh/j → Équipements, Câbles, Protections), `performance`. Helpers : `support.ts`.
+  CI : job `e2e` dans `.github/workflows/ci.yml` (npm ci, `npx playwright install --with-deps chromium`, build web,
+  `npx nx e2e web-e2e`, artefact `playwright-report` si échec).
+- Bug « Continuer » sur `/` (L5c) : **non reproduit** (souris, tactile, Fast 3G, SW actif : `/mode` s'ouvre).
+  Cause probable de l'observation : « Littoral » est déjà la région par défaut, et le sélecteur texte `text=Littoral`
+  vise d'abord la puce du bandeau desktop (masquée à 360 px) ; de plus Angular ne met à jour l'URL qu'après le
+  chargement du chunk paresseux de `/mode` → lire `page.url()` juste après le clic, sans `waitForURL`, donne encore `/`.
+- **Vrai bug corrigé (L5c)** : formulaire « Autre appareil » (`needs-page.html`) — le champ « Heures par jour » avait
+  `min="0.1" step="0.5"` : seules 0,1 / 0,6 / 1,1… étaient valides, si bien que la validation native du navigateur
+  bloquait l'envoi pour toute heure entière, **y compris la valeur par défaut 4** (aucun appareil hors catalogue ne
+  pouvait être ajouté). Passé à `step="any"` (le composant borne déjà 0,1–24) ; test unitaire de non-régression
+  (`checkValidity()` pour 4, 6, 24, 0,5, 2,3).
 - 6. Déploiement (L5b) : **fait** (configuration seulement, aucun déploiement réel) — voir `docs/DEPLOIEMENT.md`.
   - `apps/web/vercel.json` : Root Directory `apps/web`, `framework: null`, install `npx npm@11.6.2 ci` à la racine,
     build `nx build web` copié dans `apps/web/vercel-dist` (sortie, ignorée par Git : pas de `outputDirectory` en `../`),

@@ -70,6 +70,14 @@ describe('NeedsPage (mobile)', () => {
     (form.querySelector('[name=label]') as HTMLInputElement).value =
       'Pompe à eau';
     (form.querySelector('[name=power]') as HTMLInputElement).value = '250';
+    // Le navigateur bloque l'envoi d'un formulaire invalide : heures entières
+    // (dont la valeur par défaut) et décimales doivent être acceptées.
+    const hours = form.querySelector('[name=hours]') as HTMLInputElement;
+    for (const v of ['4', '6', '24', '0.5', '2.3']) {
+      hours.value = v;
+      expect(form.checkValidity()).toBe(true);
+    }
+    hours.value = '4';
     form.dispatchEvent(new Event('submit'));
     await fixture.whenStable();
     const load = TestBed.inject(SimulationStore).loads()[0];
