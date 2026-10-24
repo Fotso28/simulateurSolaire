@@ -4,7 +4,7 @@
 |---|---|---|
 | L0 | terminé | L0 |
 | L1 | terminé | L1 |
-| L2 | à faire | |
+| L2 | terminé | L2 |
 | L3 | à faire | |
 | L4 | à faire | |
 | L5 | à faire | |
@@ -121,3 +121,89 @@
   régions : estimation indicative (moyenne − 0,9 à 1,2), à remplacer avec les données PVGIS / NASA POWER.
 
 **Reste à faire** : aucun pour L1.
+
+### L2 — API NestJS, Prisma, auth, back-office (terminé)
+
+**Fait**
+- Prisma 6 + PostgreSQL : `apps/api/prisma/schema.prisma` (`url = DATABASE_URL`, `directUrl = DATABASE_URL_UNPOOLED`,
+  `binaryTargets` natif + `rhel-openssl-3.0.x` pour Vercel), migrations dans `apps/api/prisma/migrations`.
+  Modèles anglais camelCase, tables/colonnes `@@map` snake_case. Les 14 tables du TRD **+ 2 tables documentées** :
+  `lead` (RF-18 : nom, téléphone, e-mail?, ville?, message?, `simulation_id?`, `consent_at`, `ip_hash` HMAC-SHA256)
+  et `refresh_token` (jetons de renouvellement hachés SHA-256, rotation). Colonnes ajoutées hors TRD :
+  `admin_user.failed_logins/locked_until/created_at`, `parameter_set.created_at`, `cable_section.id` et
+  `protection_rating.id` (clé technique), `icon_key` (appareils, catégories) et `label` (batteries, onduleurs,
+  régulateurs) pour suivre les ajouts facultatifs de L1. Version de paramètres active = `active_since` le plus récent.
+- Seed idempotent (`apps/api/src/seed`) : `DEFAULT_CATALOG` + `DEFAULT_PARAMETER_SET.values` de `@simulateur/engine`,
+  n'insère que les lignes absentes (jamais d'écrasement des modifications admin) ; compte ADMIN depuis `SEED_ADMIN_*`.
+- Routes publiques `/api/v1` : `GET /health`, `GET /countries` (pays + `regions[]`), `GET /catalog` (ETag + 304),
+  `POST /simulations`, `GET /simulations/:shareToken`, `POST /leads`.
+- `POST /simulations` : corps `{ input: SimulationInput, result: SimulationResult }`. Validation stricte de `input`
+  (DTO miroir), région existante, `result.paramsVersion` = version de paramètres existante (active ou non), rejeu
+  `simulate()` avec le catalogue de la base (matériel actif **et** inactif, le moteur filtre), comparaison récursive
+  à 1 % (nombres) / égalité (le reste), `engineVersion` ignorée. Divergence → 422 `RESULT_MISMATCH` (`field` =
+  `result.<chemin>`), `EngineError` → 422 avec le `code` du moteur. Stocke `inputs` (sans `overrides`), `overrides`,
+  le résultat **rejoué** (JSONB), versions, `share_token` = 18 octets aléatoires base64url (24 car.). Réponse
+  `201 { shareToken }`. `GET /simulations/:shareToken` → `{ shareToken, input (overrides réintégrés), result,
+  engineVersion, paramsVersion, createdAt }` (pas d'id interne).
+- `POST /leads` : `{ name, phone, email?, city?, message?, shareToken?, consent: true }` → `201 { id, createdAt }` ;
+  `consent` ≠ `true` → 400 `VALIDATION_ERROR` (`field: consent`).
+- Auth : `POST /auth/login` → `{ accessToken, expiresIn: 900, user: { id, email, role } }` + cookie `refresh_token`
+  (httpOnly, SameSite=Strict, Path=`/api/v1/auth`, Secure si `COOKIE_SECURE`, 7 jours) ; `POST /auth/refresh`
+  (rotation ; rejouer un jeton déjà utilisé révoque toute la session) ; `POST /auth/logout` (204). JWT HS256 15 min
+  (`Authorization: Bearer`), argon2id, verrouillage 15 min au 5e échec (423 `ACCOUNT_LOCKED`), message générique
+  sinon (401 `INVALID_CREDENTIALS`). Garde global : seules les routes `@Roles(...)` exigent un jeton.
+- Admin (toute écriture → `audit_log` avant/après dans la même transaction, hachages exclus) :
+  - ADMIN + EDITEUR : `/admin/device-categories` (GET, GET/:id, POST, PATCH/:id, DELETE/:id si vide → sinon 409
+    `CATEGORY_NOT_EMPTY`), `/admin/devices` (GET `?categoryId&includeInactive=true`, GET/:id, POST, PATCH/:id,
+    DELETE/:id = désactivation logique), `POST /admin/media` (multipart `file` + `kind` = `icon` | `image`).
+  - ADMIN : `/admin/countries`, `/admin/regions` (`?countryId`), `/admin/equipment/{panels,batteries,inverters,
+    controllers,cable-sections,protection-ratings}` (GET, GET/:id, POST, PATCH/:id ; désactivation via
+    `PATCH { active: false }`), `/admin/parameter-sets` (GET avec `active`, GET/:id, POST `{ values, baseVersion? }`
+    = nouvelle version inactive fusionnée sur la base complétée par `resolveParameters`, clés/forme contrôlées),
+    `POST /admin/parameter-sets/:id/activate`, `/admin/users` (GET, POST `{ email, role, password }`, PATCH
+    `{ role?, active?, password? }` ; pas d'auto-désactivation/rétrogradation ; révocation des sessions),
+    `GET /admin/stats/simulations?from&to` (`total, byMode, byRegion[], perDay[], topDevices[]`, 30 j par défaut),
+    `GET /admin/audit-log?entity&entityId&adminUserId&action&page&pageSize` (`{ items, total, page, pageSize }`).
+- Médias : type réel par signature (PNG/JPEG/WebP/GIF/SVG), > 2 Mo → 413 `FILE_TOO_LARGE` ; icône = SVG nettoyé
+  (svgo `preset-default` + `removeScripts` + plugin maison : éléments actifs, `on*`, liens non `#`, `<style>`) ;
+  image = WebP 512×512 (`contain`, fond transparent) ≤ 80 Ko via sharp. Réponse `{ url, key, kind, contentType, size }`.
+  Stockage abstrait `MediaStorage` : `LocalMediaStorage` (dev/tests, servi sur `/media`) ou `VercelBlobStorage`.
+- Transverse : `ValidationPipe` (whitelist, forbidNonWhitelisted, transform), erreurs `{ code, message (FR), field? }`
+  partout (filtre global, erreurs Prisma P2002 → 409 `ALREADY_EXISTS`, P2025 → 404, P2003 → 409), Helmet,
+  CORS limité à `CORS_ORIGINS` (credentials), cookie-parser, JSON ≤ 256 Ko, `trust proxy`, env validée au démarrage.
+- Vercel : `apps/api/src/serverless.ts` → `dist/apps/api/serverless.js` (export par défaut `(req, res)`, app Nest
+  créée une fois par instance) ; `nx serve api` inchangé (`main.ts`). Configuration Vercel/`vercel.json` : L5.
+- Tests : 25 unitaires (`nx test api` : comparaison 1 %, format d'erreur, env, médias, paramètres, AuthService)
+  et 31 e2e Supertest sur vraie base (`nx run api:e2e` : public, ETag/304, rejeu réel + divergence, erreurs moteur,
+  leads/IP, CORS, auth/rotation/verrouillage, rôles 401/403, CRUD + audit, médias, versions de paramètres, comptes,
+  stats, journal, seed idempotent). CI : service `postgres:16` + étape « Tests e2e API ».
+
+**Variables d'environnement** (`apps/api/.env.example`, chargé automatiquement par Nx depuis `apps/api/.env`) :
+`DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `DATABASE_URL_TEST`, `JWT_ACCESS_SECRET` (≥ 32 car.), `COOKIE_SECURE`,
+`CORS_ORIGINS` (liste séparée par des virgules), `IP_HASH_SECRET` (≥ 16), `STORAGE_DRIVER` (`local`|`vercel-blob`),
+`LOCAL_MEDIA_DIR`, `PUBLIC_MEDIA_BASE_URL`, `BLOB_READ_WRITE_TOKEN`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, `PORT`.
+
+**Commandes DB**
+- PostgreSQL local (Ubuntu) : `sudo apt install postgresql` puis `sudo service postgresql start` ;
+  `sudo -u postgres psql -c "CREATE USER simulateur WITH PASSWORD 'simulateur' CREATEDB;"` ;
+  `sudo -u postgres createdb -O simulateur simulateur_dev && sudo -u postgres createdb -O simulateur simulateur_test` ;
+  `cp apps/api/.env.example apps/api/.env`.
+- `npx prisma generate` (lancé par `postinstall`), `npx nx run api:migrate` (= `prisma migrate dev`),
+  `npx nx run api:migrate-deploy` (production/CI), `npx nx run api:seed` (= `npm run db:seed`),
+  `npx nx run api:db-reset` (dev uniquement, destructif), `npx nx run api:e2e` (applique les migrations sur
+  `DATABASE_URL_TEST` puis vide les tables à chaque suite).
+
+**Contrat de `GET /catalog` pour le front** : `CatalogResponse = Catalog & { parameterSet: ParameterSet }`
+(type exporté par `apps/api/src/app/catalog/catalog.service.ts` ; à recopier ou à déplacer dans shared-types si
+besoin). Contient les pays, **toutes** les régions, catégories, appareils **actifs**, matériel **actif**, sections
+de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (empreinte SHA-256 du corps) et
+`Cache-Control: no-cache` ; renvoyer `If-None-Match` → `304` sans corps. Passer `parameterSet` tel quel à
+`simulate(input, catalog, parameterSet)` puis envoyer `{ input, result }` à `POST /simulations`.
+
+**Écarts / reste à faire**
+- Limitation de débit des routes publiques : à configurer dans le pare-feu Vercel (L5), rien en mémoire.
+- SVG nettoyé avec svgo seul (pas de DOMPurify : il exige un DOM type jsdom, trop lourd pour la fonction Vercel).
+- `@nestjs/jwt` 11 et `@nestjs/mapped-types` 2 (les versions suivantes sont ESM-only et cassent Jest/CommonJS).
+- Prisma interdit `migrate reset` lancé par un agent : les e2e utilisent `migrate deploy` + `TRUNCATE`.
+- Unicité du panneau `isDefault` non imposée côté API (plusieurs panneaux peuvent être « par défaut »).
+- `package.json#prisma` (schéma, seed) est déprécié pour Prisma 7 : migrer vers `prisma.config.ts` lors d'une montée.
