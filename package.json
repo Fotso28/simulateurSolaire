@@ -14,7 +14,10 @@
     "start:web": "nx serve web",
     "start:api": "nx serve api",
     "format": "nx format:write",
-    "format:check": "nx format:check"
+    "format:check": "nx format:check",
+    "postinstall": "prisma generate",
+    "db:migrate": "nx run api:migrate",
+    "db:seed": "nx run api:seed"
   },
   "dependencies": {
     "@angular/cdk": "~22.1.0",
@@ -28,6 +31,7 @@
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
     "@nestjs/jwt": "^12.0.3",
+    "@nestjs/mapped-types": "^12.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@prisma/client": "^6.19.3",
     "@vercel/blob": "^2.8.2",
@@ -94,5 +98,8 @@
     "webpack": "~5.110.0",
     "webpack-cli": "^7.0.0",
     "webpack-dev-server": "^5.2.1"
+  },
+  "prisma": {
+    "schema": "apps/api/prisma/schema.prisma"
   }
 }

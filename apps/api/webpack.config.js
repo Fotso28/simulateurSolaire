@@ -14,6 +14,10 @@ module.exports = {
       target: 'node',
       compiler: 'tsc',
       main: './src/main.ts',
+      // Handler serverless pour Vercel (export par défaut).
+      additionalEntryPoints: [
+        { entryName: 'serverless', entryPath: './src/serverless.ts' },
+      ],
       tsConfig: './tsconfig.app.json',
       assets: ['./src/assets'],
       optimization: false,
