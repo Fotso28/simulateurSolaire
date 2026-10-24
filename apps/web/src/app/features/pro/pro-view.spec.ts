@@ -70,6 +70,12 @@ describe('pro-validation', () => {
     expect(toField(undefined)).toBe('');
     expect(toField(1.8)).toBe('1,8');
     expect(toField(1 / 3)).toBe('0,333');
+    expect(toField(3277)).toBe('3277');
+    expect(toField(3277, true)).toBe('3\u202f277');
+    expect(toField(1234567.5, true)).toBe('1\u202f234\u202f567,5');
+    expect(parseField('1\u202f234\u202f567,5', RULES.dailyEnergyWh).value).toBe(
+      1234567.5,
+    );
   });
 });
 

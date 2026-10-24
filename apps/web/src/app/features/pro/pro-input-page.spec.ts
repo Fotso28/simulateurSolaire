@@ -34,7 +34,7 @@ function setup() {
 
 describe('ProInputPage', () => {
   it('saisie en puissance totale → totaux du store', () => {
-    const { store, el, type, click } = setup();
+    const { store, fixture, el, type, click } = setup();
     click('Puissance totale');
     type('#tot-p', '435');
     (el.querySelector('#tot-p') as HTMLInputElement).dispatchEvent(
@@ -47,6 +47,15 @@ describe('ProInputPage', () => {
       dailyEnergyWh: 3277,
       surgeFactor: 1.8,
     });
+    // Séparateur de milliers FR au départ du champ, sans casser la validation.
+    type('#tot-e', '12500');
+    const totE = el.querySelector('#tot-e') as HTMLInputElement;
+    totE.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+    expect(totE.value).toBe('12\u202f500');
+    expect(store.totals()?.dailyEnergyWh).toBe(12500);
+    type('#tot-e', '3\u202f277');
+    expect(store.totals()?.dailyEnergyWh).toBe(3277);
     click('Par appareil');
     expect(store.totals()).toBeUndefined();
   });

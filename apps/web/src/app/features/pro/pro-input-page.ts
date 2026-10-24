@@ -265,7 +265,7 @@ const LOAD_FIELDS: { field: LoadField; label: string; mode: string }[] = [
                       [attr.aria-invalid]="!!error(t.id)"
                       [attr.aria-describedby]="t.id + '-help'"
                       [placeholder]="t.placeholder"
-                      [value]="value(t.id, totalValue(t.id))"
+                      [value]="value(t.id, totalValue(t.id), true)"
                       (input)="editTotals(t.id, $any($event.target).value)"
                       (blur)="settle(t.id)"
                     />
@@ -685,8 +685,12 @@ export class ProInputPage {
     return `load-${l.key}-${field}`;
   }
 
-  protected value(id: string, stored: number | undefined): string {
-    return this.drafts()[id] ?? toField(stored);
+  protected value(
+    id: string,
+    stored: number | undefined,
+    grouped = false,
+  ): string {
+    return this.drafts()[id] ?? toField(stored, grouped);
   }
 
   protected error(id: string): string | null {
@@ -703,8 +707,19 @@ export class ProInputPage {
 
   /** Champ quitté : une valeur valide est normalisée, une erreur reste affichée. */
   protected settle(id: string): void {
-    // Les totaux ne sont enregistrés qu'à deux : leur texte reste la référence.
-    if (this.error(id) || id.startsWith('tot-')) return;
+    if (this.error(id)) return;
+    // Les totaux ne sont enregistrés qu'à deux : leur texte reste la référence,
+    // reformaté avec le séparateur de milliers.
+    if (id.startsWith('tot-')) {
+      const raw = this.drafts()[id];
+      const rule = this.rules.get(id);
+      const res = raw !== undefined && rule ? parseField(raw, rule) : null;
+      if (res?.ok && res.value !== undefined) {
+        const text = toField(res.value, true);
+        this.drafts.update((d) => ({ ...d, [id]: text }));
+      }
+      return;
+    }
     this.drafts.update((d) => {
       const rest = { ...d };
       delete rest[id];

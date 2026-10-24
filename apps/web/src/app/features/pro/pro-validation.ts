@@ -73,8 +73,14 @@ export function parseField(raw: string, rule: NumberRule): ParseResult {
   return { ok: true, value };
 }
 
-/** Valeur affichée dans un champ (virgule décimale, sans séparateur de milliers). */
-export function toField(value: number | undefined): string {
+/**
+ * Valeur affichée dans un champ (virgule décimale). `grouped` ajoute le
+ * séparateur de milliers français (espace fine insécable), que `parseField`
+ * ignore : la validation reste inchangée.
+ */
+export function toField(value: number | undefined, grouped = false): string {
   if (value === undefined) return '';
-  return String(Math.round(value * 1000) / 1000).replace('.', ',');
+  const [int, dec] = String(Math.round(value * 1000) / 1000).split('.');
+  const head = grouped ? int.replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f') : int;
+  return dec === undefined ? head : `${head},${dec}`;
 }
