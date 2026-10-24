@@ -67,6 +67,8 @@
   --color-track-soft: #ebebe5;
   --color-divider: #ecece6;
   --color-ring: #a7aaa2;
+  /* Contour des contrôles de formulaire : ≥ 3:1 sur surface et fond (WCAG 1.4.11). */
+  --color-control: #868981;
   --color-highlight: #fffbeb;
 
   --color-ok: #1d7a46;
@@ -215,7 +217,7 @@
   .field {
     min-height: 48px;
     width: 100%;
-    border: 1px solid var(--color-line-strong);
+    border: 1px solid var(--color-control);
     border-radius: var(--radius-lg);
     background: var(--color-surface);
     padding: 10px 14px;
@@ -255,7 +257,7 @@
     flex: none;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid #a7aaa2;
+    border: 1.5px solid var(--color-control);
     border-radius: 9999px;
   }
   .radio-dot::after {

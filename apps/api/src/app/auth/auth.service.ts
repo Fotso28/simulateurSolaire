@@ -65,15 +65,21 @@ export class AuthService {
       );
     }
     if (!(await verifyPassword(user.passwordHash, password))) {
-      const failedLogins = user.failedLogins + 1;
-      const locked = failedLogins >= MAX_FAILED_LOGINS;
-      await this.prisma.adminUser.update({
+      // Incrément atomique : des essais simultanés ne peuvent pas écraser le compteur.
+      const { failedLogins } = await this.prisma.adminUser.update({
         where: { id: user.id },
-        data: {
-          failedLogins: locked ? 0 : failedLogins,
-          lockedUntil: locked ? new Date(Date.now() + LOCK_DURATION_MS) : null,
-        },
+        data: { failedLogins: { increment: 1 } },
+        select: { failedLogins: true },
       });
+      if (failedLogins >= MAX_FAILED_LOGINS) {
+        await this.prisma.adminUser.update({
+          where: { id: user.id },
+          data: {
+            failedLogins: 0,
+            lockedUntil: new Date(Date.now() + LOCK_DURATION_MS),
+          },
+        });
+      }
       throw invalidCredentials();
     }
     await this.prisma.adminUser.update({

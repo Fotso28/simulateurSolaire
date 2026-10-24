@@ -222,6 +222,19 @@ describe('Back-office', () => {
         .field('kind', 'image')
         .expect(400);
     });
+
+    it('refuse un fichier de plus de 2 Mo (413)', async () => {
+      const res = await http
+        .post(`${API}/admin/media`)
+        .set(as(editor))
+        .field('kind', 'image')
+        .attach('file', Buffer.alloc(2 * 1024 * 1024 + 1), {
+          filename: 'gros.png',
+          contentType: 'image/png',
+        })
+        .expect(413);
+      expect(res.body.code).toBe('FILE_TOO_LARGE');
+    });
   });
 
   describe('référentiels (ADMIN)', () => {
@@ -255,6 +268,30 @@ describe('Back-office', () => {
         .set(as(admin))
         .send({ irradiationAvg: 4.4 })
         .expect(200);
+      const tooSunny = await http
+        .post(`${API}/admin/regions`)
+        .set(as(admin))
+        .send({
+          countryId: country.body.id,
+          name: 'Plateaux',
+          capital: 'Djambala',
+          latitude: -2.54,
+          longitude: 14.75,
+          irradiationAvg: 4.3,
+          irradiationMinMonth: 4.8,
+          source: 'PVGIS',
+        })
+        .expect(400);
+      expect(tooSunny.body).toMatchObject({
+        code: 'INVALID_IRRADIATION',
+        field: 'irradiationMinMonth',
+      });
+      const badPatch = await http
+        .patch(`${API}/admin/regions/${region.body.id}`)
+        .set(as(admin))
+        .send({ irradiationMinMonth: 4.5 })
+        .expect(400);
+      expect(badPatch.body.field).toBe('irradiationMinMonth');
       const countries = await http.get(`${API}/countries`).expect(200);
       expect(
         countries.body.find((c: { isoCode: string }) => c.isoCode === 'CG')

@@ -7,6 +7,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import type { Region } from '@prisma/client';
 import type { AuthUser } from '../auth/auth.types';
 import { CurrentUser, Roles } from '../auth/decorators';
 import { ApiError } from '../common/api-error';
@@ -32,6 +33,19 @@ import {
   UpdateProtectionRatingDto,
   UpdateRegionDto,
 } from './dto';
+
+/** L'ensoleillement du mois le plus défavorable ne peut dépasser la moyenne annuelle. */
+export function checkIrradiation(
+  r: Pick<Region, 'irradiationAvg' | 'irradiationMinMonth'>,
+): void {
+  if (!(r.irradiationMinMonth <= r.irradiationAvg)) {
+    throw ApiError.badRequest(
+      'INVALID_IRRADIATION',
+      "L'ensoleillement minimal doit être inférieur ou égal à la moyenne.",
+      'irradiationMinMonth',
+    );
+  }
+}
 
 @Controller('admin/countries')
 @Roles('ADMIN')
@@ -88,6 +102,7 @@ export class RegionsAdminController {
 
   @Post()
   async create(@Body() dto: CreateRegionDto, @CurrentUser() user: AuthUser) {
+    checkIrradiation(dto);
     await this.assertCountry(dto.countryId);
     return this.crud.create('region', dto, user);
   }
@@ -98,6 +113,8 @@ export class RegionsAdminController {
     @Body() dto: UpdateRegionDto,
     @CurrentUser() user: AuthUser,
   ) {
+    const current = await this.crud.get<Region>('region', id);
+    checkIrradiation({ ...current, ...dto });
     if (dto.countryId) await this.assertCountry(dto.countryId);
     return this.crud.update('region', id, dto, user);
   }

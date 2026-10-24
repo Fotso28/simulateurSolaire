@@ -55,5 +55,19 @@ vercel firewall rules add "Limite POST login" \
   --rate-limit-action rate_limit \
   --yes
 
+# POST /api/v1/client-errors : 10 rapports d'erreurs navigateur par minute et par IP
+# (le navigateur échantillonne et dédoublonne déjà ; ceci borne les abus).
+vercel firewall rules add "Limite POST client-errors" \
+  --description "10 POST /api/v1/client-errors par minute et par IP" \
+  --condition '{"type":"path","op":"eq","value":"/api/v1/client-errors"}' \
+  --condition '{"type":"method","op":"eq","value":"POST"}' \
+  --action rate_limit \
+  --rate-limit-window 60 \
+  --rate-limit-requests 10 \
+  --rate-limit-keys ip \
+  --rate-limit-algo fixed_window \
+  --rate-limit-action rate_limit \
+  --yes
+
 vercel firewall publish --yes
 vercel firewall rules list

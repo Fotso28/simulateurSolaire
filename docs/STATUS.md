@@ -10,7 +10,7 @@
 | L4b | terminé — mode pro (saisie, résultat, récapitulatif technique, tests ; finalisé en L4c) | L4b |
 | L4a | terminé — back-office `/admin` | L4a |
 | L5 | terminé (1–4 et 6 faits — déploiement : L5b ; 5, 7 : L5c) | L5, L5b, L5c |
-| L6 | terminé — L6a/L6b : points 1 à 7 faits ; L6c : recette (`docs/RECETTE.md`) | L6a, L6b, L6c |
+| L6 | terminé — L6a/L6b : points 1 à 7 faits ; L6c : recette (`docs/RECETTE.md`) ; L6d : 7 écarts de recette corrigés | L6a, L6b, L6c, L6d |
 
 ## Notes par lot
 

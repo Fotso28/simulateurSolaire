@@ -72,6 +72,18 @@ export function toErrorResponse(exception: unknown): {
       };
     }
   }
+  // Erreurs `http-errors` des analyseurs de corps (JSON invalide, corps trop gros).
+  const httpError = exception as { status?: unknown; expose?: unknown };
+  if (
+    httpError?.expose === true &&
+    typeof httpError.status === 'number' &&
+    httpError.status >= 400 &&
+    httpError.status < 500
+  ) {
+    const status = httpError.status;
+    const [code, message] = DEFAULT_CODES[status] ?? ['ERROR', 'Erreur.'];
+    return { status, body: { code, message } };
+  }
   return {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     body: { code: 'INTERNAL_ERROR', message: 'Erreur interne du serveur.' },

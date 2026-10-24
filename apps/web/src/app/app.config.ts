@@ -1,5 +1,6 @@
 import {
   ApplicationConfig,
+  ErrorHandler,
   inject,
   isDevMode,
   provideAppInitializer,
@@ -13,6 +14,7 @@ import {
 } from '@angular/router';
 import { Router } from '@angular/router';
 import { appRoutes } from './app.routes';
+import { ClientErrorHandler } from './core/client-error-handler';
 import { RESULT_ACTIONS, ResultActions } from './core/extensions';
 import { OfflineQueue } from './core/offline-queue';
 import { ShareService } from './core/share.service';
@@ -33,6 +35,8 @@ function resultActions(): ResultActions {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    // Suivi des erreurs navigateur (désactivable via CLIENT_ERRORS_CONFIG).
+    { provide: ErrorHandler, useClass: ClientErrorHandler },
     provideRouter(
       appRoutes,
       withComponentInputBinding(),

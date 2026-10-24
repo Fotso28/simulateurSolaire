@@ -167,6 +167,7 @@ Vercel → projet **api** → **Settings → Environment Variables**. Liste comp
 | `SEED_ADMIN_EMAIL` | ✔ | — | E-mail du compte ADMIN initial (créé par le seed s'il n'existe pas). |
 | `SEED_ADMIN_PASSWORD` | ✔ | — | Mot de passe initial fort, à changer dès la première connexion (back-office → Comptes). Supprimer la variable ensuite. |
 | `SEED_ON_BUILD` | `1` au premier déploiement | — | Lance le seed idempotent dans le build (voir § 6). Retirer ensuite (sans risque si oublié : le seed n'écrase rien). |
+| `CLIENT_ERRORS_ENABLED` | — | — | `false` pour ignorer les rapports d'erreurs navigateur (défaut : journalisés). |
 | `SKIP_DB_MIGRATIONS` | — | — | `1` uniquement pour un build sans base (dépannage). |
 | `NODE_ENV` | — | — | Fixée à `production` par Vercel. |
 | `NX_NO_CLOUD` | — | — | Déjà fixée par les commandes de build. |
@@ -221,6 +222,8 @@ donc par la CLI (script fourni) ou le tableau de bord.
 |---|---|---|---|
 | Limite POST simulations | chemin = `/api/v1/simulations` ET méthode = `POST` | 20 / 60 s par IP (fenêtre fixe) | 429 |
 | Limite POST leads | chemin = `/api/v1/leads` ET méthode = `POST` | 5 / 600 s par IP (fenêtre fixe) | refus (403) pendant 15 min |
+| Limite POST login | chemin = `/api/v1/auth/login` ET méthode = `POST` | 10 / 60 s par IP (fenêtre fixe) | 429 |
+| Limite POST client-errors | chemin = `/api/v1/client-errors` ET méthode = `POST` | 10 / 60 s par IP (fenêtre fixe) | 429 |
 
 Les créer sur les **deux** projets : `web` (entrée publique, l'IP client y est connue) et
 `api` (accès direct à `*.vercel.app`).
@@ -235,7 +238,7 @@ apps/api/scripts/firewall-rules.sh apps/web
 apps/api/scripts/firewall-rules.sh apps/api
 ```
 
-Le script crée les trois règles (simulations, leads, connexion) en brouillon, les publie (`vercel firewall publish`) et
+Le script crée les quatre règles (simulations, leads, connexion, erreurs navigateur) en brouillon, les publie (`vercel firewall publish`) et
 affiche la liste.
 
 **Par le tableau de bord** (équivalent) : projet → **Firewall → Configure → New Rule** :
@@ -246,7 +249,8 @@ affiche la liste.
    action au dépassement `Too Many Requests (429)`.
 4. **Save Rule** ; recommencer pour `Limite POST leads` (`/api/v1/leads`, `600` s, `5`
    requêtes, action `Deny`, durée `15 minutes`), puis `Limite POST login`
-   (`/api/v1/auth/login`, `60` s, `10` requêtes, action `429`).
+   (`/api/v1/auth/login`, `60` s, `10` requêtes, action `429`) et `Limite POST client-errors`
+   (`/api/v1/client-errors`, `60` s, `10` requêtes, action `429`).
 5. **Review Changes → Publish**.
 
 Le nombre de règles de limitation dépend du plan Vercel : si le plan n'en autorise qu'une,
@@ -254,6 +258,18 @@ créer une seule règle avec deux groupes (`OR`) — chemin `/api/v1/simulations
 `/api/v1/leads`, méthode `POST` — à 10 requêtes / 60 s par IP.
 
 Contrôle : `vercel firewall rules list` ; puis le test du § 10.
+
+### Suivi des erreurs navigateur
+
+Le front envoie les erreurs JavaScript non gérées à `POST /api/v1/client-errors`
+(public, corps JSON ≤ 8 Ko, réponse 204). Le navigateur n'envoie que le message, la pile
+(tronquée), le chemin de la page sans paramètres et la version ; il échantillonne (25 %),
+dédoublonne et plafonne à 10 envois par session. L'API n'écrit rien en base : chaque rapport
+est une ligne de journal structurée `{"event":"client_error",...}` (niveau `WARN`, contexte
+`ClientError`), visible dans **Logs** du projet api (filtre `client_error`).
+Désactivation : variable `CLIENT_ERRORS_ENABLED=false` sur le projet api (rapports acceptés
+puis ignorés) ; côté front, jeton `CLIENT_ERRORS_CONFIG` (`enabled: false`) dans
+`apps/web/src/app/core/client-error-handler.ts` (désactivé d'office en mode développement).
 
 ## 9. Sauvegardes et restauration
 

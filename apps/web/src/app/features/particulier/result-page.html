@@ -4,6 +4,7 @@
     title="Votre installation"
     backLink="/autonomie"
     backLabel="Retour à l'autonomie"
+    [shareable]="store.outcome().status === 'ok'"
   />
 
   @switch (store.outcome().status) { @case ('empty') {

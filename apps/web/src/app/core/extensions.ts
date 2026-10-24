@@ -20,3 +20,28 @@ export const RESULT_ACTIONS = new InjectionToken<ResultActions>(
   'RESULT_ACTIONS',
   { providedIn: 'root', factory: () => ({}) },
 );
+
+/**
+ * Partage du résultat (récapitulatif, en-tête desktop du résultat) : partage
+ * natif, sinon copie du lien. Renvoie le message à afficher ('' si aucun).
+ */
+export async function shareResult(actions: ResultActions): Promise<string> {
+  try {
+    const url = actions.share
+      ? await actions.share()
+      : (globalThis.location?.origin ?? '');
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      await navigator.share({ title: 'Ma simulation solaire', url });
+    } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      await navigator.clipboard.writeText(url);
+      return 'Lien copié.';
+    }
+    return '';
+  } catch (error) {
+    // Partage annulé par l'utilisateur : rien à signaler.
+    if ((error as Error)?.name === 'AbortError') return '';
+    return (error as Error)?.name === 'QueuedOfflineError'
+      ? (error as Error).message
+      : 'Le lien n’a pas pu être créé. Réessayez.';
+  }
+}

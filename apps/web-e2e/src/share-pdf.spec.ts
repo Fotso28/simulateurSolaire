@@ -1,5 +1,13 @@
 import { expect, test } from '@playwright/test';
-import { collectErrors, reachRecap, visibleButton } from './support';
+import {
+  chooseAutonomy,
+  collectErrors,
+  enterDoualaDevices,
+  isDesktop,
+  reachRecap,
+  startJourney,
+  visibleButton,
+} from './support';
 
 const TOKEN = 'e2eTok3n';
 
@@ -89,4 +97,34 @@ test('export PDF', async ({ page }) => {
   const { readFile } = await import('node:fs/promises');
   const head = (await readFile(path)).subarray(0, 5).toString();
   expect(head).toBe('%PDF-');
+});
+
+test('bouton « Partager » de l’en-tête desktop du résultat', async ({
+  page,
+}) => {
+  test.skip(!isDesktop(page), 'En-tête desktop uniquement');
+  const errors = collectErrors(page);
+  await page.route('**/api/v1/simulations', (route) =>
+    route.fulfill({ status: 201, json: { shareToken: TOKEN } }),
+  );
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: async (data: ShareData) => {
+        (window as unknown as { __shared: string }).__shared = data.url ?? '';
+      },
+    });
+  });
+  await startJourney(page, 'particulier');
+  await enterDoualaDevices(page);
+  await chooseAutonomy(page);
+  await page
+    .getByRole('banner')
+    .getByRole('button', { name: 'Partager' })
+    .filter({ visible: true })
+    .click();
+  await expect
+    .poll(() => page.evaluate(() => (window as { __shared?: string }).__shared))
+    .toMatch(new RegExp(`/s/${TOKEN}$`));
+  expect(errors).toEqual([]);
 });

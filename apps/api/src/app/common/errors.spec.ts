@@ -13,6 +13,18 @@ const prismaError = (code: string, meta?: Record<string, unknown>) =>
   });
 
 describe('format d’erreur unique', () => {
+  it('convertit une erreur d’analyseur de corps (corps trop gros) en 413', () => {
+    const err = Object.assign(new Error('request entity too large'), {
+      status: 413,
+      expose: true,
+      type: 'entity.too.large',
+    });
+    expect(toErrorResponse(err)).toEqual({
+      status: 413,
+      body: { code: 'PAYLOAD_TOO_LARGE', message: 'Contenu trop volumineux.' },
+    });
+  });
+
   it('conserve le corps d’une ApiError', () => {
     const { status, body } = toErrorResponse(
       ApiError.badRequest('X', 'Message.', 'champ'),

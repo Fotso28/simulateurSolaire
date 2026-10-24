@@ -30,6 +30,7 @@ import {
   VercelBlobStorage,
 } from './media/media-storage';
 import { PrismaModule } from './prisma/prisma.module';
+import { ClientErrorsController } from './public/client-errors.controller';
 import { PublicController } from './public/public.controller';
 import { SimulationsController } from './public/simulations.controller';
 import { SimulationsService } from './public/simulations.service';
@@ -40,6 +41,7 @@ import { SimulationsService } from './public/simulations.service';
     HealthController,
     PublicController,
     SimulationsController,
+    ClientErrorsController,
     DeviceCategoriesController,
     DevicesController,
     MediaController,

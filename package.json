@@ -20,7 +20,6 @@
     "db:seed": "nx run api:seed"
   },
   "dependencies": {
-    "@angular/cdk": "~22.1.0",
     "@angular/common": "~22.1.0",
     "@angular/compiler": "~22.1.0",
     "@angular/core": "~22.1.0",

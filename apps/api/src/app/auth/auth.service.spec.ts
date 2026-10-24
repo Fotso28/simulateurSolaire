@@ -36,9 +36,14 @@ describe('AuthService', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     prisma.adminUser.findUnique.mockImplementation(async () => user);
-    prisma.adminUser.update.mockImplementation(async ({ data }) =>
-      Object.assign(user, data),
-    );
+    prisma.adminUser.update.mockImplementation(async ({ data }) => {
+      const { failedLogins, ...rest } = data;
+      Object.assign(user, rest);
+      if (typeof failedLogins === 'number') user.failedLogins = failedLogins;
+      else if (failedLogins?.increment)
+        user.failedLogins += failedLogins.increment;
+      return { ...user };
+    });
   });
 
   it('connecte avec le bon mot de passe et remet le compteur à zéro', async () => {
@@ -67,6 +72,22 @@ describe('AuthService', () => {
       service.login('a@b.fr', 'Secret-123456'),
     ).rejects.toMatchObject({ status: 423 });
     user.lockedUntil = null;
+  });
+
+  it('verrouille même si les 5 échecs sont simultanés (incrément atomique)', async () => {
+    user.failedLogins = 0;
+    // Chaque essai lit l'état initial (compteur à 0) avant les autres écritures.
+    prisma.adminUser.findUnique.mockImplementation(async () => ({ ...user }));
+    const attempts = Array.from({ length: 5 }, () =>
+      service.login('a@b.fr', 'mauvais'),
+    );
+    await Promise.allSettled(attempts);
+    expect(prisma.adminUser.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { failedLogins: { increment: 1 } } }),
+    );
+    expect(user.lockedUntil?.getTime()).toBeGreaterThan(Date.now());
+    user.lockedUntil = null;
+    user.failedLogins = 0;
   });
 
   it('révoque toute la famille si un jeton déjà utilisé est rejoué', async () => {

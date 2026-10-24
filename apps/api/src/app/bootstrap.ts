@@ -8,6 +8,7 @@ import { AppModule } from './app.module';
 import { createValidationPipe } from './common/validation';
 import { corsOrigins, Env } from './config/env';
 import { GLOBAL_PREFIX } from './constants';
+import { CLIENT_ERROR_MAX_BYTES } from './public/client-errors.controller';
 
 /** Configuration commune : serveur local, fonction Vercel et tests e2e. */
 export function configureApp(
@@ -20,6 +21,11 @@ export function configureApp(
   app.disable('x-powered-by');
   app.use(helmet());
   app.use(cookieParser());
+  // Rapports d'erreurs navigateur : limite propre, plus stricte que la limite générale.
+  app.use(
+    `/${GLOBAL_PREFIX}/client-errors`,
+    express.json({ limit: CLIENT_ERROR_MAX_BYTES }),
+  );
   app.useBodyParser('json', { limit: '256kb' });
   const origins = corsOrigins(env);
   app.enableCors({

@@ -39,6 +39,32 @@ describe('API publique', () => {
 
   it('GET /health', () => http.get(`${API}/health`).expect(200));
 
+  describe('POST /client-errors', () => {
+    it('journalise une erreur navigateur sans la stocker', async () => {
+      await http
+        .post(`${API}/client-errors`)
+        .send({
+          message: 'TypeError: x is undefined',
+          path: '/resultat',
+          kind: 'error',
+        })
+        .expect(204);
+      await http
+        .post(`${API}/client-errors`)
+        .send({ message: 'x', email: 'a@b.fr' })
+        .expect(400);
+    });
+
+    it('refuse un rapport de plus de 8 Ko (413)', async () => {
+      const res = await http
+        .post(`${API}/client-errors`)
+        .set('Content-Type', 'application/json')
+        .send(JSON.stringify({ message: 'x', stack: 'a'.repeat(9000) }))
+        .expect(413);
+      expect(res.body.code).toBe('PAYLOAD_TOO_LARGE');
+    });
+  });
+
   it('GET /countries renvoie pays et régions triés', async () => {
     const res = await http.get(`${API}/countries`).expect(200);
     expect(res.body.map((c: { isoCode: string }) => c.isoCode)).toEqual([

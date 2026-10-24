@@ -40,6 +40,11 @@ export class Env {
   @MinLength(16)
   IP_HASH_SECRET!: string;
 
+  /** Journalisation des erreurs remontées par le navigateur. */
+  @Transform(({ value }) => value !== false && value !== 'false')
+  @IsBoolean()
+  CLIENT_ERRORS_ENABLED = true;
+
   @IsIn(['local', 'vercel-blob'])
   STORAGE_DRIVER: 'local' | 'vercel-blob' = 'local';
 

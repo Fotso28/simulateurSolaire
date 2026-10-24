@@ -4,8 +4,10 @@ import {
   computed,
   inject,
   input,
+  signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { RESULT_ACTIONS, shareResult } from '../../core/extensions';
 import { SimulationStore } from '../../core/simulation.store';
 import { formatNumber, NBSP } from '../../core/format';
 import { Icon } from '../icons/icon';
@@ -28,7 +30,8 @@ export const PRO_STEPS = [
 
 /**
  * En-tête du parcours. Mobile : titre, retour, « ÉTAPE n / 5 » et barre
- * d'étapes. Desktop (≥ 1024 px) : logo, étapes numérotées, lieu choisi.
+ * d'étapes. Desktop (≥ 1024 px) : logo, étapes numérotées, lieu choisi et,
+ * sur le résultat, bouton « Partager ».
  */
 @Component({
   selector: 'app-step-header',
@@ -154,6 +157,23 @@ export const PRO_STEPS = [
             {{ p }}
           </span>
         }
+        @if (shareable()) {
+          <div class="flex items-center gap-3">
+            @if (shareMessage()) {
+              <span role="status" class="text-small text-ok-ink">{{
+                shareMessage()
+              }}</span>
+            }
+            <button
+              type="button"
+              class="btn-secondary !min-h-11 gap-2 px-4 text-sm"
+              (click)="share()"
+            >
+              <app-icon name="share" [size]="18" />
+              Partager
+            </button>
+          </div>
+        }
       </div>
     </header>
   `,
@@ -165,6 +185,16 @@ export class StepHeader {
   readonly step = input<number | null>(null);
   readonly backLink = input<string>();
   readonly backLabel = input('Retour');
+  /** Bouton « Partager » dans l'en-tête desktop (écran Résultat). */
+  readonly shareable = input(false);
+
+  private readonly actions = inject(RESULT_ACTIONS);
+  protected readonly shareMessage = signal('');
+
+  protected async share(): Promise<void> {
+    this.shareMessage.set('');
+    this.shareMessage.set(await shareResult(this.actions));
+  }
 
   protected readonly isPro = computed(() => this.store.mode() === 'pro');
   protected readonly steps = computed(() => (this.isPro() ? PRO_STEPS : STEPS));

@@ -8,7 +8,7 @@ cinq périmètres. Les preuves ont été vérifiées dans le code. Chemins relat
 - **Exigences fonctionnelles : 23 / 23 conformes** après les correctifs L6c. Avant L6c, deux étaient
   partielles : RF-03 (durée d'un « Autre appareil » non modifiable après ajout) et RF-14 (indicateur
   onduleur du mode pro qui ignorait la pointe). Aucune n'est absente.
-- **Exigences non fonctionnelles : 10 conformes, 2 partielles, 1 absente** (suivi des erreurs côté navigateur), 1 non mesurable avant production (disponibilité).
+- **Exigences non fonctionnelles (après L6d) : 12 conformes, 1 partielle** (focus/lecteur d'écran à vérifier à la main), 1 non mesurable avant production (disponibilité). Avant L6d : 10 conformes, 2 partielles, 1 absente.
 - **Moteur** : étapes 1 à 9, fourchette, variantes, configurateur, 5 alertes et 4 cas de référence conformes.
   109 tests, couverture ≈ 96 % des lignes. Un bug a été corrigé en L6c (installation 48 V à forte puissance et
   faible énergie).
@@ -54,15 +54,15 @@ cinq périmètres. Les preuves ont été vérifiées dans le code. Chemins relat
 | Hors-ligne après la première visite | Conforme | `ngsw-config.json` (prefetch, catalogue en freshness) ; `web/core/offline-queue.ts` ; repli `DEFAULT_CATALOG` | — |
 | Recalcul < 100 ms | Conforme | `simulate()` sur Douala : 0,067 ms en moyenne, p99 0,36 ms ; test `< 5 ms` dans `reference-cases.spec.ts` | — |
 | Contrastes du texte (WCAG AA 4,5:1) | Conforme | muted/bg 5,53 ; blanc/action 5,02 ; *-ink/*-soft ≥ 6,3 | — |
-| Contraste des composants (WCAG 1.4.11, 3:1) | Partiel | Bordure `.field` 1,65:1 (`styles.css:217`) ; `.radio-dot` 2,36:1 | À corriger (changement visuel à valider) |
+| Contraste des composants (WCAG 1.4.11, 3:1) | Conforme (L6d) | Jeton `--color-control` #868981 pour `.field` et `.radio-dot` : 3,55:1 sur surface, 3,25:1 sur fond | Gris discret conservé (esprit des maquettes) |
 | Focus visible, libellés, aria | Partiel → amélioré (L6c) | `styles.css` : focus étendu aux `textarea` ; recherche admin : `focus-within` | Reste à vérifier à la main avec un lecteur d'écran |
 | Zones tactiles ≥ 44 px | Conforme (L6c) | Bandeau hors-ligne : « × » et « Voir le lien » portés à 44 px (`web/shared/ui/offline-indicator.ts`) | — |
 | Langue française, unités, formats | Conforme | `index.html` `lang="fr"` ; `Intl.NumberFormat('fr-FR')` ; messages d'API en français | Anglais prévu en V2 |
 | Disponibilité 99,5 % | Non mesurable avant production | Vercel + Neon | À suivre après mise en ligne |
 | Polices auto-hébergées | Conforme | `apps/web/public/fonts` (6 woff2, 128 Ko) | — |
 | Déploiement Vercel / Neon / migrations / sauvegardes | Conforme (configuration seule) | `apps/web/vercel.json` + `scripts/vercel-output.mjs` ; `apps/api/vercel.json` ; `vercel-build.sh` ; `.github/workflows/backup.yml` | Aucun déploiement réel |
-| Tests (unitaires, cas de référence, e2e) | Conforme | Unitaires verts ; e2e API (Supertest) et web (Playwright) présents | Verrouillage fiabilisé et e2e relancés par L6b ; test e2e du 413 à écrire |
-| Suivi des erreurs côté navigateur (TRD) | **Absent** | `provideBrowserGlobalErrorListeners()` seulement, sans envoi | À faire |
+| Tests (unitaires, cas de référence, e2e) | Conforme | Unitaires verts ; e2e API (Supertest) et web (Playwright) présents | Test e2e du 413 ajouté (L6d) |
+| Suivi des erreurs côté navigateur (TRD) | Conforme (L6d) | `web/core/client-error-handler.ts` (anonymisé, échantillonné 25 %, dédoublonné, ≤ 10/page) → `POST /api/v1/client-errors` (≤ 8 Ko, journal structuré, pas de base, `CLIENT_ERRORS_ENABLED`) ; règle de débit WAF | — |
 
 ## Correctifs appliqués en L6c
 
@@ -114,17 +114,20 @@ Tous les correctifs ont un test, sauf les deux derniers (script et constante).
   - règles du pare-feu posées par script CLI ;
   - prise en compte de `apps/web/.vercel/output` à vérifier au premier déploiement.
 
-## Écarts à corriger (non traités en L6c)
+## Écarts corrigés en L6d
 
-| # | Écart | Où | Correctif proposé |
-|---|---|---|---|
-| 1 | Verrouillage après 5 échecs non atomique : des essais simultanés peuvent dépasser 5 | `apps/api/src/app/auth/auth.service.ts:59-76` | `update({ data: { failedLogins: { increment: 1 } } })`, puis verrouiller selon la valeur renvoyée. À coordonner avec L6b (auth) |
-| 2 | Ensoleillement minimal pouvant dépasser la moyenne | `apps/api/src/app/admin/reference-admin.controller.ts:90, 96` | Contrôle `checkIrradiation` sur le modèle de `checkPowers`, qui renvoie 400 `field: 'irradiationMinMonth'` |
-| 3 | Contraste des composants < 3:1 | `apps/web/src/styles.css:217, 257` | Bordure `.field` et `.radio-dot` en `var(--color-muted)`, après validation visuelle |
-| 4 | Suivi des erreurs côté navigateur absent | `apps/web/src/app/app.config.ts` | `ErrorHandler` qui envoie les erreurs (Sentry ou point d'API dédié) |
-| 5 | Bouton « Partager » absent de l'en-tête desktop du résultat | `web/shared/layout/step-header.ts` | Le partage existe sur le récapitulatif ; l'ajouter à l'en-tête comme sur la maquette DesktopResultat |
-| 6 | Test e2e du 413 `FILE_TOO_LARGE` | `apps/api/src/e2e/` | À écrire après L6b (téléverser 2 Mo + 1 octet) |
-| 7 | `@angular/cdk` déclaré mais jamais importé | `package.json` | Le retirer ou l'utiliser |
+| # | Écart | Correctif |
+|---|---|---|
+| 1 | Verrouillage après 5 échecs non atomique | `failedLogins: { increment: 1 }` puis verrouillage selon la valeur renvoyée (`auth.service.ts`) ; test d'essais simultanés |
+| 2 | Ensoleillement minimal > moyenne | `checkIrradiation` à la création et à la modification des régions → 400 `INVALID_IRRADIATION`, `field: 'irradiationMinMonth'` ; tests e2e |
+| 3 | Contraste des composants < 3:1 | Jeton `--color-control` (#868981, 3,55:1) pour `.field` et `.radio-dot` |
+| 4 | Suivi des erreurs navigateur absent | `ClientErrorHandler` + `POST /api/v1/client-errors` (voir exigences non fonctionnelles) ; corps > limite → 413 `PAYLOAD_TOO_LARGE` (le filtre d'erreurs convertit désormais les erreurs des analyseurs de corps au lieu d'un 500) ; `firewall-rules.sh` et `docs/DEPLOIEMENT.md` mis à jour |
+| 5 | « Partager » absent de l'en-tête desktop du résultat | Bouton dans `step-header.ts` (`[shareable]`), logique commune `shareResult` (`core/extensions.ts`) avec le récapitulatif ; test Playwright desktop |
+| 6 | Test e2e du 413 `FILE_TOO_LARGE` | `admin.e2e.spec.ts` : 2 Mo + 1 octet → 413 |
+| 7 | `@angular/cdk` jamais importé | Retiré ; lockfile régénéré avec npm 11.6.2 |
+
+Vérifications L6d : `nx run-many -t lint test build` (engine 109, web 89, api 29 tests), `nx e2e api` 34/34,
+`nx e2e web-e2e` 15 réussis + 1 ignoré (test desktop sur le projet mobile).
 
 ## Questions ouvertes du PRD
 

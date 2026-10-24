@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { RESULT_ACTIONS } from '../../core/extensions';
+import { RESULT_ACTIONS, shareResult } from '../../core/extensions';
 import { SimulationStore } from '../../core/simulation.store';
 import { Icon } from '../../shared/icons/icon';
 import { StepHeader } from '../../shared/layout/step-header';
@@ -254,25 +254,7 @@ export class RecapPage {
 
   protected async share(): Promise<void> {
     this.shareMessage.set('');
-    try {
-      const url = this.actions.share
-        ? await this.actions.share()
-        : (globalThis.location?.origin ?? '');
-      if (typeof navigator !== 'undefined' && navigator.share) {
-        await navigator.share({ title: 'Ma simulation solaire', url });
-      } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        await navigator.clipboard.writeText(url);
-        this.shareMessage.set('Lien copié.');
-      }
-    } catch (error) {
-      // Partage annulé par l'utilisateur : rien à signaler.
-      if ((error as Error)?.name === 'AbortError') return;
-      this.shareMessage.set(
-        (error as Error)?.name === 'QueuedOfflineError'
-          ? (error as Error).message
-          : 'Le lien n’a pas pu être créé. Réessayez.',
-      );
-    }
+    this.shareMessage.set(await shareResult(this.actions));
   }
 
   protected requestCallback(): void {
