@@ -6,7 +6,8 @@
 | L1 | terminé | L1 |
 | L2 | terminé | L2 |
 | L3 | terminé | L3 |
-| L4 | en cours (L4a back-office : terminé) | L4a |
+| L4 | en cours (L4a terminé, L4b partiel) | L4a, L4b |
+| L4b | partiel — mode pro (saisie + résultat livrés, tests à compléter) | L4b |
 | L4a | terminé — back-office `/admin` | L4a |
 | L5 | à faire | |
 | L6 | à faire | |
@@ -339,3 +340,33 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
 - Ordre des appareils/catégories par champ « Ordre » (pas de glisser-déposer).
 - `AdminCatalogue` : la maquette n'a pas d'icône de catégorie dans la liste ; colonnes génériques ailleurs.
 
+
+### L4b — Mode professionnel (partiel)
+
+**Fait**
+- `features/pro/pro-input-page.ts` (route `/besoins` gardée par `isProMode`, placeholder retiré) : bascule « Par appareil »
+  (lignes libres ou depuis le catalogue avec puissance typique pré-remplie ; P, Qté, h/jour, k démarrage ; τ du
+  catalogue ; énergie par ligne) / « Puissance totale » (P_inst, E_j, facteur de pointe) ; bandeau P_inst / P_dem / E_j ;
+  paramètres : autonomie (partagée avec le store), technologie, tension auto/12/24/48, architecture séparée/hybride,
+  c_s (0,5–1, pas 0,05), panneau de référence, longueurs des 4 tronçons. Validation (`pro-validation.ts`, bornes de
+  l'API), bouton « Dimensionner » désactivé avec la raison. Desktop : 2 colonnes (charges | paramètres).
+- `features/pro/pro-result-page.ts` (route `/resultat` gardée par `isProMode`) : hypothèses, indicateurs A_eff / C_PV /
+  onduleur, alertes techniques (code + message moteur), fiches PV (N_s × N_p, contrôle V_oc), régulateur (I_reg,
+  V_PV max, courant d'entrée), batteries (C requise/installée, S × P), onduleur (1,25 × P_inst, f_s × P_nom), câbles
+  (courant, tension, longueur, section calculée, ΔU réelle), protections (calibre × quantité), variantes, saison des
+  pluies, traçabilité ; export PDF / partage via `RESULT_ACTIONS`, liens configurateur (L3) et `/recapitulatif`.
+  Desktop : esprit DesktopResultat (configurateur compact à droite). Fonctions pures : `pro-view.ts`.
+- **Modifs hors périmètre (minimales)** : `shared-types` `loads[].surgeFactor?` ; moteur `energy.ts` (k saisi prioritaire
+  sur le catalogue, refus < 1) + 2 tests ; API `LoadDto.surgeFactor` (1–10, sinon `forbidNonWhitelisted` rejetait le
+  partage) ; store : `LoadEntry.surgeFactor`, `panelModelId` (persisté, fusionné dans `overrides`), `addProLoad`,
+  `updateLoad`, `setPanelModel`, `setOptions`/`setTotals` effacent les forçages, `setMode('particulier')` efface
+  options/totaux/panneau, lignes pro sans puissance ignorées, libellé vide → « Appareil » ; `StepHeader` : badge PRO
+  et parcours pro en 4 étapes (`PRO_STEPS`) ; `app.spec.ts` adapté.
+- Playwright (serveur statique de `dist`) à 360 px : cas par appareils OK (pas de défilement horizontal, P_inst
+  890 W / P_dem 2 390 W / E_j 3 594 Wh/j). Bug trouvé et corrigé ensuite : saisie des totaux perdue à la sortie du champ.
+
+**Reste à faire**
+- Tests : seul `pro-input-page.spec.ts` (cas totaux) existe ; ajouter cas par appareils + validation, `pro-result-page`,
+  store pro (`addProLoad`, `panelModelId`, `setMode`), `pro-view` / `pro-validation`.
+- Rejouer Playwright après correctif : cas puissance totale à 360 px, les deux cas à 1440 px, configurateur depuis pro.
+- `/recapitulatif` réutilisé tel quel (formulation particulier : « Consommation ≈ ») — à adapter éventuellement.

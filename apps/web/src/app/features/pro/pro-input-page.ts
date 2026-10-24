@@ -703,7 +703,8 @@ export class ProInputPage {
 
   /** Champ quitté : une valeur valide est normalisée, une erreur reste affichée. */
   protected settle(id: string): void {
-    if (this.error(id)) return;
+    // Les totaux ne sont enregistrés qu'à deux : leur texte reste la référence.
+    if (this.error(id) || id.startsWith('tot-')) return;
     this.drafts.update((d) => {
       const rest = { ...d };
       delete rest[id];
