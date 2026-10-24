@@ -10,7 +10,7 @@
 | L4b | terminé — mode pro (saisie, résultat, récapitulatif technique, tests ; finalisé en L4c) | L4b |
 | L4a | terminé — back-office `/admin` | L4a |
 | L5 | terminé (1–4 et 6 faits — déploiement : L5b ; 5, 7 : L5c) | L5, L5b, L5c |
-| L6 | à faire | |
+| L6 | en cours — L6a partiel (points 1 à 4 faits ; reste 5 à 7) | L6a |
 
 ## Notes par lot
 
@@ -462,3 +462,37 @@ de câbles, protections et le jeu de paramètres actif. En-têtes `ETag` (emprei
   - Écarts : les prévisualisations du web relaient vers l'API de production (URL statique) ; règles du pare-feu non
     versionnables dans `vercel.json` (script CLI à lancer une fois par projet).
 - Facultatif : tests de `lead-page` et `shared-page`.
+
+## L6a — correctifs de recette (partiel)
+
+Fait :
+1. **Catalogue** : `p_typ` explicite et réaliste pour les 36 appareils (`libs/engine/src/data/devices.ts`,
+   colonne P_typ ; Ampoule LED 10 W, TV 43–55" 80 W, décodeur 15 W, réfrigérateur 120 W, ventilateur 60 W,
+   chargeur 10 W, box 10 W…). Le foyer de Douala saisi depuis le catalogue (particulier) donne 3 277 Wh/j et
+   la même proposition (3 × 450 Wc, 1 × 24 V 200 Ah, onduleur 1 000 W) : test dans `reference-cases.spec.ts`.
+   Cas 4 (Ebolowa) recalculé (typ 2 132 Wh/j, 2 × 12 V 200 Ah) ; fer à repasser n'est plus « lourd »
+   (typ 1 200 W). Le seed API reprend `DEFAULT_CATALOG` (inchangé). `enterDouala` (tests web) n'a plus à
+   forcer le réfrigérateur à 120 W.
+2. **PDF pro** : `buildPdfDocument` utilise `proRecapSummary` / `proBillOfMaterials` en mode pro (E_j,
+   P_inst / P_dem, câblage nS × mP, sections, calibres), bilan de charge (P, Qté, h/j, k) ou totaux saisis ;
+   PDF particulier inchangé. `pdfText` remplace aussi ≤ / ≥. Test dans `pdf-document.spec.ts`.
+3. **Totaux pro** : `toField(v, true)` ajoute le séparateur de milliers (espace fine insécable) à l'affichage
+   et au départ du champ ; `parseField` l'ignore déjà. Tests `pro-view.spec.ts`, `pro-input-page.spec.ts`.
+4. **Déploiement web** : plus d'URL d'API dans `apps/web/vercel.json`. Le build lance
+   `apps/web/scripts/vercel-output.mjs` qui écrit `apps/web/.vercel/output` (Build Output API v3) :
+   réécriture `/api/*` vers la variable `API_ORIGIN` (obligatoire, `{branch}` remplacé par la branche Git
+   pour viser l'API de prévisualisation de la même branche), en-têtes, cache, repli SPA, et CSP dont les
+   empreintes sha256 des scripts/gestionnaires en ligne sont calculées depuis l'`index.html` construit.
+   `docs/DEPLOIEMENT.md` § 3 et § 4 mis à jour (variable `API_ORIGIN`, règle « aucune prévisualisation
+   n'écrit en production », branche Neon dédiée). `.vercel` ignoré par ESLint.
+   À vérifier au premier déploiement réel : que Vercel prend bien `apps/web/.vercel/output` (non testable ici).
+
+Reste à faire :
+5. Test e2e API « verrouille le compte après 5 échecs » (`apps/api/src/e2e/auth.e2e.spec.ts`) : le fiabiliser
+   — piste : coût argon2 réduit quand `NODE_ENV=test` dans `apps/api/src/app/auth/password.ts`
+   (`timeCost`/`memoryCost` minimaux, `verify` lit les paramètres du hash) et/ou timeout explicite du test.
+   Non commencé.
+6. CI GitHub : dernier run vérifié (run 19, commit 16b7380) **vert** ; à revérifier sur les commits L6a
+   après push (`mcp__github__actions_list`, dépôt fotso28/simulateursolaire).
+7. `npx nx e2e web-e2e` non relancé en L6a (lint/test/build passent) ; les specs e2e pro/particulier qui
+   affichent des puissances typiques du catalogue peuvent avoir à être ajustées.
